@@ -1,30 +1,96 @@
 <?php
 
-use App\Models\Menu;
 use Illuminate\Support\Facades\Route;
-use App\Http\Controllers\CartController;
+use App\Models\Menu;
 use App\Http\Controllers\OrderController;
+use App\Http\Controllers\AdminOrderController;
 
-// Halaman Depan
+/*
+|--------------------------------------------------------------------------
+| Helper Firebase
+|--------------------------------------------------------------------------
+| Dibungkus function_exists agar tidak terjadi redeclare error
+*/
+
+if (!function_exists('firebaseDatabase')) {
+    function firebaseDatabase()
+    {
+        $credPath = base_path(env('FIREBASE_CREDENTIALS'));
+        $dbUrl    = env('FIREBASE_DATABASE_URL');
+
+        if (!file_exists($credPath)) {
+            abort(500, "File credential tidak ditemukan: $credPath");
+        }
+
+        if (!$dbUrl) {
+            abort(500, "FIREBASE_DATABASE_URL belum diisi di .env");
+        }
+
+        $factory = (new \Kreait\Firebase\Factory)
+            ->withServiceAccount($credPath)
+            ->withDatabaseUri($dbUrl);
+
+        return $factory->createDatabase();
+    }
+}
+
+/*
+|--------------------------------------------------------------------------
+| Halaman Depan
+|--------------------------------------------------------------------------
+*/
+
 Route::get('/', function () {
-    $semua_menu = Menu::all();
-    return view('welcome', ['menus' => $semua_menu]);
-});
+    $menus = Menu::all();
+    return view('welcome', compact('menus'));
+})->name('home');
 
-// Rute untuk Tambah ke Keranjang
-/*Route::post('/cart/add/{id}', [OrderController::class, 'addToCart'])->name('cart.add');*/
 
-// Rute untuk Halaman Keranjang
+/*
+|--------------------------------------------------------------------------
+| Keranjang
+|--------------------------------------------------------------------------
+*/
+
 Route::get('/cart', [OrderController::class, 'showCart'])->name('cart.show');
+Route::post('/cart/add/{id}', [OrderController::class, 'addToCart'])->name('cart.add');
+Route::post('/cart/decrease/{id}', [OrderController::class, 'decrease'])->name('cart.decrease');
+Route::delete('/cart/remove/{id}', [OrderController::class, 'remove'])->name('cart.remove');
 
-// Rute untuk Simpan Pesanan (Checkout)
+
+/*
+|--------------------------------------------------------------------------
+| Checkout
+|--------------------------------------------------------------------------
+*/
+
 Route::post('/checkout', [OrderController::class, 'simpan'])->name('checkout.simpan');
 
-// Menambah jumlah (digunakan di Home & Keranjang)
-Route::post('/cart/add/{id}', [App\Http\Controllers\OrderController::class, 'add'])->name('cart.add');
 
-// Mengurangi jumlah item
-Route::post('/cart/decrease/{id}', [App\Http\Controllers\OrderController::class, 'decrease'])->name('cart.decrease');
+/*
+|--------------------------------------------------------------------------
+| Admin Orders (Halaman + Update Status Manual via Dropdown)
+|--------------------------------------------------------------------------
+*/
 
-// Menghapus item sepenuhnya dari keranjang
-Route::delete('/cart/remove/{id}', [App\Http\Controllers\OrderController::class, 'remove'])->name('cart.remove');
+Route::get('/admin/orders', [AdminOrderController::class, 'index'])->name('admin.orders');
+Route::post('/orders/{id}/status', [AdminOrderController::class, 'nextStatus'])->name('orders.status');
+
+
+/*
+|--------------------------------------------------------------------------
+| TEST Firebase (Optional)
+|--------------------------------------------------------------------------
+*/
+
+Route::get('/firebase-test', function () {
+
+    $database = firebaseDatabase();
+
+    $database->getReference('test')->set([
+        'msg' => 'Halo Realtime Database!',
+        'created_at' => now()->toDateTimeString(),
+    ]);
+
+    return "✅ Berhasil kirim ke Realtime Database";
+});
