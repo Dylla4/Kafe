@@ -91,7 +91,7 @@
                                         </button>
                                     </form>
 
-                                    <span class="min-w-[30px] font-bold">{{ $qty }}</span>
+                                    <span class="min-w-7.5 font-bold">{{ $qty }}</span>
 
                                     <form action="{{ route('cart.add', $id) }}" method="POST">
                                         @csrf
