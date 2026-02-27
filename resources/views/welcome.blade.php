@@ -140,27 +140,29 @@
                         @if($qty > 0)
                             <div class="flex items-center justify-between gap-3">
                                 <button type="button"
-                                        onclick="decreaseItem({{ $m->id }})"
-                                        class="w-12 h-12 rounded-xl border border-stone-200 hover:bg-stone-100 font-bold text-lg">
-                                    -
-                                </button>
+        onclick="decreaseItem('{{ $m->id }}')" 
+        class="w-12 h-12 rounded-xl border border-stone-200 hover:bg-stone-100 font-bold text-lg">
+    -
+</button>
 
                                 <span id="qty-{{ $m->id }}" class="min-w-6 text-center text-lg font-bold">
                                     {{ $qty }}
                                 </span>
 
                                 <button type="button"
-                                        onclick="increaseItem({{ $m->id }})"
-                                        class="w-12 h-12 rounded-xl border border-stone-200 hover:bg-stone-100 font-bold text-lg">
-                                    +
-                                </button>
+        onclick="increaseItem('{{ $m->id }}')" 
+        class="w-12 h-12 rounded-xl border border-stone-200 hover:bg-stone-100 font-bold text-lg">
+    +
+</button>
+
                             </div>
                         @else
                             <button type="button"
-                                    onclick="addFirst({{ $m->id }})"
-                                    class="w-full bg-stone-900 hover:bg-orange-700 text-white py-3 rounded-xl font-semibold transition">
-                                + Tambah ke Pesanan
-                            </button>
+        onclick="addFirst('{{ $m->id }}')" 
+        class="w-full bg-stone-900 hover:bg-orange-700 text-white py-3 rounded-xl font-semibold transition">
+    + Tambah ke Pesanan
+</button>
+
                         @endif
                     </div>
 
@@ -225,7 +227,7 @@
 </footer>
 
 <script>
-const CSRF_TOKEN = @json(csrf_token());
+const CSRF_TOKEN = "@json(csrf_token())";
 
 async function post(url) {
     const res = await fetch(url, {

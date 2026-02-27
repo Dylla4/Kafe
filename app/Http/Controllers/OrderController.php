@@ -5,137 +5,112 @@ namespace App\Http\Controllers;
 use App\Models\Menu;
 use App\Models\Order;
 use Illuminate\Http\Request;
-use Kreait\Firebase\Factory;
 
 class OrderController extends Controller
 {
-    // =========================
-    // KERANJANG (SESSION)
-    // =========================
+    /**
+     * Fungsi 1: Menambahkan menu ke keranjang (Session).
+     * Digunakan oleh tombol "+ Tambah ke Pesanan" di halaman utama 
+     * dan tombol "+" di halaman keranjang.
+     */
     public function addToCart($id)
     {
         $menu = Menu::findOrFail($id);
         $cart = session()->get('cart', []);
 
-        if (isset($cart[$id])) {
+        if(isset($cart[$id])) {
             $cart[$id]['quantity']++;
         } else {
+            // Key harus sama dengan yang dipanggil di file Blade
             $cart[$id] = [
                 "nama_menu" => $menu->nama_menu,
                 "quantity"  => 1,
-                "harga"     => (int) $menu->harga,
-                "kategori"  => $menu->kategori,
+                "harga"     => $menu->harga,
                 "foto"      => $menu->foto,
+                "kategori"  => $menu->kategori
             ];
         }
 
         session()->put('cart', $cart);
-        return redirect()->back()->with('success', 'Menu ditambahkan!');
+        return redirect()->back()->with('success', 'Menu berhasil ditambahkan!');
     }
 
+    /**
+     * Fungsi 2: Mengurangi jumlah item di keranjang.
+     * Digunakan oleh tombol "-" di halaman keranjang.
+     */
     public function decrease($id)
     {
-        $cart = session()->get('cart', []);
-        if (isset($cart[$id])) {
-            if (($cart[$id]['quantity'] ?? 1) > 1) {
+        $cart = session()->get('cart');
+
+        if(isset($cart[$id])) {
+            if($cart[$id]['quantity'] > 1) {
                 $cart[$id]['quantity']--;
             } else {
+                // Jika jumlah tinggal 1 dan dikurangi, hapus item dari keranjang
                 unset($cart[$id]);
             }
             session()->put('cart', $cart);
         }
-        return redirect()->back();
+
+        return redirect()->back()->with('success', 'Jumlah menu diperbarui.');
     }
 
+    /**
+     * Fungsi 3: Menghapus item sepenuhnya dari keranjang.
+     * Digunakan oleh tombol "Hapus/Cancel" (ikon tong sampah).
+     */
     public function remove($id)
     {
-        $cart = session()->get('cart', []);
-        if (isset($cart[$id])) {
+        $cart = session()->get('cart');
+
+        if(isset($cart[$id])) {
             unset($cart[$id]);
             session()->put('cart', $cart);
         }
-        return redirect()->back();
+
+        return redirect()->back()->with('success', 'Menu dihapus dari keranjang.');
     }
 
+    /**
+     * Fungsi 4: Menampilkan halaman keranjang belanja.
+     */
     public function showCart()
     {
-        return view('cart');
+        $cartItems = session()->get('cart', []);
+        return view('cart', compact('cartItems'));
     }
 
-    // =========================
-    // CHECKOUT -> SIMPAN ORDER
-    // =========================
+    /**
+     * Fungsi 5: Menyimpan data pesanan dari form ke tabel 'orders'.
+     */
     public function simpan(Request $request)
     {
-        $request->validate([
-            'nama_pembeli' => 'required|string|max:100',
-            'nomor_meja'   => 'required|string|max:20',
-            'catatan'      => 'nullable|string|max:255',
-        ]);
-
         $cart = session()->get('cart', []);
+        
         if (empty($cart)) {
-            return redirect()->back()->with('error', 'Keranjang kosong.');
+            return redirect()->back()->with('error', 'Keranjang masih kosong!');
         }
 
-        // hitung total
+        // Hitung Total Harga
         $total = 0;
-        foreach ($cart as $item) {
-            $harga = (int) ($item['harga'] ?? 0);
-            $qty   = (int) ($item['quantity'] ?? 1);
-            $total += $harga * $qty;
+        foreach($cart as $item) { 
+            $total += $item['harga'] * $item['quantity']; 
         }
 
-        // =========================
-        // 1) SIMPAN KE SQLITE (opsional)
-        // =========================
-        $order = Order::create([
-            'nama_pembeli' => $request->nama_pembeli,
-            'nomor_meja'   => $request->nomor_meja,
+        // Simpan ke Database
+        Order::create([
+            'nama_pembeli' => $request->nama_pemesan, // 'nama_pemesan' dari input form
+            'nomor_meja'   => $request->nomor_meja ?? 0,
             'catatan'      => $request->catatan ?? '-',
             'item_pesanan' => json_encode($cart),
             'total_harga'  => $total,
-            'status'       => 'pending',
+            'status'       => 'pending'
         ]);
 
-        // =========================
-        // 2) SIMPAN KE FIREBASE RTDB
-        // =========================
-        $credPath = base_path(env('FIREBASE_CREDENTIALS'));
-        $dbUrl    = env('FIREBASE_DATABASE_URL');
-
-        if (!file_exists($credPath)) {
-            return redirect()->back()->with('error', "Credential Firebase tidak ditemukan: $credPath");
-        }
-        if (!$dbUrl) {
-            return redirect()->back()->with('error', "FIREBASE_DATABASE_URL belum diisi di .env");
-        }
-
-        $factory = (new Factory)
-            ->withServiceAccount($credPath)
-            ->withDatabaseUri($dbUrl);
-
-        $database = $factory->createDatabase();
-
-        // pakai ID dari SQLite biar sinkron, atau bisa pakai push() kalau mau auto key
-        $orderId = (string) $order->id;
-
-        $database->getReference("orders/$orderId")->set([
-            'id'          => (int) $order->id,
-            'nama_pembeli'=> $request->nama_pembeli,
-            'nomor_meja'  => $request->nomor_meja,
-            'catatan'     => $request->catatan ?? '-',
-            'items'       => $cart,
-            'total_harga' => (int) $total,
-            'status'      => [
-                'code'       => 'pending',
-                'label'      => 'Menunggu',
-                'updated_at' => now()->toDateTimeString(),
-            ],
-            'created_at'  => now()->toDateTimeString(),
-        ]);
-
+        // Kosongkan keranjang setelah berhasil pesan
         session()->forget('cart');
-        return redirect('/')->with('success', 'Pesanan terkirim & masuk Firebase!');
+
+        return redirect('/')->with('success', 'Pesanan Anda telah kami terima!');
     }
 }
