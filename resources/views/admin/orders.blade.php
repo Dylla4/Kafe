@@ -33,8 +33,8 @@
 
             @php
                 // status dari firebase kadang bisa array/object → amankan jadi string
-                $rawStatus = $order['status'] ?? 'pending';
-                $status = is_string($rawStatus) ? $rawStatus : 'pending';
+                $rawStatus = $order['status'] ?? 'diproses';
+                $status = is_string($rawStatus) ? $rawStatus : 'diproses';
 
                 $badgeClass = match ($status) {
                     'pending'  => 'bg-yellow-500',
@@ -78,12 +78,12 @@
                                 onchange="this.form.submit()"
                                 class="border rounded px-3 py-1 ml-2">
 
-                            <option value="pending" {{ $status === 'pending' ? 'selected' : '' }}>
-                                Pending
+                            <option value="proses" {{ $status === 'proses' ? 'selected' : '' }}>
+                                Diproses
                             </option>
 
-                            <option value="diproses" {{ $status === 'diproses' ? 'selected' : '' }}>
-                                Diproses
+                            <option value="siap" {{ $status === 'siap' ? 'selected' : '' }}>
+                                Siap
                             </option>
 
                             <option value="selesai" {{ $status === 'selesai' ? 'selected' : '' }}>

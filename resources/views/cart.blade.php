@@ -67,7 +67,7 @@
                             <td class="py-4 font-semibold">
                                 <div class="flex items-center gap-3">
                                     @if(!empty($details['foto']))
-                                        <img src="{{ \Illuminate\Support\Facades\Storage::url($details['foto']) }}"
+                                        <img src="{{ asset($details['foto']) }}"
                                              class="w-12 h-12 rounded-xl object-cover border" alt="">
                                     @endif
                                     <div>
@@ -145,22 +145,22 @@
                            placeholder="Masukkan nama Anda">
                 </div>
 
-                <div>
-                    <label class="block text-sm font-bold text-orange-900 mb-2">Jenis Pesanan</label>
-                    <select name="jenis_pesanan" required
-                            class="w-full p-3 border-2 border-orange-200 rounded-xl focus:outline-none focus:border-orange-500 transition">
-                        <option value="dine_in">Makan di Tempat</option>
-                        <option value="take_away">Take Away</option>
-                    </select>
-                </div>
+         <div>
+    <label class="block text-sm font-bold text-orange-900 mb-2">Jenis Pesanan</label>
+    <select name="jenis_pesanan" id="jenis_pesanan" required
+            class="w-full p-3 border-2 border-orange-200 rounded-xl focus:outline-none focus:border-orange-500 transition">
+        <option value="dine_in">Makan di Tempat</option>
+        <option value="take_away">Take Away</option>
+    </select>
+</div>
 
-                <div>
-                    <label class="block text-sm font-bold text-orange-900 mb-2">Nomor Meja</label>
-                    <input type="text" name="nomor_meja"
-                           class="w-full p-3 border-2 border-orange-200 rounded-xl focus:outline-none focus:border-orange-500 transition"
-                           placeholder="Contoh: Meja 05">
-                    <p class="text-xs text-stone-500 mt-1">Isi jika makan di tempat (boleh kosong jika take away).</p>
-                </div>
+<div>
+    <label id="label_lokasi" class="block text-sm font-bold text-orange-900 mb-2">Nomor Meja</label>
+    <input type="text" name="nomor_meja" id="input_lokasi"
+           class="w-full p-3 border-2 border-orange-200 rounded-xl focus:outline-none focus:border-orange-500 transition"
+           placeholder="Contoh: Meja 05">
+    <p id="keterangan_lokasi" class="text-xs text-stone-500 mt-1">Isi jika makan di tempat (boleh kosong jika take away).</p>
+</div>
 
                 <div>
                     <label class="block text-sm font-bold text-orange-900 mb-2">Metode Pembayaran</label>
@@ -197,6 +197,25 @@
 
     </div>
 </div>
+
+<script>
+    const jenisPesanan = document.getElementById('jenis_pesanan');
+    const labelLokasi = document.getElementById('label_lokasi');
+    const inputLokasi = document.getElementById('input_lokasi');
+    const keteranganLokasi = document.getElementById('keterangan_lokasi');
+
+    jenisPesanan.addEventListener('change', function() {
+        if (this.value === 'take_away') {
+            labelLokasi.innerText = 'Alamat Pengiriman / Penjemputan';
+            inputLokasi.placeholder = 'Masukkan alamat lengkap Anda...';
+            keteranganLokasi.innerText = 'Tulis alamat lengkap atau instruksi penjemputan.';
+        } else {
+            labelLokasi.innerText = 'Nomor Meja';
+            inputLokasi.placeholder = 'Contoh: Meja 05';
+            keteranganLokasi.innerText = 'Isi jika makan di tempat (boleh kosong jika take away).';
+        }
+    });
+</script>
 
 </body>
 </html>

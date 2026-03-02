@@ -22,28 +22,31 @@ class MenuSeeder extends Seeder
             'nama_menu' => 'Almond Coffee',
             'harga' => 25000,
             'kategori' => 'Minuman',
-            'foto' => 'img/AlmoundCoffee.jpeg'
+            'foto' => 'img/AlmoundCoffee.jpeg',
+            'is_best_seller' => true
         ]);
 
         Menu::create([
             'nama_menu' => 'Biskuit Coffee',
             'harga' => 22000,
             'kategori' => 'Minuman',
-            'foto' => 'img/BiskiesCoffee.jpeg'
+            'foto' => 'img/BiskiesCoffee.jpeg',
+            'is_best_seller' => true
         ]);
 
         Menu::create([
             'nama_menu' => 'Caramel Latte',
             'harga' => 20000,
             'kategori' => 'Minuman',
-            'foto' => 'img/CaramelCoffee.jpeg'
+            'foto' => 'img/CaramelCoffee.jpeg',
+            'is_best_seller' => true
         ]);
 
         Menu::create([
-            'nama_menu' => 'Chocolate',
+            'nama_menu' => 'Hot Chocolate',
             'harga' => 20000,
             'kategori' => 'Minuman',
-            'foto' => 'img/Chocolate.jpeg'
+            'foto' => 'img/ChocolateHot.jpeg'
         ]);
 
         Menu::create([
@@ -80,6 +83,13 @@ class MenuSeeder extends Seeder
             'kategori' => 'Makanan',
             'foto' => 'img/AyamGeprek.jpeg'
         ]);
+
+        Menu::create([
+            'nama_menu' => 'Ayam Crispy',
+            'harga' => 15000,
+            'kategori' => 'Makanan',
+            'foto' => 'img/AyamCrispy.jpeg'
+        ]);
         
         Menu::create([
             'nama_menu' => 'Dimsum Mentai',
@@ -96,7 +106,7 @@ class MenuSeeder extends Seeder
         ]);
 
         Menu::create([
-            'nama_menu' => 'Naget Ayam',
+            'nama_menu' => 'Nugget Ayam',
             'harga' => 30000,
             'kategori' => 'Makanan',
             'foto' => 'img/Naget.jpeg'
@@ -134,7 +144,8 @@ class MenuSeeder extends Seeder
             'nama_menu' => 'Sushi Salmon',
             'harga' => 45000,
             'kategori' => 'Makanan',
-            'foto' => 'img/Salmon.jpeg'
+            'foto' => 'img/Salmon.jpeg',
+            'is_best_seller' => true
         ]);
 
         Menu::create([
@@ -145,10 +156,119 @@ class MenuSeeder extends Seeder
         ]);
 
         Menu::create([
-            'nama_menu' => 'Hamberger Ayam',
-            'harga' => 25000,
+            'nama_menu' => 'Hamburger Ayam',
+            'harga' => 20000,
             'kategori' => 'Makanan',
             'foto' => 'img/Burgerayaam.jpeg'
+        ]);
+
+        Menu::create([
+            'nama_menu' => 'Hamburger Beef',
+            'harga' => 23000,
+            'kategori' => 'Makanan',
+            'foto' => 'img/Burgerbeef.jpeg'
+        ]);
+
+        Menu::create([
+            'nama_menu' => 'Chocolate Cake',
+            'harga' => 20000,
+            'kategori' => 'Sweet Treats',
+            'foto' => 'img/ChocolateCake.jpeg',
+            'is_best_seller' => true
+        ]);
+
+        Menu::create([
+            'nama_menu' => 'Original Churros',
+            'harga' => 10000,
+            'kategori' => 'Sweet Treats',
+            'foto' => 'img/Churros.jpeg'
+        ]);
+
+        Menu::create([
+            'nama_menu' => 'Original Croissant',
+            'harga' => 20000,
+            'kategori' => 'Sweet Treats',
+            'foto' => 'img/Croissant.jpeg'
+        ]);
+
+        Menu::create([
+            'nama_menu' => 'Lemon Cheesecake',
+            'harga' => 20000,
+            'kategori' => 'Promo',
+            'foto' => 'img/LemonCheesecake.jpg'
+        ]);
+
+        Menu::create([
+            'nama_menu' => 'Almond Croissant',
+            'harga' => 25000,
+            'kategori' => 'Sweet Treats',
+            'foto' => 'img/CroissantAlmond.jpeg'
+        ]);
+
+        Menu::create([
+            'nama_menu' => 'Chocolate Croissant',
+            'harga' => 23000,
+            'kategori' => 'Sweet Treats',
+            'foto' => 'img/Croissantcoklat.jpeg'
+        ]);
+
+        Menu::create([
+            'nama_menu' => 'Chocolate Almond Croissant',
+            'harga' => 26000,
+            'kategori' => 'Sweet Treats',
+            'foto' => 'img/CroissantCoklatAlmond.jpeg',
+            'is_best_seller' => true
+        ]);
+
+        Menu::create([
+            'nama_menu' => 'Matcha Croissant',
+            'harga' => 23000,
+            'kategori' => 'Sweet Treats',
+            'foto' => 'img/CroissantMatcha.jpeg',
+            'is_best_seller' => true
+        ]);
+
+        Menu::create([
+            'nama_menu' => 'Hotdog',
+            'harga' => 15000,
+            'kategori' => 'Makanan',
+            'foto' => 'img/hotdog.jpeg'
+        ]);
+
+        Menu::create([
+            'nama_menu' => 'French Fries',
+            'harga' => 13000,
+            'kategori' => 'Makanan',
+            'foto' => 'img/KentangGoreng.jpeg'
+        ]);
+
+        Menu::create([
+            'nama_menu' => 'Lumpia',
+            'harga' => 17000,
+            'kategori' => 'Makanan',
+            'foto' => 'img/Lumpiah.jpeg'
+        ]);
+
+        Menu::create([
+            'nama_menu' => 'Mozzarella Pizza',
+            'harga' => 53000,
+            'kategori' => 'Makanan',
+            'foto' => 'img/pizzamoza.jpeg'
+        ]);
+
+        Menu::create([
+            'nama_menu' => 'Sosis Bakar',
+            'harga' => 15000,
+            'kategori' => 'Makanan',
+            'foto' => 'img/sosisbakar.jpeg'
+        ]);
+
+        Menu::create([
+            'nama_menu' => 'Strawberry Cheesecake',
+            'harga' => 25000,
+            'kategori' => 'Sweet Treats',
+            'foto' => 'img/StrawberryCheesecake.jpg',
+            'is_best_seller' => true
         ]);
     }
 }

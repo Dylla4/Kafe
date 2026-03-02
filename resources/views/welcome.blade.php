@@ -5,6 +5,9 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Valeria Coffee</title>
     <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+    html {scroll-behavior: smooth;}
+    </style>
 </head>
 
 <body class="bg-stone-50 text-stone-800 font-sans scroll-smooth">
@@ -100,77 +103,171 @@
 </section>
 
 <!-- ================= MENU ================= -->
-<section id="menu" class="max-w-6xl mx-auto py-24 px-6">
 
-    <h2 class="text-3xl font-bold text-center mb-16">
-        Menu Pilihan Kami
-    </h2>
+<section id="menu" class="max-w-6xl mx-auto py-24 px-6 bg-white">
+    
+    <div class="text-center mb-10">
+        <h2 class="text-4xl font-extrabold text-stone-800 mb-4">Menu Pilihan Kami</h2>
+        <p class="text-stone-500">Nikmati sajian terbaik kami yang terbuat dari biji kopi pilihan dan bahan berkualitas.</p>
+        <div class="w-24 h-1.5 bg-orange-500 mx-auto mt-6 rounded-full"></div>
+    </div>
 
-    <div class="grid grid-cols-1 md:grid-cols-3 gap-10">
+    @php
+        $categories = $menus->pluck('kategori')->unique();
+    @endphp
+    
 
-        @foreach($menus as $m)
-            @php
-                $sid = (string) $m->id;
-                $qty = (int)($cart[$sid]['quantity'] ?? ($cart[$sid]['qty'] ?? 0));
-            @endphp
+    <div class="flex flex-wrap justify-center gap-4 mb-20">
+        <a href="#menu" 
+           class="px-10 py-3 bg-orange-500 text-white font-bold rounded-full shadow-lg shadow-orange-200 transition-all duration-300 uppercase text-xs tracking-widest">
+            Semua
+        </a>
 
-            <div class="bg-white rounded-3xl shadow-md hover:shadow-2xl transition duration-300 overflow-hidden group">
+        @foreach($categories as $cat)
+            <a href="#category-{{ Str::slug($cat) }}" 
+               class="px-10 py-3 bg-white border border-stone-200 text-stone-600 font-bold rounded-full shadow-sm hover:bg-orange-50 hover:text-orange-600 hover:border-orange-200 transition-all duration-300 uppercase text-xs tracking-widest">
+                {{ $cat }}
+            </a>
+        @endforeach
+    </div>
 
-                <div class="relative w-full h-60 overflow-hidden">
-                    <img src="{{ asset($m->foto) }}"
-                         class="w-full h-full object-cover group-hover:scale-110 transition duration-500"
-                         alt="{{ $m->nama_menu }}">
+/*today's offer*/
+
+    <div class="mb-12 px-4 md:px-0">
+    <div class="flex justify-between items-center mb-6">
+        <h2 class="text-2xl font-black text-stone-800 flex items-center gap-2">
+            Today's Offer <span class="text-orange-500">🔥</span>
+        </h2>
+        <a href="#menu" class="text-orange-600 font-bold text-sm hover:underline">Lihat Semua →</a>
+    </div>
+
+    <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+        @foreach($menus->where('kategori', 'Promo') as $m)
+            <div class="bg-white rounded-3xl p-4 shadow-sm border border-stone-100 flex gap-5 items-center hover:shadow-md transition-shadow">
+                
+                <div class="relative w-32 h-32 shrink-0">
+                    <img src="{{ asset($m->foto) }}" class="w-full h-full object-cover rounded-2xl" alt="{{ $m->nama_menu }}">
+                    
+                    <div class="absolute -top-2 -right-2 bg-red-500 text-white text-[9px] font-bold px-2 py-1 rounded-lg shadow-sm">
+                        PROMO
+                    </div>
                 </div>
 
-                <div class="p-6">
-
-                    <span class="text-xs font-semibold uppercase text-orange-600 tracking-wider">
-                        {{ $m->kategori }}
-                    </span>
-
-                    <h3 class="text-xl font-bold mt-2">
-                        {{ $m->nama_menu }}
-                    </h3>
-
-                    <p class="text-2xl font-extrabold mt-4">
-                        Rp {{ number_format($m->harga) }}
+                <div class="grow">
+                    <h3 class="font-bold text-lg text-stone-800 leading-tight mb-1">{{ $m->nama_menu }}</h3>
+                    <p class="text-[11px] text-stone-400 mb-3 line-clamp-2 italic">
+                        {{ $m->deskripsi ?? 'Paket hemat spesial hari ini' }}
                     </p>
-
-                    <div class="mt-6" id="action-{{ $m->id }}">
-                        @if($qty > 0)
-                            <div class="flex items-center justify-between gap-3">
-                                <button type="button"
-        onclick="decreaseItem('{{ $m->id }}')" 
-        class="w-12 h-12 rounded-xl border border-stone-200 hover:bg-stone-100 font-bold text-lg">
-    -
-</button>
-
-                                <span id="qty-{{ $m->id }}" class="min-w-6 text-center text-lg font-bold">
-                                    {{ $qty }}
-                                </span>
-
-                                <button type="button"
-        onclick="increaseItem('{{ $m->id }}')" 
-        class="w-12 h-12 rounded-xl border border-stone-200 hover:bg-stone-100 font-bold text-lg">
-    +
-</button>
-
-                            </div>
-                        @else
-                            <button type="button"
-        onclick="addFirst('{{ $m->id }}')" 
-        class="w-full bg-stone-900 hover:bg-orange-700 text-white py-3 rounded-xl font-semibold transition">
-    + Tambah ke Pesanan
-</button>
-
-                        @endif
+                    
+                    <div class="flex items-baseline gap-2">
+                        <span class="font-black text-orange-600 text-lg">Rp {{ number_format($m->harga) }}</span>
+                        <span class="text-[10px] text-stone-300 line-through">Rp {{ number_format($m->harga + 5000) }}</span>
                     </div>
+                </div>
 
+                <form action="{{ route('cart.add', $m->id) }}" method="POST">
+                    @csrf
+                    <button type="submit" class="bg-green-600 text-white w-10 h-10 rounded-full flex items-center justify-center font-bold shadow-lg shadow-green-100 hover:bg-stone-900 transition-colors">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="3" d="M12 4v16m8-8H4" />
+                        </svg>
+                    </button>
+                </form>
+            </div>
+        @endforeach
+    </div>
+</div>
+
+/*best seller*/
+
+    @if($menus->where('is_best_seller', true)->count() > 0)
+<div class="mb-16">
+    <div class="flex items-center gap-4 mb-8">
+        <span class="bg-orange-100 text-orange-600 px-4 py-1 rounded-full text-xs font-bold uppercase tracking-widest">Best Seller</span>
+        <div class="grow h-px bg-stone-100"></div>
+    </div>
+    
+    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+        @foreach($menus->where('is_best_seller', true) as $m)
+            @php
+                $sid = (string) $m->id;
+                $qty = (int)($cart[$sid]['quantity'] ?? 0);
+            @endphp
+            <div class="flex items-center gap-5 p-4 bg-orange-50/50 rounded-3xl border border-orange-100 hover:shadow-lg transition duration-300">
+                <img src="{{ asset($m->foto) }}" class="w-24 h-24 object-cover rounded-2xl shadow-sm">
+                <div class="grow">
+                    <h4 class="font-bold text-stone-800">{{ $m->nama_menu }}</h4>
+                    <p class="text-orange-600 font-black">Rp {{ number_format($m->harga) }}</p>
+                    <form action="{{ route('cart.add', $m->id) }}#menu" method="POST" class="mt-2">
+                        @csrf
+                        <button type="submit" class="text-xs font-bold text-stone-500 hover:text-orange-600 uppercase tracking-tighter">
+                            + Tambah Pesanan
+                        </button>
+                    </form>
                 </div>
             </div>
         @endforeach
-
     </div>
+</div>
+@endif
+
+    @foreach($categories as $cat)
+        <div class="mb-20 scroll-mt-24" id="category-{{ Str::slug($cat) }}">
+            <div class="flex items-center gap-4 mb-10">
+                <h3 class="text-2xl font-bold text-stone-800 uppercase tracking-wider">{{ $cat }}</h3>
+                <div class="grow h-px bg-stone-200"></div>
+            </div>
+
+            <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-6">
+                @foreach($menus->where('kategori', $cat) as $m)
+                    @php
+                        $sid = (string) $m->id;
+                        $qty = (int)($cart[$sid]['quantity'] ?? ($cart[$sid]['qty'] ?? 0));
+                    @endphp
+
+                    <div class="bg-white rounded-4xl border border-stone-100 shadow-sm hover:shadow-xl transition-all duration-500 overflow-hidden group">
+                        <div class="relative w-full h-64 overflow-hidden bg-stone-100">
+                            <img src="{{ asset($m->foto) }}"
+                                 class="w-full h-full object-cover group-hover:scale-110 transition duration-700"
+                                 alt="{{ $m->nama_menu }}">
+                            
+                            @if($m->is_best_seller)
+                                <div class="absolute top-4 left-4 bg-orange-500 text-white text-[10px] font-bold px-3 py-1.5 rounded-full shadow-lg uppercase tracking-widest">
+                                    Best Seller
+                                </div>
+                            @endif
+                        </div>
+
+                        <div class="p-8 text-center">
+                            <h4 class="text-xl font-bold text-stone-800 mb-2">{{ $m->nama_menu }}</h4>
+                            <p class="text-2xl font-black text-stone-900 mb-6">
+                                Rp {{ number_format($m->harga) }}
+                            </p>
+
+                            <div id="action-{{ $m->id }}" class="flex justify-center">
+                                @if($qty > 0)
+                                    <div class="flex items-center gap-6 bg-stone-50 px-4 py-2 rounded-2xl border border-stone-100">
+                                        <button type="button" onclick="decreaseItem('{{ $m->id }}')" 
+                                                class="w-10 h-10 flex items-center justify-center rounded-xl bg-white border border-stone-200 text-stone-600 hover:bg-orange-500 hover:text-white transition-all font-bold shadow-sm">-</button>
+                                        <span id="qty-{{ $m->id }}" class="text-xl font-bold text-stone-800 min-w-5">{{ $qty }}</span>
+                                        <button type="button" onclick="increaseItem('{{ $m->id }}')" 
+                                                class="w-10 h-10 flex items-center justify-center rounded-xl bg-white border border-stone-200 text-stone-600 hover:bg-orange-500 hover:text-white transition-all font-bold shadow-sm">+</button>
+                                    </div>
+                                @else
+                                    <form action="{{ route('cart.add', $m->id) }}#menu" method="POST">
+                    @csrf
+                    <button type="submit" class="w-full bg-orange-600 text-white py-4 rounded-2xl font-bold hover:bg-stone-900 transition-all shadow-lg shadow-stone-200">
+                        + Tambah ke Pesanan
+                    </button>
+                </form>
+                                @endif
+                            </div>
+                        </div>
+                    </div>
+                @endforeach
+                </div>
+        </div>
+    @endforeach
 </section>
 
 <!-- ================= KONTAK ================= -->

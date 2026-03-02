@@ -39,7 +39,7 @@ class AdminOrderController extends Controller
     {
         $status = request('status');
 
-        $valid = ['pending', 'diproses', 'selesai'];
+        $valid = ['diproses', 'siap', 'selesai'];
 
         if (!in_array($status, $valid, true)) {
             return redirect()->back()->with('error', 'Status tidak valid');

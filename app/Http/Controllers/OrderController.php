@@ -98,14 +98,22 @@ class OrderController extends Controller
             $total += $item['harga'] * $item['quantity']; 
         }
 
+        // Logika penentuan lokasi (Meja vs Alamat)
+        $lokasi = $request->nomor_meja;
+        
+        // Jika input kosong, berikan keterangan otomatis berdasarkan jenis pesanan
+        if (empty($lokasi)) {
+            $lokasi = ($request->jenis_pesanan == 'take_away') ? 'Alamat Tidak Diisi' : 'Tanpa Meja';
+        }
+
         // Simpan ke Database
         Order::create([
-            'nama_pembeli' => $request->nama_pemesan, // 'nama_pemesan' dari input form
-            'nomor_meja'   => $request->nomor_meja ?? 0,
+            'nama_pembeli' => $request->nama_pembeli,
+            'nomor_meja'   => $lokasi, // Menyimpan nomor meja ATAU alamat
             'catatan'      => $request->catatan ?? '-',
             'item_pesanan' => json_encode($cart),
             'total_harga'  => $total,
-            'status'       => 'pending'
+            'status'       => 'diproses' // Status default saat baru memesan
         ]);
 
         // Kosongkan keranjang setelah berhasil pesan
