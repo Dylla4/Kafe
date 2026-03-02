@@ -57,6 +57,27 @@ class MenuSeeder extends Seeder
         ]);
 
         Menu::create([
+            'nama_menu' => 'Matcha Latte',
+            'harga' => 22000,
+            'kategori' => 'Minuman',
+            'foto' => 'img/MatchaLatte.jpg'
+        ]);
+
+        Menu::create([
+            'nama_menu' => 'Matcha Latte',
+            'harga' => 18000,
+            'kategori' => 'Offer',
+            'foto' => 'img/MatchaLatte.jpg'
+        ]);
+
+        Menu::create([
+            'nama_menu' => 'Strawberry Milkshake',
+            'harga' => 21000,
+            'kategori' => 'Minuman',
+            'foto' => 'img/StrawberryMilkshake.jpg'
+        ]);
+
+        Menu::create([
             'nama_menu' => 'Dalgona Coffee',
             'harga' => 20000,
             'kategori' => 'Minuman',
@@ -121,7 +142,7 @@ class MenuSeeder extends Seeder
 
         Menu::create([
             'nama_menu' => 'Onigiri',
-            'harga' => 35000,
+            'harga' => 25000,
             'kategori' => 'Makanan',
             'foto' => 'img/Onigiri.jpeg'
         ]);
@@ -170,6 +191,13 @@ class MenuSeeder extends Seeder
         ]);
 
         Menu::create([
+            'nama_menu' => 'French Fries',
+            'harga' => 13000,
+            'kategori' => 'Offer',
+            'foto' => 'img/KentangGoreng.jpeg'
+        ]);
+
+        Menu::create([
             'nama_menu' => 'Chocolate Cake',
             'harga' => 20000,
             'kategori' => 'Sweet Treats',
@@ -194,8 +222,22 @@ class MenuSeeder extends Seeder
         Menu::create([
             'nama_menu' => 'Lemon Cheesecake',
             'harga' => 20000,
-            'kategori' => 'Promo',
+            'kategori' => 'Sweet Treats',
             'foto' => 'img/LemonCheesecake.jpg'
+        ]);
+
+        Menu::create([
+            'nama_menu' => 'Lemon Cheesecake',
+            'harga' => 15000,
+            'kategori' => 'Offer',
+            'foto' => 'img/LemonCheesecake.jpg'
+        ]);
+
+        Menu::create([
+            'nama_menu' => 'Oreo Cheesecake',
+            'harga' => 20000,
+            'kategori' => 'Sweet Treats',
+            'foto' => 'img/OreoCheesecake.jpg'
         ]);
 
         Menu::create([
@@ -237,7 +279,7 @@ class MenuSeeder extends Seeder
 
         Menu::create([
             'nama_menu' => 'French Fries',
-            'harga' => 13000,
+            'harga' => 15000,
             'kategori' => 'Makanan',
             'foto' => 'img/KentangGoreng.jpeg'
         ]);

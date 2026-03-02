@@ -113,8 +113,11 @@
     </div>
 
     @php
-        $categories = $menus->pluck('kategori')->unique();
-    @endphp
+    // Menghapus 'Offer' dan 'Promo' dari daftar kategori agar tidak muncul di navigasi
+    $categories = $menus->whereNotIn('kategori', ['Offer', 'Promo', 'Today\'s Offer', 'OFFER'])
+                       ->pluck('kategori')
+                       ->unique();
+@endphp
     
 
     <div class="flex flex-wrap justify-center gap-4 mb-20">
@@ -131,7 +134,7 @@
         @endforeach
     </div>
 
-/*today's offer*/
+                <!--Today's offer-->
 
     <div class="mb-12 px-4 md:px-0">
     <div class="flex justify-between items-center mb-6">
@@ -142,7 +145,7 @@
     </div>
 
     <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-        @foreach($menus->where('kategori', 'Promo') as $m)
+        @foreach($menus->where('kategori', 'Offer') as $m)
             <div class="bg-white rounded-3xl p-4 shadow-sm border border-stone-100 flex gap-5 items-center hover:shadow-md transition-shadow">
                 
                 <div class="relative w-32 h-32 shrink-0">
@@ -178,7 +181,7 @@
     </div>
 </div>
 
-/*best seller*/
+                <!--Best Seller-->
 
     @if($menus->where('is_best_seller', true)->count() > 0)
 <div class="mb-16">
