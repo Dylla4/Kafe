@@ -9,9 +9,19 @@ use Illuminate\Http\Request;
 class OrderController extends Controller
 {
     /**
-     * Fungsi 1: Menambahkan menu ke keranjang (Session).
-     * Digunakan oleh tombol "+ Tambah ke Pesanan" di halaman utama 
-     * dan tombol "+" di halaman keranjang.
+     * Menampilkan halaman utama dengan menu reguler dan menu promo harian.
+     */
+    public function index() 
+    {
+        $today = date('Ymd'); 
+        $promoMenus = Menu::inRandomOrder($today)->take(2)->get();
+        $menus = Menu::all();
+        
+        return view('welcome', compact('menus', 'promoMenus'));
+    }
+
+    /**
+     * Menambahkan menu ke keranjang (Session).
      */
     public function addToCart($id)
     {
@@ -21,7 +31,6 @@ class OrderController extends Controller
         if(isset($cart[$id])) {
             $cart[$id]['quantity']++;
         } else {
-            // Key harus sama dengan yang dipanggil di file Blade
             $cart[$id] = [
                 "nama_menu" => $menu->nama_menu,
                 "quantity"  => 1,
@@ -36,8 +45,7 @@ class OrderController extends Controller
     }
 
     /**
-     * Fungsi 2: Mengurangi jumlah item di keranjang.
-     * Digunakan oleh tombol "-" di halaman keranjang.
+     * Mengurangi jumlah item di keranjang.
      */
     public function decrease($id)
     {
@@ -47,7 +55,6 @@ class OrderController extends Controller
             if($cart[$id]['quantity'] > 1) {
                 $cart[$id]['quantity']--;
             } else {
-                // Jika jumlah tinggal 1 dan dikurangi, hapus item dari keranjang
                 unset($cart[$id]);
             }
             session()->put('cart', $cart);
@@ -57,8 +64,7 @@ class OrderController extends Controller
     }
 
     /**
-     * Fungsi 3: Menghapus item sepenuhnya dari keranjang.
-     * Digunakan oleh tombol "Hapus/Cancel" (ikon tong sampah).
+     * Menghapus item sepenuhnya dari keranjang.
      */
     public function remove($id)
     {
@@ -73,7 +79,7 @@ class OrderController extends Controller
     }
 
     /**
-     * Fungsi 4: Menampilkan halaman keranjang belanja.
+     * Menampilkan halaman keranjang belanja.
      */
     public function showCart()
     {
@@ -82,7 +88,7 @@ class OrderController extends Controller
     }
 
     /**
-     * Fungsi 5: Menyimpan data pesanan dari form ke tabel 'orders'.
+     * Menyimpan data pesanan dan langsung mengarahkan ke cetak struk.
      */
     public function simpan(Request $request)
     {
@@ -100,25 +106,38 @@ class OrderController extends Controller
 
         // Logika penentuan lokasi (Meja vs Alamat)
         $lokasi = $request->nomor_meja;
-        
-        // Jika input kosong, berikan keterangan otomatis berdasarkan jenis pesanan
         if (empty($lokasi)) {
             $lokasi = ($request->jenis_pesanan == 'take_away') ? 'Alamat Tidak Diisi' : 'Tanpa Meja';
         }
 
-        // Simpan ke Database
-        Order::create([
+        // Simpan ke Database dan ambil objek hasil simpan ke variabel $order
+        $order = Order::create([
             'nama_pembeli' => $request->nama_pembeli,
-            'nomor_meja'   => $lokasi, // Menyimpan nomor meja ATAU alamat
+            'nomor_meja'   => $lokasi,
             'catatan'      => $request->catatan ?? '-',
             'item_pesanan' => json_encode($cart),
             'total_harga'  => $total,
-            'status'       => 'diproses' // Status default saat baru memesan
+            'status'       => 'diproses'
         ]);
 
         // Kosongkan keranjang setelah berhasil pesan
         session()->forget('cart');
 
-        return redirect('/')->with('success', 'Pesanan Anda telah kami terima!');
+        // Redirect langsung ke halaman cetak struk berdasarkan ID pesanan baru
+        return redirect()->route('invoice.print', $order->id)->with('success', 'Pesanan berhasil dibuat!');
+    }
+
+    /**
+     * Menampilkan halaman struk (Invoice) untuk dicetak.
+     */
+    public function printInvoice($id)
+    {
+        // Mengambil data pesanan berdasarkan ID
+        $order = Order::findOrFail($id);
+        
+        // Decode data JSON item pesanan agar bisa dibaca di Blade
+        $items = json_decode($order->item_pesanan, true);
+
+        return view('invoice', compact('order', 'items'));
     }
 }

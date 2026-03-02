@@ -94,3 +94,5 @@ Route::get('/firebase-test', function () {
 
     return "✅ Berhasil kirim ke Realtime Database";
 });
+
+Route::get('/invoice/{id}', [OrderController::class, 'printInvoice'])->name('invoice.print');
