@@ -2,61 +2,56 @@
 
 namespace App\Http\Controllers;
 
-use Kreait\Firebase\Factory;
-use Kreait\Firebase\Database;
+use App\Models\Order;
+use Illuminate\Http\Request;
 
 class AdminOrderController extends Controller
 {
-    protected Database $db;
-
-    public function __construct()
-    {
-        $credPath = base_path(env('FIREBASE_CREDENTIALS'));
-        $dbUrl    = env('FIREBASE_DATABASE_URL');
-
-        if (!file_exists($credPath)) {
-            throw new \RuntimeException("Firebase credentials tidak ditemukan: {$credPath}");
-        }
-        if (!$dbUrl) {
-            throw new \RuntimeException("FIREBASE_DATABASE_URL belum di-set di .env");
-        }
-
-        $factory = (new Factory)
-            ->withServiceAccount($credPath)
-            ->withDatabaseUri($dbUrl);
-
-        $this->db = $factory->createDatabase();
-    }
-
+    /**
+     * Menampilkan daftar pesanan dari database MySQL.
+     */
     public function index()
     {
-        $orders = $this->db->getReference('orders')->getValue() ?? [];
+        // Mengambil semua data order, diurutkan dari yang terbaru
+        $orders = Order::orderBy('created_at', 'desc')->get();
+        
         return view('admin.orders', compact('orders'));
     }
 
-    // ✅ STATUS MANUAL (sesuai dropdown)
+    /**
+     * Mengubah status pesanan secara manual dari Admin Panel.
+     */
     public function nextStatus($id)
     {
+        // Mengambil status baru dari request dropdown
         $status = request('status');
 
-        $valid = ['diproses', 'siap', 'selesai'];
+        // Menambahkan 'menunggu_pembayaran' ke daftar validasi agar sesuai fitur QRIS
+        $valid = ['menunggu_pembayaran', 'diproses', 'siap', 'selesai'];
 
         if (!in_array($status, $valid, true)) {
             return redirect()->back()->with('error', 'Status tidak valid');
         }
 
-        $orderRef = $this->db->getReference("orders/{$id}");
-        $order    = $orderRef->getValue();
+        // Mencari data di tabel MySQL menggunakan Eloquent
+        $order = Order::findOrFail($id);
 
-        if (!$order) {
-            return redirect()->back()->with('error', 'Order tidak ditemukan');
-        }
-
-        $orderRef->update([
-            'status'     => $status,
-            'updated_at' => now()->toDateTimeString(),
+        // Update status di database MySQL
+        $order->update([
+            'status' => $status,
         ]);
 
-        return redirect()->back()->with('success', "Status diubah ke {$status}");
+        return redirect()->back()->with('success', "Status pesanan #{$id} berhasil diubah ke {$status}");
+    }
+
+    /**
+     * Menghapus pesanan (Opsional)
+     */
+    public function destroy($id)
+    {
+        $order = Order::findOrFail($id);
+        $order->delete();
+
+        return redirect()->back()->with('success', 'Pesanan berhasil dihapus');
     }
 }

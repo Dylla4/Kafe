@@ -19,18 +19,27 @@
   <div class="max-w-6xl mx-auto px-6 py-4 flex justify-between items-center">
     <h1 class="text-2xl font-bold text-orange-700 tracking-wide">☕ Valeria Coffee</h1>
 
-    <div class="flex items-center gap-8">
-      <div class="hidden md:flex gap-8 font-medium">
+    <div class="flex items-center gap-4"> {{-- Gap dikurangi agar muat dua tombol --}}
+      <div class="hidden md:flex gap-8 font-medium mr-4">
         <a href="#beranda" class="hover:text-orange-600 transition">Beranda</a>
         <a href="#tentang" class="hover:text-orange-600 transition">Tentang</a>
         <a href="#menu" class="hover:text-orange-600 transition">Menu</a>
         <a href="#kontak" class="hover:text-orange-600 transition">Kontak</a>
       </div>
 
-      <a href="{{ url('/cart') }}"
-         class="bg-orange-700 hover:bg-orange-800 text-white px-6 py-2 rounded-full font-semibold shadow-lg transition">
-        🛒 Keranjang
-      </a>
+      <div class="flex items-center gap-2">
+        {{-- TOMBOL RIWAYAT --}}
+        <a href="{{ route('order.history') }}"
+           class="bg-orange-700 border-stone-100 hover:border-orange-200 text-white px-6 py-2 rounded-full font-semibold shadow-lg transition flex items-center gap-2">
+           📜 <span class="hidden sm:inline">Riwayat</span>
+        </a>
+
+        {{-- TOMBOL KERANJANG --}}
+        <a href="{{ url('/cart') }}"
+           class="bg-orange-700 hover:bg-orange-800 text-white px-6 py-2 rounded-full font-semibold shadow-lg transition flex items-center gap-2">
+           🛒 <span class="hidden sm:inline">Keranjang</span>
+        </a>
+      </div>
     </div>
   </div>
 </nav>
@@ -135,19 +144,21 @@
           <div id="action-offer-{{ $m->id }}" class="shrink-0">
             @if($qty > 0)
               <div class="flex items-center gap-3 bg-stone-50 px-3 py-2 rounded-2xl border border-stone-100">
-                <button type="button" onclick="decreaseItem({{ $m->id }}, 'offer')"
-                        class="w-10 h-10 flex items-center justify-center rounded-xl bg-white border border-stone-200 text-stone-600 hover:bg-orange-500 hover:text-white transition-all font-bold shadow-sm">-</button>
-                <span id="qty-offer-{{ $m->id }}" class="text-lg font-bold text-stone-800 min-w-5 text-center">{{ $qty }}</span>
-                <button type="button" onclick="increaseItem({{ $m->id }}, 'offer')"
-                        class="w-10 h-10 flex items-center justify-center rounded-xl bg-white border border-stone-200 text-stone-600 hover:bg-orange-500 hover:text-white transition-all font-bold shadow-sm">+</button>
-              </div>
+    <button type="button" onclick="decreaseItem('{{ $m->id }}', 'offer')"
+            class="w-10 h-10 flex items-center justify-center rounded-xl bg-white border border-stone-200 text-stone-600 hover:bg-orange-500 hover:text-white transition-all font-bold shadow-sm">-</button>
+    
+    <span id="qty-offer-{{ $m->id }}" class="text-lg font-bold text-stone-800 min-w-5 text-center">{{ $qty }}</span>
+    
+    <button type="button" onclick="increaseItem('{{ $m->id }}', 'offer')"
+            class="w-10 h-10 flex items-center justify-center rounded-xl bg-white border border-stone-200 text-stone-600 hover:bg-orange-500 hover:text-white transition-all font-bold shadow-sm">+</button>
+</div>
             @else
-              <button type="button" onclick="addFirst({{ $m->id }}, 'offer')"
-                      class="bg-green-600 text-white w-10 h-10 rounded-full flex items-center justify-center font-bold shadow-lg shadow-green-100 hover:bg-stone-900 transition-colors">
-                <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="3" d="M12 4v16m8-8H4" />
-                </svg>
-              </button>
+              <button type="button" onclick="addFirst('{{ $m->id }}', 'offer')"
+        class="bg-green-600 text-white w-10 h-10 rounded-full flex items-center justify-center font-bold shadow-lg shadow-green-100 hover:bg-stone-900 transition-colors">
+      <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="3" d="M12 4v16m8-8H4" />
+          </svg>
+       </button>
             @endif
           </div>
         </div>
@@ -182,19 +193,21 @@
               <div id="action-bs-{{ $m->id }}" class="shrink-0">
                 @if($qty > 0)
                   <div class="flex items-center gap-3 bg-white px-3 py-2 rounded-2xl border border-orange-100">
-                    <button type="button" onclick="decreaseItem({{ $m->id }}, 'bs')"
-                            class="w-9 h-9 flex items-center justify-center rounded-xl bg-white border border-stone-200 hover:bg-orange-500 hover:text-white transition-all font-bold">-</button>
-                    <span id="qty-bs-{{ $m->id }}" class="text-base font-bold min-w-5 text-center">{{ $qty }}</span>
-                    <button type="button" onclick="increaseItem({{ $m->id }}, 'bs')"
-                            class="w-9 h-9 flex items-center justify-center rounded-xl bg-white border border-stone-200 hover:bg-orange-500 hover:text-white transition-all font-bold">+</button>
-                  </div>
+    <button type="button" onclick="decreaseItem('{{ $m->id }}', 'bs')"
+            class="w-9 h-9 flex items-center justify-center rounded-xl bg-white border border-stone-200 hover:bg-orange-500 hover:text-white transition-all font-bold">-</button>
+    
+    <span id="qty-bs-{{ $m->id }}" class="text-base font-bold min-w-5 text-center">{{ $qty }}</span>
+    
+    <button type="button" onclick="increaseItem('{{ $m->id }}', 'bs')"
+            class="w-9 h-9 flex items-center justify-center rounded-xl bg-white border border-stone-200 hover:bg-orange-500 hover:text-white transition-all font-bold">+</button>
+</div>
                 @else
-                  <button type="button" onclick="addFirst({{ $m->id }}, 'bs')"
-                          class="bg-green-600 text-white w-10 h-10 rounded-full flex items-center justify-center font-bold shadow-lg shadow-green-100 hover:bg-stone-900 transition-colors">
-                    <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="3" d="M12 4v16m8-8H4" />
-                    </svg>
-                  </button>
+                  <button type="button" onclick="addFirst('{{ $m->id }}', 'bs')"
+        class="bg-green-600 text-white w-10 h-10 rounded-full flex items-center justify-center font-bold shadow-lg shadow-green-100 hover:bg-stone-900 transition-colors">
+    <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="3" d="M12 4v16m8-8H4" />
+    </svg>
+</button>
                 @endif
               </div>
 
@@ -232,17 +245,19 @@
               <div id="action-cat-{{ $m->id }}" class="flex justify-center w-full">
                 @if($qty > 0)
                   <div class="flex items-center gap-6 bg-stone-50 px-4 py-2 rounded-2xl border border-stone-100">
-                    <button type="button" onclick="decreaseItem({{ $m->id }}, 'cat')"
-                            class="w-10 h-10 flex items-center justify-center rounded-xl bg-white border border-stone-200 text-stone-600 hover:bg-orange-500 hover:text-white transition-all font-bold shadow-sm">-</button>
-                    <span id="qty-cat-{{ $m->id }}" class="text-xl font-bold text-stone-800 min-w-5 text-center">{{ $qty }}</span>
-                    <button type="button" onclick="increaseItem({{ $m->id }}, 'cat')"
-                            class="w-10 h-10 flex items-center justify-center rounded-xl bg-white border border-stone-200 text-stone-600 hover:bg-orange-500 hover:text-white transition-all font-bold shadow-sm">+</button>
-                  </div>
+    <button type="button" onclick="decreaseItem('{{ $m->id }}', 'cat')"
+            class="w-10 h-10 flex items-center justify-center rounded-xl bg-white border border-stone-200 text-stone-600 hover:bg-orange-500 hover:text-white transition-all font-bold shadow-sm">-</button>
+    
+    <span id="qty-cat-{{ $m->id }}" class="text-xl font-bold text-stone-800 min-w-5 text-center">{{ $qty }}</span>
+    
+    <button type="button" onclick="increaseItem('{{ $m->id }}', 'cat')"
+            class="w-10 h-10 flex items-center justify-center rounded-xl bg-white border border-stone-200 text-stone-600 hover:bg-orange-500 hover:text-white transition-all font-bold shadow-sm">+</button>
+</div>
                 @else
-                  <button type="button" onclick="addFirst({{ $m->id }}, 'cat')"
-                          class="w-full bg-orange-600 text-white py-4 rounded-2xl font-bold hover:bg-stone-900 transition-all shadow-lg shadow-stone-200">
-                    + Tambah ke Pesanan
-                  </button>
+                  <button type="button" onclick="addFirst('{{ $m->id }}', 'cat')"
+        class="w-full bg-orange-600 text-white py-4 rounded-2xl font-bold hover:bg-stone-900 transition-all shadow-lg shadow-stone-200">
+    + Tambah ke Pesanan
+</button>
                 @endif
               </div>
 
@@ -328,7 +343,7 @@
 </section>
 
 <script>
-const CSRF_TOKEN = @json(csrf_token());
+const CSRF_TOKEN = "{{ csrf_token() }}";
 
 async function post(url) {
   const res = await fetch(url, {

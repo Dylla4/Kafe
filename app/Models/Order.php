@@ -15,7 +15,8 @@ class Order extends Model
         'nomor_meja', 
         'catatan', 
         'item_pesanan', 
-        'total_harga', 
+        'total_harga',
+        'metode_pembayaran', 
         'status'
     ];
 }

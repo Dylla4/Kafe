@@ -13,12 +13,14 @@ return new class extends Migration
 {
     Schema::create('orders', function (Blueprint $table) {
         $table->id();
-        $table->string('nama_pembeli');      // Menyimpan nama pelanggan
-        $table->string('nomor_meja')->nullable(); // Meja (boleh kosong)
-        $table->text('catatan')->nullable();    // Catatan (misal: "kopi kurang manis")
-        $table->text('item_pesanan');         // Daftar menu yang dibeli (format JSON)
-        $table->integer('total_harga');       // Total bayar
-        $table->string('status')->default('pending'); // Status (pending, diproses, selesai)
+        $table->string('nama_pembeli');
+        $table->string('nomor_meja')->nullable();
+        $table->text('catatan')->nullable();
+        $table->text('item_pesanan');
+        $table->integer('total_harga');
+        // TAMBAHKAN BARIS INI:
+        $table->string('metode_pembayaran')->nullable(); 
+        $table->string('status')->default('pending');
         $table->timestamps();
     });
 }
