@@ -6,125 +6,144 @@
     <title>Admin Panel - Valeria Coffee</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <style>
-        .bg-teal-admin { background-color: #008080; }
-        .text-panel-red { color: #ff4d4d; }
+        /* Palet Warna Kopi */
+        .bg-coffee-admin { background-color: #3C2A21; } /* Espresso Dark */
+        .text-accent-caramel { color: #A06040; }       /* Caramel */
+        html { scroll-behavior: smooth; }
+        body { font-family: 'Plus Jakarta Sans', sans-serif; }
     </style>
 </head>
-<body class="flex bg-gray-100 min-h-screen">
+<body class="flex bg-[#FDFBF7] min-h-screen text-[#3C2A21]">
 
-    <div class="w-64 bg-teal-admin text-white shrink-0 p-6 flex flex-col sticky top-0 h-screen">
-        <h1 class="text-2xl font-bold text-panel-red">Admin<span class="text-white">Panel</span></h1>
-        <p class="text-xs opacity-80 mb-8 uppercase tracking-widest font-bold">Valeria Coffee</p>
+    <div class="w-64 bg-coffee-admin text-[#FDFBF7] shrink-0 p-6 flex flex-col sticky top-0 h-screen shadow-2xl">
+        <h1 class="text-2xl font-black tracking-tighter text-accent-caramel uppercase">Valeria<span class="text-white opacity-50">Admin</span></h1>
+        <p class="text-[10px] opacity-50 mb-8 uppercase tracking-[0.3em] font-bold">Coffee Control Center</p>
         
         <nav class="flex-1 space-y-2 text-sm">
-            <p class="text-[10px] uppercase font-bold opacity-50 mb-2 tracking-widest">Menu Utama</p>
+            <p class="text-[10px] uppercase font-bold opacity-30 mb-2 tracking-widest">Manajemen</p>
             
-            <a href="{{ route('admin.orders') }}" class="flex items-center p-3 rounded-lg hover:bg-white/10 transition {{ request()->is('admin/orders') ? 'bg-white/20 font-bold' : '' }}">
-                <span class="mr-3">📋</span> Daftar Pesanan
+            <a href="{{ route('admin.orders') }}" class="flex items-center p-3 rounded-xl hover:bg-white/10 transition {{ request()->is('admin/orders') ? 'bg-white/10 border-l-4 border-accent-caramel font-bold' : '' }}">
+                <span class="mr-3">☕</span> Daftar Pesanan
             </a>
 
-            <a href="#stats-section" class="flex items-center p-3 rounded-lg hover:bg-white/10 transition">
-                <span class="mr-3">📊</span> Statistik Harian
+            <a href="#stats-section" class="flex items-center p-3 rounded-xl hover:bg-white/10 transition">
+                <span class="mr-3">📈</span> Statistik Harian
             </a>
 
-            <div class="pt-4 mt-4 border-t border-white/10">
-                <a href="{{ route('home') }}" class="block py-2 opacity-70 hover:opacity-100 font-semibold italic text-orange-200">
-                    ← Kembali ke Menu
+            <div class="pt-4 mt-4 border-t border-white/5">
+                <a href="{{ route('home') }}" class="block py-2 opacity-50 hover:opacity-100 font-bold text-xs uppercase tracking-widest transition">
+                    ← Lihat Toko
                 </a>
             </div>
         </nav>
+
+        <div class="mt-auto pt-4 border-t border-white/5">
+            <div class="flex items-center gap-3 mb-4 px-2">
+                <div class="w-8 h-8 rounded-full bg-accent-caramel/20 flex items-center justify-center font-bold text-xs text-accent-caramel">
+                    {{ substr(Auth::user()->name ?? 'A', 0, 1) }}
+                </div>
+                <div class="overflow-hidden">
+                    <p class="text-xs font-bold truncate">{{ Auth::user()->name ?? 'Administrator' }}</p>
+                    <p class="text-[9px] opacity-40 truncate">Admin Level</p>
+                </div>
+            </div>
+            
+            <form action="{{ route('logout') }}" method="POST" onsubmit="return confirm('Yakin ingin keluar?')">
+                @csrf
+                <button type="submit" class="w-full flex items-center p-3 rounded-xl bg-red-500/10 hover:bg-red-600 text-red-400 hover:text-white transition font-bold text-[10px] uppercase tracking-widest">
+                    <span class="mr-3">🚪</span> Logout
+                </button>
+            </form>
+        </div>
     </div>
 
     <div class="flex-1 p-10">
-        
-        <div id="stats-section" class="mb-10">
-            <h2 class="text-2xl font-bold mb-6 flex items-center text-gray-800 tracking-tight">
-                <span class="mr-2">📈</span> Ringkasan Penjualan Hari Ini
+        <div id="stats-section" class="mb-12">
+            <h2 class="text-xl font-black mb-6 flex items-center text-[#3C2A21] uppercase tracking-widest">
+                <span class="mr-3">📊</span> Penjualan Hari Ini
             </h2>
-            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-                <div class="bg-white p-7 rounded-3xl shadow-sm border-l-8 border-teal-500">
-                    <p class="text-xs text-gray-400 font-black uppercase tracking-widest">Total Pesanan</p>
-                    <h3 class="text-5xl font-black text-stone-800 mt-1">{{ count($orders) }}</h3>
-                    <p class="text-[10px] text-teal-600 mt-2 font-bold uppercase italic">Data Terpusat di MySQL</p>
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+                <div class="bg-white p-8 rounded-[2rem] shadow-sm border-b-4 border-accent-caramel hover:shadow-md transition">
+                    <p class="text-[10px] text-stone-400 font-black uppercase tracking-[0.2em]">Total Orders</p>
+                    <h3 class="text-6xl font-black text-[#3C2A21] mt-2">{{ count($orders) }}</h3>
                 </div>
 
-                <div class="bg-white p-7 rounded-3xl shadow-sm border-l-8 border-green-500">
-                    <p class="text-xs text-gray-400 font-black uppercase tracking-widest">Pendapatan (Rp)</p>
-                    <h3 class="text-5xl font-black text-stone-800 mt-1">{{ number_format($orders->sum('total_harga')) }}</h3>
-                    <p class="text-[10px] text-green-600 mt-2 font-bold uppercase italic">Total dari Semua Status</p>
+                <div class="bg-white p-8 rounded-[2rem] shadow-sm border-b-4 border-[#3C2A21] hover:shadow-md transition">
+                    <p class="text-[10px] text-stone-400 font-black uppercase tracking-[0.2em]">Revenue (IDR)</p>
+                    <h3 class="text-6xl font-black text-[#3C2A21] mt-2">{{ number_format($orders->sum('total_harga')) }}</h3>
                 </div>
             </div>
         </div>
 
-        <hr class="mb-10 border-gray-200">
+        <hr class="mb-12 border-stone-200">
 
         <div id="list-section">
-            <div class="flex justify-between items-center mb-8">
-                <h2 class="text-3xl font-black text-stone-900 tracking-tighter">📦 Semua Daftar Order</h2>
-                <div class="bg-white px-4 py-2 rounded-xl border text-sm font-bold text-stone-500">
-                    {{ now()->format('d F Y') }}
+            <div class="flex justify-between items-center mb-10">
+                <h2 class="text-3xl font-black text-[#3C2A21] tracking-tighter uppercase">📦 Daftar Transaksi</h2>
+                <div class="bg-[#3C2A21] px-5 py-2 rounded-full text-[10px] font-bold text-white tracking-widest shadow-lg">
+                    {{ now()->translatedFormat('d F Y') }}
                 </div>
             </div>
 
             @if(session('success'))
-                <div class="bg-green-600 text-white p-4 rounded-2xl mb-8 shadow-lg font-bold flex items-center gap-3 animate-bounce">
-                    <span>✅</span> {{ session('success') }}
+                <div class="bg-accent-caramel text-white p-5 rounded-2xl mb-8 shadow-xl font-bold flex items-center gap-3">
+                    <span>✨</span> {{ session('success') }}
                 </div>
             @endif
 
             @if($orders->isEmpty())
-                <div class="bg-white p-20 rounded-[2.5rem] shadow-sm border-2 border-dashed text-center text-gray-400">
-                    <p class="text-6xl mb-4">☕</p>
-                    <p class="font-bold text-lg">Belum ada data pesanan di database MySQL.</p>
+                <div class="bg-white p-20 rounded-[3rem] shadow-inner border-2 border-dashed border-stone-200 text-center">
+                    <p class="text-5xl mb-4 grayscale">☕</p>
+                    <p class="font-bold text-stone-400">Belum ada pesanan yang masuk.</p>
                 </div>
             @else
-                <div class="grid grid-cols-1 gap-4">
+                <div class="grid grid-cols-1 gap-5">
                     @foreach($orders as $order)
                         @php
                             $status = $order->status ?? 'diproses';
                             $badgeColor = match ($status) {
-                                'diproses' => 'bg-blue-100 text-blue-700 border-blue-200',
-                                'siap' => 'bg-yellow-100 text-yellow-700 border-yellow-200',
-                                'selesai' => 'bg-green-100 text-green-700 border-green-200',
-                                'menunggu_pembayaran' => 'bg-orange-100 text-orange-700 border-orange-200',
-                                default => 'bg-gray-100 text-gray-700 border-gray-200',
+                                'diproses' => 'bg-blue-50 text-blue-600 border-blue-100',
+                                'siap' => 'bg-amber-50 text-amber-600 border-amber-100',
+                                'selesai' => 'bg-green-50 text-green-600 border-green-100',
+                                'menunggu_pembayaran' => 'bg-red-50 text-red-600 border-red-100',
+                                default => 'bg-stone-50 text-stone-600 border-stone-100',
                             };
                         @endphp
 
-                        <div class="bg-white p-6 rounded-2xl shadow-sm border border-stone-100 flex flex-col md:flex-row justify-between items-start md:items-center gap-6">
+                        <div class="bg-white p-7 rounded-[2.5rem] shadow-sm border border-stone-100 flex flex-col md:flex-row justify-between items-center gap-6 hover:shadow-lg transition-all duration-300">
                             <div class="flex-1">
-                                <div class="flex items-center gap-3 mb-2">
-                                    <span class="font-black text-xl text-stone-900">#{{ $order->id }}</span>
-                                    <span class="px-3 py-1 rounded-full text-[10px] font-black uppercase border {{ $badgeColor }}">
+                                <div class="flex items-center gap-4 mb-2">
+                                    <span class="font-black text-2xl text-[#3C2A21]">#{{ $order->id }}</span>
+                                    <span class="px-4 py-1 rounded-full text-[9px] font-black uppercase border-2 {{ $badgeColor }}">
                                         {{ str_replace('_', ' ', $status) }}
                                     </span>
                                 </div>
-                                <h4 class="font-bold text-stone-800 text-lg leading-tight">{{ $order->nama_pembeli }}</h4>
-                                <p class="text-xs text-stone-400 font-bold uppercase tracking-widest mt-1">
-                                    {{ $order->metode_pembayaran }} • Meja: {{ $order->nomor_meja ?? '-' }}
+                                <h4 class="font-bold text-stone-800 text-xl leading-tight">{{ $order->nama_pembeli }}</h4>
+                                <p class="text-[10px] text-accent-caramel font-black uppercase tracking-widest mt-1">
+                                    {{ $order->metode_pembayaran }} • Meja {{ $order->nomor_meja ?? '-' }}
                                 </p>
                             </div>
 
-                            <div class="text-left md:text-center px-6 border-l border-stone-100">
-                                <p class="text-[10px] text-stone-400 font-bold uppercase">Tagihan</p>
-                                <p class="font-black text-orange-700 text-xl">Rp {{ number_format($order->total_harga) }}</p>
+                            <div class="px-8 border-x border-stone-100 text-center">
+                                <p class="text-[9px] text-stone-400 font-black uppercase tracking-widest mb-1">Bill Amount</p>
+                                <p class="font-black text-[#3C2A21] text-2xl">Rp{{ number_format($order->total_harga) }}</p>
                             </div>
 
-                            <div class="flex items-center gap-3 w-full md:w-auto">
-                                <form action="{{ route('orders.status', $order->id) }}" method="POST" class="flex-1 md:flex-none">
+                            <div class="flex items-center gap-3">
+                                <form action="{{ route('orders.status', $order->id) }}" method="POST">
                                     @csrf
-                                    <select name="status" onchange="this.form.submit()" class="w-full text-xs font-bold border-2 border-stone-100 rounded-xl px-4 py-2.5 bg-stone-50 outline-none focus:border-orange-200 transition">
-                                        <option value="menunggu_pembayaran" {{ $status === 'menunggu_pembayaran' ? 'selected' : '' }}>Menunggu Bayar</option>
-                                        <option value="diproses" {{ $status === 'diproses' ? 'selected' : '' }}>Diproses</option>
-                                        <option value="siap" {{ $status === 'siap' ? 'selected' : '' }}>Siap Disajikan</option>
-                                        <option value="selesai" {{ $status === 'selesai' ? 'selected' : '' }}>Selesai</option>
+                                    <select name="status" onchange="this.form.submit()" class="text-[10px] font-black uppercase tracking-widest border-2 border-stone-100 rounded-2xl px-5 py-3 bg-stone-50 focus:border-accent-caramel outline-none transition cursor-pointer">
+                                        <option value="menunggu_pembayaran" {{ $status === 'menunggu_pembayaran' ? 'selected' : '' }}>Pending</option>
+                                        <option value="diproses" {{ $status === 'diproses' ? 'selected' : '' }}>Process</option>
+                                        <option value="siap" {{ $status === 'siap' ? 'selected' : '' }}>Ready</option>
+                                        <option value="selesai" {{ $status === 'selesai' ? 'selected' : '' }}>Done</option>
                                     </select>
                                 </form>
 
-                                <form action="{{ route('admin.orders.destroy', $order->id) }}" method="POST" onsubmit="return confirm('Apakah Anda yakin ingin menghapus pesanan #{{ $order->id }}?')">
+                                <form action="{{ route('admin.orders.destroy', $order->id) }}" method="POST" onsubmit="return confirm('Hapus data?')">
                                     @csrf
                                     @method('DELETE')
-                                    <button type="submit" class="p-2.5 bg-red-50 text-red-600 rounded-xl hover:bg-red-600 hover:text-white transition shadow-sm border border-red-100">
+                                    <button type="submit" class="p-3 bg-red-50 text-red-500 rounded-2xl hover:bg-red-500 hover:text-white transition-all border border-red-100">
                                         🗑️
                                     </button>
                                 </form>
@@ -135,6 +154,5 @@
             @endif
         </div>
     </div>
-
 </body>
 </html>

@@ -66,7 +66,7 @@ class MenuSeeder extends Seeder
         Menu::create([
             'nama_menu' => 'Matcha Latte',
             'harga' => 18000,
-            'kategori' => 'Offer',
+            'kategori' => 'Minuman',
             'foto' => 'img/MatchaLatte.jpg'
         ]);
 
@@ -193,7 +193,7 @@ class MenuSeeder extends Seeder
         Menu::create([
             'nama_menu' => 'French Fries',
             'harga' => 13000,
-            'kategori' => 'Offer',
+            'kategori' => 'Makanan',
             'foto' => 'img/KentangGoreng.jpeg'
         ]);
 
@@ -229,7 +229,7 @@ class MenuSeeder extends Seeder
         Menu::create([
             'nama_menu' => 'Lemon Cheesecake',
             'harga' => 15000,
-            'kategori' => 'Offer',
+            'kategori' => 'Sweet Treats',
             'foto' => 'img/LemonCheesecake.jpg'
         ]);
 

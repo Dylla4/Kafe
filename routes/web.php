@@ -4,51 +4,60 @@ use Illuminate\Support\Facades\Route;
 use App\Models\Menu;
 use App\Http\Controllers\OrderController;
 use App\Http\Controllers\AdminOrderController;
+use App\Http\Controllers\AdminAuthController;
 
 /*
 |--------------------------------------------------------------------------
-| Halaman Depan
+| Halaman Depan & Katalog (Multi-Page)
 |--------------------------------------------------------------------------
 */
 Route::get('/', function () {
-    $menus = Menu::all();
-    return view('welcome', compact('menus'));
+    return view('beranda');
 })->name('home');
 
-/*
-|--------------------------------------------------------------------------
-| Keranjang (Cart)
-|--------------------------------------------------------------------------
-*/
-Route::get('/cart', [OrderController::class, 'showCart'])->name('cart.show');
-Route::post('/cart/add/{id}', [OrderController::class, 'addToCart'])->name('cart.add');
-Route::post('/cart/decrease/{id}', [OrderController::class, 'decrease'])->name('cart.decrease');
-Route::delete('/cart/remove/{id}', [OrderController::class, 'remove'])->name('cart.remove');
+Route::get('/menu', function () {
+    $menus = Menu::all(); 
+    return view('menu', compact('menus'));
+})->name('menu');
+
+Route::get('/tentang', function () {
+    return view('tentang');
+})->name('tentang');
+
+Route::get('/locations', function () {
+    return view('kontak');
+})->name('kontak');
 
 /*
 |--------------------------------------------------------------------------
-| Pesanan & Pembayaran (Customer)
+| Keranjang & Pesanan (Customer)
 |--------------------------------------------------------------------------
 */
-Route::post('/checkout', [OrderController::class, 'simpan'])->name('checkout.simpan');
-Route::get('/payment/{id}', [OrderController::class, 'showPayment'])->name('order.payment');
-Route::post('/payment/confirm/{id}', [OrderController::class, 'confirmPayment'])->name('order.pay');
+Route::controller(OrderController::class)->group(function () {
+    Route::get('/cart', 'showCart')->name('cart.show');
+    Route::post('/cart/add/{id}', 'addToCart')->name('cart.add');
+    Route::post('/cart/decrease/{id}', 'decrease')->name('cart.decrease');
+    Route::delete('/cart/remove/{id}', 'remove')->name('cart.remove');
+    
+    Route::post('/checkout', 'simpan')->name('checkout.simpan');
+    Route::get('/payment/{id}', 'showPayment')->name('order.payment');
+    Route::post('/payment/confirm/{id}', 'confirmPayment')->name('order.pay');
+    Route::get('/history', 'history')->name('order.history');
+    Route::get('/invoice/{id}', 'printInvoice')->name('invoice.print');
+});
 
 /*
 |--------------------------------------------------------------------------
-| Riwayat & Invoice
+| Admin Panel & Authentication
 |--------------------------------------------------------------------------
 */
-Route::get('/history', [OrderController::class, 'history'])->name('order.history');
-Route::get('/invoice/{id}', [OrderController::class, 'printInvoice'])->name('invoice.print');
+Route::get('/admin/login', [AdminAuthController::class, 'showLogin'])->name('login');
+Route::post('/admin/login', [AdminAuthController::class, 'login']);
+Route::post('/admin/logout', [AdminAuthController::class, 'logout'])->name('logout');
 
-/*
-|--------------------------------------------------------------------------
-| Admin Panel (Kelola Pesanan MySQL)
-|--------------------------------------------------------------------------
-*/
-Route::get('/admin/orders', [AdminOrderController::class, 'index'])->name('admin.orders');
-Route::post('/orders/{id}/status', [AdminOrderController::class, 'nextStatus'])->name('orders.status');
-
-// TAMBAHKAN INI: Agar tombol hapus di Admin Panel berfungsi
-Route::delete('/admin/orders/{id}', [AdminOrderController::class, 'destroy'])->name('admin.orders.destroy');
+// Lindungi semua rute admin dengan middleware 'auth'
+Route::middleware('auth')->prefix('admin')->group(function () {
+    Route::get('/orders', [AdminOrderController::class, 'index'])->name('admin.orders');
+    Route::post('/orders/{id}/status', [AdminOrderController::class, 'nextStatus'])->name('orders.status');
+    Route::delete('/orders/{id}', [AdminOrderController::class, 'destroy'])->name('admin.orders.destroy');
+});
