@@ -2,9 +2,10 @@
 
 namespace Database\Seeders;
 
-use App\Models\User;
+use App\Models\User; // Pastikan namespace ini ada
 use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
+use Illuminate\Support\Facades\Hash; // Penting untuk meng-hash password
 
 class DatabaseSeeder extends Seeder
 {
@@ -13,20 +14,18 @@ class DatabaseSeeder extends Seeder
     /**
      * Seed the application's database.
      */
-    /*public function run(): void
-    {
-        // User::factory(10)->create();
-
-        User::factory()->create([
-            'name' => 'Test User',
-            'email' => 'test@example.com',
-        ]);
-    }*/
-
     public function run(): void
-{
-    $this->call([
-        MenuSeeder::class,
-    ]);
-}
+    {
+        // 1. Menambahkan User Admin secara manual
+        User::create([
+            'name' => 'Admin Valeria',
+            'email' => 'admin@valeriacoffee.id',
+            'password' => Hash::make('password'), // Ganti dengan password pilihan Anda
+        ]);
+
+        // 2. Memanggil Seeder lainnya
+        $this->call([
+            MenuSeeder::class,
+        ]);
+    }
 }
