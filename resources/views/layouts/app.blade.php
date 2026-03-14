@@ -112,14 +112,6 @@
                 </div>
             </div>
         </div>
-
-        <div class="border-t border-white/5 pt-8 flex flex-col md:flex-row justify-between items-center gap-4 text-[9px] font-bold tracking-[0.3em] opacity-30 uppercase">
-            <div class="flex gap-6">
-                <a href="#" class="hover:text-[#A06040] transition">Privacy Policy</a>
-                <a href="#" class="hover:text-[#A06040] transition">Terms of Use</a>
-            </div>
-            <div>Built by Mee</div>
-        </div>
     </div>
 </footer>
 

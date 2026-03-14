@@ -35,7 +35,7 @@
         <div class="flex items-center justify-between gap-4 mb-8">
             <h1 class="text-3xl font-bold flex items-center gap-2">🛒 Keranjang Belanja Anda</h1>
 
-            <a href="{{ route('home') }}" class="text-orange-700 font-bold hover:underline">
+            <a href="{{ route('menu') }}" class="text-orange-700 font-bold hover:underline">
                 + Tambahkan Pesanan
             </a>
         </div>
@@ -113,7 +113,7 @@
                                             </button>
                                         </form>
 
-                                        <span class="inline-block min-w-[30px] text-center font-bold">{{ $qty }}</span>
+                                        <span class="inline-block min-w-75 text-center font-bold">{{ $qty }}</span>
 
                                         <form action="{{ route('cart.add', $id) }}" method="POST">
                                             @csrf

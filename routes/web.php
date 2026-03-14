@@ -57,7 +57,14 @@ Route::post('/admin/logout', [AdminAuthController::class, 'logout'])->name('logo
 
 // Lindungi semua rute admin dengan middleware 'auth'
 Route::middleware('auth')->prefix('admin')->group(function () {
+    
+    // 1. Halaman Daftar Pesanan (Semua Transaksi)
     Route::get('/orders', [AdminOrderController::class, 'index'])->name('admin.orders');
+    
+    // 2. Halaman Statistik Harian (Baru Ditambahkan)
+    Route::get('/statistics', [AdminOrderController::class, 'statistics'])->name('admin.stats');
+    
+    // 3. Aksi Admin (Update Status & Hapus)
     Route::post('/orders/{id}/status', [AdminOrderController::class, 'nextStatus'])->name('orders.status');
     Route::delete('/orders/{id}', [AdminOrderController::class, 'destroy'])->name('admin.orders.destroy');
 });
