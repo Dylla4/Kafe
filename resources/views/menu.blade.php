@@ -2,32 +2,36 @@
 
 @section('content')
 <section class="bg-[#FDFBF7]"> {{-- Warna Latar Cream Latte --}}
-    {{-- 1. NAVIGASI KATEGORI STICKY --}}
+
+    {{-- 1. NAVIGASI KATEGORI --}}
     <div class="sticky top-18 z-40 bg-white/95 backdrop-blur-md border-b border-stone-200 shadow-sm">
         <div class="max-w-7xl mx-auto px-6">
             <div class="flex items-center gap-8 overflow-x-auto no-scrollbar py-4">
                 @php
                     $categories = $menus->pluck('kategori')->unique();
+                    // Ikon disesuaikan dengan keinginan Anda
                     $icons = [
-                        'Coffee' => '☕',
-                        'Frappe' => '🥤',
-                        'Milk' => '🥛',
-                        'Tea' => '🫖',
-                        'Food' => '🍰'
+                        'Minuman'      => '🍹',
+                        'Makanan'      => '🍽️',
+                        'Sweet Treats' => '🍰'
                     ];
                 @endphp
 
+                {{-- Best Seller --}}
                 @if($menus->where('is_best_seller', 1)->count() > 0)
                 <a href="#best-seller" class="flex items-center gap-2 shrink-0 group">
                     <span class="text-xl">⭐️</span>
-                    <span class="text-sm font-bold text-stone-400 group-hover:text-[#A06040] transition">Best Seller</span>
+                    {{-- Hanya warna teks yang berubah saat di-hover --}}
+                    <span class="text-sm font-bold text-stone-400 group-hover:text-[#A06040] transition duration-300 uppercase tracking-wider">Best Seller</span>
                 </a>
                 @endif
 
+                {{-- Kategori Lainnya --}}
                 @foreach($categories as $cat)
                 <a href="#category-{{ Str::slug($cat) }}" class="flex items-center gap-2 shrink-0 group">
-                    <span class="text-xl grayscale group-hover:grayscale-0 transition">{{ $icons[$cat] ?? '🍴' }}</span>
-                    <span class="text-sm font-bold text-stone-400 group-hover:text-[#A06040] transition uppercase tracking-wider">{{ $cat }}</span>
+                    <span class="text-xl">{{ $icons[$cat] ?? '🍴' }}</span>
+                    {{-- Fokus perubahan warna hanya pada teks --}}
+                    <span class="text-sm font-bold text-stone-400 group-hover:text-[#A06040] transition duration-300 uppercase tracking-wider">{{ $cat }}</span>
                 </a>
                 @endforeach
             </div>
@@ -41,7 +45,7 @@
         @if($menus->where('is_best_seller', 1)->count() > 0)
         <div id="best-seller" class="mb-24 scroll-mt-40">
             <div class="flex items-center gap-4 mb-10">
-                <h3 class="text-2xl font-black text-[#3C2A21] uppercase tracking-widest">🔥 Best Seller</h3>
+                <h3 class="text-2xl font-black text-[#3C2A21] uppercase tracking-widest">Best Seller</h3>
                 <div class="grow h-px bg-[#3C2A21]/10"></div>
             </div>
 

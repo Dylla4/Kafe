@@ -7,7 +7,8 @@
     <style>
         @media print {
             .no-print { display: none; }
-            body { background: white; }
+            body { background: white; padding: 0; }
+            .shadow-lg { box-shadow: none; border: none; }
         }
     </style>
 </head>
@@ -43,9 +44,20 @@
             </tbody>
         </table>
 
-        <div class="border-t-2 border-dashed pt-4 flex justify-between font-bold text-lg text-orange-700">
-            <span>TOTAL</span>
-            <span>Rp {{ number_format($order->total_harga) }}</span>
+        <div class="border-t-2 border-dashed pt-4 space-y-1">
+            <div class="flex justify-between text-sm text-gray-600 italic">
+                <span>Bayar</span>
+                <span>Rp {{ number_format($order->bayar ?? 0) }}</span>
+            </div>
+            <div class="flex justify-between text-sm text-gray-600 italic">
+                <span>Kembalian</span>
+                <span>Rp {{ number_format($order->kembali ?? 0) }}</span>
+            </div>
+            
+            <div class="flex justify-between font-bold text-lg text-orange-700 pt-2 mt-2 border-t border-dashed">
+                <span>TOTAL</span>
+                <span>Rp {{ number_format($order->total_harga) }}</span>
+            </div>
         </div>
 
         <div class="mt-8 text-center text-xs text-gray-400">
@@ -54,8 +66,8 @@
         </div>
 
         <div class="mt-8 flex gap-2 no-print">
-            <button onclick="window.print()" class="bg-orange-700 text-white px-6 py-2 rounded-lg font-bold w-full">🖨️ Cetak Struk</button>
-            <a href="{{ url('/') }}" class="bg-gray-200 text-gray-600 px-6 py-2 rounded-lg font-bold w-full text-center italic">Kembali</a>
+            <button onclick="window.print()" class="bg-orange-700 hover:bg-orange-800 text-white px-6 py-2 rounded-lg font-bold w-full transition">🖨️ Cetak Struk</button>
+            <a href="{{ url('/') }}" class="bg-gray-200 hover:bg-gray-300 text-gray-600 px-6 py-2 rounded-lg font-bold w-full text-center italic transition">Kembali</a>
         </div>
     </div>
 </body>

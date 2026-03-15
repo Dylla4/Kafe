@@ -25,16 +25,22 @@
             Valeria<span class="text-[#A06040]">Coffee</span>
         </a>
         
-        <div class="hidden md:flex gap-10 text-xs font-bold uppercase tracking-widest">
-            <a href="{{ route('home') }}" class="{{ request()->is('/') ? 'text-[#A06040] border-b-2 border-[#A06040]' : 'text-stone-400' }} pb-1 hover:text-[#3C2A21] transition">Home</a>
-            <a href="{{ route('tentang') }}" class="text-stone-400 pb-1 hover:text-[#3C2A21] transition">About Us</a>
-            <a href="{{ route('menu') }}" class="{{ request()->is('menu') ? 'text-[#A06040] border-b-2 border-[#A06040]' : 'text-stone-400' }} pb-1 hover:text-[#3C2A21] transition">Our Menu</a>
-            <a href="#kontak" class="text-stone-400 pb-1 hover:text-[#3C2A21] transition">Locations</a>
-        </div>
-            <div class="flex items-center gap-2">
+    <div class="hidden md:flex gap-10 text-xs font-bold uppercase tracking-widest">
+    <a href="{{ route('home') }}" 
+       class="{{ request()->is('/') ? 'text-[#A06040] border-b-2 border-[#A06040]' : 'text-stone-400' }} pb-1 hover:text-[#3C2A21] transition">Home</a>
+    <a href="{{ route('tentang') }}" 
+       class="{{ request()->is('tentang') ? 'text-[#A06040] border-b-2 border-[#A06040]' : 'text-stone-400' }} pb-1 hover:text-[#3C2A21] transition">About Us</a>
+    <a href="{{ route('menu') }}" 
+       class="{{ request()->is('menu') ? 'text-[#A06040] border-b-2 border-[#A06040]' : 'text-stone-400' }} pb-1 hover:text-[#3C2A21] transition">Our Menu</a>
+    <a href="#kontak" 
+        class="text-stone-400 pb-1 hover:text-[#3C2A21] transition">Locations</a>
+    <a href="{{ route('ulasan.index') }}" 
+        class="{{ request()->is('ulasan') ? 'text-[#A06040] border-b-2 border-[#A06040]' : 'text-stone-400' }} pb-1 hover:text-[#3C2A21] transition">Review</a>
+    </div>
+
+    <div class="flex items-center gap-2">
     <a href="{{ url('/history') }}" class="relative p-2 ml-2">
         <span class="text-2xl">📜</span>
-
     </a>
 
     <a href="{{ url('/cart') }}" class="relative p-2 ml-2">

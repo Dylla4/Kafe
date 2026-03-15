@@ -199,6 +199,23 @@
                 </div>
 
                 <div>
+                <label class="block text-sm font-bold text-orange-900 mb-2">Uang Pembayaran (Rp)</label>
+                <input type="number" name="uang_pembayaran" id="uang_pembayaran" 
+                        oninput="hitungKembalian()" 
+                        class="w-full p-3 border-2 border-orange-200 rounded-xl [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none" 
+                        placeholder="Contoh: 50000" required>
+                </div>
+                
+                <div>
+                <label class="block text-sm font-bold text-orange-900 mb-2">Uang Kembalian (Rp)</label>
+                <input type="number" name="uang_pembayaran" id="uang_pembayaran" 
+                        oninput="hitungKembalian()" 
+                        class="w-full p-3 border-2 border-orange-200 rounded-xl [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none" 
+                        placeholder="Contoh: 50000" required>
+                </div>
+
+
+                <div>
                     <label class="block text-sm font-bold text-orange-900 mb-2">Catatan Tambahan</label>
                     <input type="text" name="catatan"
                            class="w-full p-3 border-2 border-orange-200 rounded-xl focus:outline-none focus:border-orange-500 transition"
@@ -247,5 +264,27 @@
     updateLokasiField();
 </script>
 
+<script>
+    // Ambil total harga dari PHP ke variabel JavaScript
+    const totalTagihan = {{ $total ?? 0 }};
+
+    function hitungKembalian() {
+        const inputUang = document.getElementById('uang_pembayaran').value;
+        const inputKembalian = document.getElementById('kembalian');
+        
+        // Mengubah input menjadi angka (float)
+        const uang = parseFloat(inputUang) || 0;
+        
+        // Hitung selisih
+        const selisih = uang - totalTagihan;
+        
+        // Tampilkan hasil jika uang mencukupi, jika kurang tampilkan 0
+        if (uang >= totalTagihan) {
+            inputKembalian.value = selisih;
+        } else {
+            inputKembalian.value = 0;
+        }
+    }
+</script>
 </body>
 </html>

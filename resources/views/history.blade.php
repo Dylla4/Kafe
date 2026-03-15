@@ -21,20 +21,31 @@
                 <p class="text-stone-500 mt-1">Daftar transaksi Anda di Valeria Coffee</p>
             </div>
         </div>
-        <a href="{{ url('/') }}" class="bg-stone-100 text-stone-600 px-6 py-2.5 rounded-full font-bold hover:bg-stone-200 transition text-sm">Kembali ke Menu</a>
+        <a href="{{ route('menu') }}" class="bg-stone-100 text-stone-600 px-6 py-2.5 rounded-full font-bold hover:bg-stone-200 transition text-sm">
+            Kembali ke Menu
+        </a>
     </div>
 
     <div class="space-y-6">
         @forelse($orders as $order)
+            @php
+                $isCash = trim(strtolower($order->metode_pembayaran)) == 'cash';
+                $isSuccess = trim(strtolower($order->status)) == 'sukses';
+            @endphp
+
             <div class="bg-white p-7 rounded-3xl shadow-sm border border-stone-100 flex flex-col md:flex-row justify-between items-start md:items-center gap-6 hover:shadow-md transition-shadow">
                 <div class="flex-1">
                     <div class="flex items-center gap-3 mb-3">
                         <span class="text-xs font-bold uppercase tracking-widest text-orange-700 bg-orange-50 px-3 py-1 rounded-full border border-orange-100">#{{ $order->id }}</span>
                         
-                        @if($order->status == 'sukses')
-                            <span class="px-3 py-1 rounded-full text-[11px] font-black uppercase bg-green-50 text-green-700 border border-green-100">Dikonfirmasi ✅</span>
+                        @if($isCash || $isSuccess)
+                            <span class="px-3 py-1 rounded-full text-[11px] font-black uppercase bg-green-50 text-green-700 border border-green-100 flex items-center gap-1">
+                                Dikonfirmasi ✅
+                            </span>
                         @else
-                            <span class="px-3 py-1 rounded-full text-[11px] font-black uppercase bg-orange-50 text-orange-700 border border-orange-100 animate-pulse">Menunggu... ⏳</span>
+                            <span class="px-3 py-1 rounded-full text-[11px] font-black uppercase bg-orange-50 text-orange-700 border border-orange-100 animate-pulse flex items-center gap-1">
+                                Menunggu... ⏳
+                            </span>
                         @endif
                     </div>
 
@@ -60,6 +71,7 @@
                 <div class="text-right w-full md:w-auto border-t md:border-t-0 pt-5 md:pt-0">
                     <p class="text-xs text-stone-400 font-bold uppercase tracking-widest">Total Harga</p>
                     <p class="text-3xl font-black text-orange-700 tracking-tighter">Rp {{ number_format($order->total_harga) }}</p>
+                    
                     <a href="{{ route('invoice.print', $order->id) }}" class="inline-flex items-center gap-2 mt-4 text-sm font-bold bg-white border-2 border-orange-200 text-orange-700 px-5 py-2 rounded-xl hover:bg-orange-700 hover:text-white transition group">
                         <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 transition-transform group-hover:scale-110" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 17h2a2 2 0 002-2v-4a2 2 0 00-2-2H5a2 2 0 00-2 2v4a2 2 0 002 2h2m2 4h6a2 2 0 002-2v-4a2 2 0 00-2-2H9a2 2 0 00-2 2v4a2 2 0 002 2zm8-12V5a2 2 0 00-2-2H9a2 2 0 00-2 2v4" />
@@ -73,7 +85,7 @@
                 <p class="text-8xl mb-6">☕</p>
                 <h3 class="text-2xl font-bold text-stone-600">Belum Ada Pesanan</h3>
                 <p class="text-stone-400 mt-2 mb-8">Anda belum memiliki riwayat transaksi di kafe kami.</p>
-                <a href="{{ url('/') }}" class="bg-orange-700 text-white px-8 py-3 rounded-full font-black hover:bg-orange-800 transition shadow-lg shadow-orange-200">
+                <a href="{{ route('menu') }}" class="bg-orange-700 text-white px-8 py-3 rounded-full font-black hover:bg-orange-800 transition shadow-lg shadow-orange-200">
                     Pesan Menu Sekarang
                 </a>
             </div>

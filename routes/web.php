@@ -5,6 +5,7 @@ use App\Models\Menu;
 use App\Http\Controllers\OrderController;
 use App\Http\Controllers\AdminOrderController;
 use App\Http\Controllers\AdminAuthController;
+use App\Http\Controllers\UlasanController;
 
 /*
 |--------------------------------------------------------------------------
@@ -14,6 +15,9 @@ use App\Http\Controllers\AdminAuthController;
 Route::get('/', function () {
     return view('beranda');
 })->name('home');
+
+Route::get('/ulasan', [UlasanController::class, 'index'])->name('ulasan.index');
+Route::post('/ulasan', [UlasanController::class, 'store'])->name('ulasan.store');
 
 Route::get('/menu', function () {
     $menus = Menu::all(); 
