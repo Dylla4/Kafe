@@ -4,7 +4,27 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Keranjang Kafe Kita</title>
-    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.tailwindcss.com">
+    document.addEventListener('DOMContentLoaded', function() {
+        const inputPembayaran = document.getElementById('pembayaran');
+        const inputKembalian = document.getElementById('kembalian');
+        
+        // Ambil total belanja dari variabel Blade Laravel
+        // Pastikan variabel $total_harga ini sesuai dengan yang dikirim dari Controller
+        const totalBelanja = Number('{!! $total_harga ?? 0 !!}'); 
+
+        inputPembayaran.addEventListener('input', function() {
+            const bayar = parseFloat(this.value) || 0;
+            const sisa = bayar - totalBelanja;
+
+            if (sisa >= 0) {
+                inputKembalian.value = sisa;
+            } else {
+                inputKembalian.value = 0; // Tetap 0 jika uang belum cukup
+            }
+        });
+    });
+    </script>
 </head>
 <body class="bg-stone-50 text-stone-800 p-6 md:p-12">
 
@@ -198,21 +218,17 @@
                     </select>
                 </div>
 
-                <div>
-                <label class="block text-sm font-bold text-orange-900 mb-2">Uang Pembayaran (Rp)</label>
-                <input type="number" name="uang_pembayaran" id="uang_pembayaran" 
-                        oninput="hitungKembalian()" 
-                        class="w-full p-3 border-2 border-orange-200 rounded-xl [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none" 
-                        placeholder="Contoh: 50000" required>
-                </div>
-                
-                <div>
-                <label class="block text-sm font-bold text-orange-900 mb-2">Uang Kembalian (Rp)</label>
-                <input type="number" name="uang_pembayaran" id="uang_pembayaran" 
-                        oninput="hitungKembalian()" 
-                        class="w-full p-3 border-2 border-orange-200 rounded-xl [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none" 
-                        placeholder="Contoh: 50000" required>
-                </div>
+                <div class="mb-4">
+    <label class="block font-bold mb-2">Uang Pembayaran (Rp)</label>
+    <input type="number" id="pembayaran" name="pembayaran" 
+           class="w-full p-3 border rounded-xl" placeholder="Contoh: 50000">
+</div>
+
+<div class="mb-4">
+    <label class="block font-bold mb-2">Uang Kembalian (Rp)</label>
+    <input type="number" id="kembalian" name="kembalian" 
+           class="w-full p-3 border rounded-xl bg-gray-100" placeholder="0" readonly>
+</div>
 
 
                 <div>
@@ -266,7 +282,7 @@
 
 <script>
     // Ambil total harga dari PHP ke variabel JavaScript
-    const totalTagihan = {{ $total ?? 0 }};
+    const totalTagihan = Number ('{!!$total ?? 0!!}')
 
     function hitungKembalian() {
         const inputUang = document.getElementById('uang_pembayaran').value;
@@ -285,6 +301,27 @@
             inputKembalian.value = 0;
         }
     }
+</script>
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        const inputPembayaran = document.getElementById('pembayaran');
+        const inputKembalian = document.getElementById('kembalian');
+        
+        // Ambil total belanja dari variabel Blade Laravel
+        // Pastikan variabel $total_harga ini sesuai dengan yang dikirim dari Controller
+        const totalBelanja = Number('{!! $total_harga ?? 0 !!}');
+
+        inputPembayaran.addEventListener('input', function() {
+            const bayar = parseFloat(this.value) || 0;
+            const sisa = bayar - totalBelanja;
+
+            if (sisa >= 0) {
+                inputKembalian.value = sisa;
+            } else {
+                inputKembalian.value = 0; // Tetap 0 jika uang belum cukup
+            }
+        });
+    });
 </script>
 </body>
 </html>

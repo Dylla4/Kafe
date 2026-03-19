@@ -8,55 +8,53 @@ use Illuminate\Support\Facades\DB;
 
 class AdminOrderController extends Controller
 {
-    /**
-     * HALAMAN 1: DAFTAR PESANAN
-     */
     public function index()
-    {
-        // 1. Ambil semua data order untuk list transaksi
-        $orders = Order::orderBy('created_at', 'desc')->get();
-        
-        // 2. Ambil data asli dari Database per bulan (Pastikan casting ke integer/double)
-        $rawMonthlyData = Order::select(
+{
+    // 1. Ambil semua data order untuk tabel (Riwayat Pesanan)
+    $orders = Order::orderBy('created_at', 'desc')->get();
+    
+    // 2. Data untuk Header (Ringkasan hari ini)
+    $ordersToday = Order::whereDate('created_at', date('Y-m-d'))->get();
+
+    // 3. LOGIKA GRAFIK HARIAN (ARUS KAS PER JAM)
+    $rawHourly = Order::select(
+            DB::raw('HOUR(created_at) as jam'),
+            DB::raw('SUM(total_harga) as total')
+        )
+        ->whereDate('created_at', date('Y-m-d'))
+        ->groupBy('jam')
+        ->pluck('total', 'jam')
+        ->toArray();
+
+    $hourlyData = collect();
+    for ($i = 0; $i < 24; $i++) {
+        $hourlyData->push((object)[
+            'jam' => $i,
+            'total' => (int)($rawHourly[$i] ?? 0)
+        ]);
+    }
+
+    // 4. LOGIKA GRAFIK BULANAN (TREN PENJUALAN)
+    $rawMonthlyData = Order::select(
             DB::raw('MONTH(created_at) as bulan'),
-            DB::raw('CAST(SUM(total_harga) AS UNSIGNED) as total') // Memastikan hasil SUM adalah angka
+            DB::raw('CAST(SUM(total_harga) AS UNSIGNED) as total')
         )
         ->whereYear('created_at', date('Y'))
         ->groupBy('bulan')
         ->pluck('total', 'bulan')
         ->toArray();
 
-        // 3. Padding data agar grafik selalu menampilkan 12 bulan (Jan-Des)
-        $monthlyData = collect();
-        for ($i = 1; $i <= 12; $i++) {
-            $monthlyData->push((object)[
-                'bulan' => $i,
-                'total' => (int)($rawMonthlyData[$i] ?? 0) // Pastikan diconvert ke Integer
-            ]);
-        }
-
-        return view('admin.orders', compact('orders', 'monthlyData'));
+    $monthlyData = collect();
+    for ($i = 1; $i <= 12; $i++) {
+        $monthlyData->push((object)[
+            'bulan' => $i,
+            'total' => (int)($rawMonthlyData[$i] ?? 0) 
+        ]);
     }
 
-    /**
-     * HALAMAN 2: STATISTIK HARIAN
-     */
-    public function statistics()
-    {
-        $ordersToday = Order::whereDate('created_at', today())->get();
-
-        $hourlyData = Order::whereDate('created_at', today())
-            ->select(
-                DB::raw('HOUR(created_at) as jam'),
-                DB::raw('CAST(SUM(total_harga) AS UNSIGNED) as total')
-            )
-            ->groupBy('jam')
-            ->orderBy('jam', 'asc')
-            ->get();
-
-        return view('admin.statistics', compact('ordersToday', 'hourlyData'));
-    }
-
+    // 5. KIRIM SEMUA VARIABEL KE VIEW (Jangan lupa tambahkan hourlyData di sini)
+    return view('admin.orders', compact('orders', 'monthlyData', 'ordersToday', 'hourlyData'));
+}
     public function nextStatus($id)
     {
         $status = request('status');

@@ -63,10 +63,18 @@ class OrderController extends Controller
     }
 
     public function showCart()
-    {
-        $cartItems = session()->get('cart', []);
-        return view('cart', compact('cartItems'));
+{
+    $cartItems = session()->get('cart', []);
+    
+    // TAMBAHKAN LOGIKA HITUNG TOTAL DI SINI
+    $total_harga = 0;
+    foreach($cartItems as $item) {
+        $total_harga += $item['harga'] * $item['quantity'];
     }
+
+    // Kirim $total_harga ke view agar JavaScript bisa membacanya
+    return view('cart', compact('cartItems', 'total_harga'));
+}
 
     /**
      * Menyimpan data pesanan dengan pilihan metode pembayaran.
@@ -90,17 +98,20 @@ class OrderController extends Controller
         }
 
         // Simpan ke Database termasuk metode_pembayaran
-        $order = Order::create([
-            'nama_pembeli'      => $request->nama_pembeli,
-            'nomor_meja'        => $lokasi,
-            'catatan'           => $request->catatan ?? '-',
-            'item_pesanan'      => json_encode($cart),
-            'total_harga'       => $total,
-            'metode_pembayaran' => $request->metode_pembayaran, // Pastikan kolom ini ada di migrasi database
-            'status'            => ($request->metode_pembayaran == 'cash') ? 'diproses' : 'menunggu_pembayaran'
-        ]);
+    $order = Order::create([
+        'nama_pembeli'      => $request->nama_pembeli,
+        'nomor_meja'        => $lokasi,
+        'catatan'           => $request->catatan ?? '-',
+        'item_pesanan'      => json_encode($cart),
+        'total_harga'       => $total,
+        'metode_pembayaran' => $request->metode_pembayaran,
+        // TAMBAHKAN DUA BARIS INI:
+        'bayar'             => $request->pembayaran, // ambil dari input 'pembayaran'
+        'kembalian'         => $request->kembalian,   // ambil dari input 'kembalian'
+        'status'            => ($request->metode_pembayaran == 'cash') ? 'diproses' : 'menunggu_pembayaran'
+    ]);
 
-        session()->forget('cart');
+    session()->forget('cart');
 
         // Logika Pengalihan Halaman
         if ($request->metode_pembayaran == 'cash') {

@@ -16,7 +16,9 @@ class Order extends Model
         'catatan', 
         'item_pesanan', 
         'total_harga',
-        'metode_pembayaran', 
+        'metode_pembayaran',
+        'bayar',
+        'kembalian',
         'status'
     ];
 }
