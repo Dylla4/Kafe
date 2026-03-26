@@ -5,6 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Pembayaran - Valeria Coffee</title>
     <script src="https://cdn.tailwindcss.com"></script>
+    {{-- Refresh otomatis setiap 5 detik jika status belum sukses --}}
     @if($order->status != 'sukses')
         <meta http-equiv="refresh" content="5">
     @endif
@@ -12,12 +13,14 @@
 <body class="bg-stone-50 text-stone-800 font-sans p-6 flex items-center justify-center min-h-screen">
 
 <div class="max-w-md w-full bg-white rounded-3xl shadow-2xl overflow-hidden border border-stone-100">
+    {{-- Header Pembayaran --}}
     <div class="bg-orange-700 p-8 text-center text-white">
         <h1 class="text-2xl font-bold uppercase tracking-widest">Pembayaran</h1>
         <p class="text-orange-200 text-sm mt-1">Selesaikan pesanan Anda</p>
     </div>
 
     <div class="p-8">
+        {{-- Info Total & ID --}}
         <div class="flex justify-between items-center mb-8 pb-6 border-b border-stone-100">
             <div class="text-left">
                 <p class="text-xs text-stone-400 uppercase font-bold tracking-tighter">Total Bayar</p>
@@ -34,6 +37,7 @@
             $isSuccess = trim(strtolower($order->status)) == 'sukses';
         @endphp
 
+        {{-- Konten QRIS / Tunai --}}
         <div class="min-h-[220px] flex flex-col justify-center">
             @if($method == 'qris')
                 <div class="text-center">
@@ -54,21 +58,32 @@
             @endif
         </div>
 
+        {{-- Bagian Tombol Aksi --}}
         <div class="mt-10 space-y-4">
             @if($isSuccess)
                 <div class="flex items-center justify-center gap-3 text-green-600 font-bold bg-green-50 py-4 rounded-2xl border border-green-200">
                     DIKONFIRMASI ✅
                 </div>
-                <a href="{{ route('invoice.print', $order->id) }}" class="block text-center w-full bg-green-600 text-white py-4 rounded-2xl font-black">LIHAT STRUK</a>
+                <a href="{{ route('invoice.print', $order->id) }}" class="block text-center w-full bg-green-600 text-white py-4 rounded-2xl font-black hover:bg-green-700 transition shadow-lg">
+                    LIHAT STRUK
+                </a>
             @else
-                <div class="flex items-center justify-center gap-3 text-orange-600 font-bold bg-orange-50 py-3 rounded-2xl animate-pulse border border-orange-100">
-                    Menunggu Konfirmasi Kasir...
-                </div>
-                {{-- Gunakan url('/history') jika route('history') masih error --}}
-                <a href="{{ url('/history') }}" class="block text-center w-full bg-stone-900 text-white py-4 rounded-2xl font-bold uppercase">Cek Status Riwayat</a>
+                {{-- Tombol Konfirmasi Berwarna Hijau --}}
+                <form action="{{ route('payment.confirm', $order->id) }}" method="POST">
+                    @csrf
+                    <button type="submit" class="w-full flex items-center justify-center gap-3 bg-green-600 text-white font-black py-4 rounded-2xl hover:bg-green-700 transition shadow-lg shadow-green-100">
+                        Konfirmasi
+                    </button>
+                </form>
+
+                {{-- Tombol Riwayat Tetap Hitam --}}
+                <a href="{{ url('/history') }}" class="block text-center w-full bg-stone-900 text-white py-4 rounded-2xl font-bold uppercase tracking-wider hover:bg-stone-800 transition shadow-md">
+                    Cek Status Riwayat
+                </a>
             @endif
         </div>
     </div>
 </div>
+
 </body>
 </html>
