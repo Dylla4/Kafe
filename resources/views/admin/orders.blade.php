@@ -65,56 +65,63 @@
                 </div>
             </div>
 
-        <div class="space-y-4 max-h-150 overflow-y-auto pr-2 custom-scrollbar">
-            @forelse($orders as $order)
-                <div class="bg-white p-6 rounded-3xl shadow-sm border border-stone-100 flex flex-col md:flex-row justify-between items-center gap-4 hover:shadow-md transition-all">
-                    <div class="flex-1">
-                        <div class="flex items-center gap-3 mb-1">
-                            <span class="font-black text-xl text-[#3C2A21]">#{{ $order->id }}</span>
-                            <span class="px-3 py-0.5 rounded-full text-[8px] font-black uppercase border 
-                                {{ $order->status === 'ready' ? 'bg-amber-50 text-amber-600 border-amber-100' : 'bg-blue-50 text-blue-600 border-blue-100' }}">
-                                {{ $order->status ?? 'process' }}
-                            </span>
+            <div class="space-y-4 max-h-150 overflow-y-auto pr-2 custom-scrollbar">
+                @forelse($orders as $order)
+                    <div class="bg-white p-6 rounded-3xl shadow-sm border border-stone-100 flex flex-col md:flex-row justify-between items-center gap-4 hover:shadow-md transition-all">
+                        <div class="flex-1">
+                            <div class="flex items-center gap-3 mb-1">
+                                <span class="font-black text-xl text-[#3C2A21]">#{{ $order->id }}</span>
+                                <span class="px-3 py-0.5 rounded-full text-[8px] font-black uppercase border 
+                                    {{ $order->status === 'siap' ? 'bg-amber-50 text-amber-600 border-amber-100' : ($order->status === 'selesai' ? 'bg-green-50 text-green-600 border-green-100' : 'bg-blue-50 text-blue-600 border-blue-100') }}">
+                                    {{ $order->status ?? 'diproses' }}
+                                </span>
+                            </div>
+                            <h4 class="font-bold text-stone-800 text-lg">{{ $order->nama_pembeli }}</h4>
+                            
+                            <div class="flex items-center gap-2 mt-1">
+                                <span class="text-[10px] bg-stone-100 text-stone-500 px-2 py-0.5 rounded font-bold uppercase tracking-wider">
+                                    {{ $order->metode_pembayaran }}
+                                </span>
+                                <span class="text-[10px] text-accent-caramel font-bold uppercase tracking-widest">
+                                    {{ $order->created_at->format('d M Y') }} • {{ $order->created_at->format('H:i') }} WIB
+                                </span>
+                            </div>
                         </div>
-                        <h4 class="font-bold text-stone-800 text-lg">{{ $order->nama_pembeli }}</h4>
-                        
-                        <div class="flex items-center gap-2 mt-1">
-                            <span class="text-[10px] bg-stone-100 text-stone-500 px-2 py-0.5 rounded font-bold uppercase tracking-wider">
-                                {{ $order->metode_pembayaran }}
-                            </span>
-                            <span class="text-[10px] text-accent-caramel font-bold uppercase tracking-widest">
-                                {{ $order->created_at->format('d M Y') }} • {{ $order->created_at->format('H:i') }} WIB
-                            </span>
+
+                        <div class="px-6 text-center">
+                            <p class="font-black text-[#3C2A21] text-2xl">Rp{{ number_format($order->total_harga) }}</p>
+                        </div>
+
+                        <div class="flex items-center gap-3">
+                            <form action="{{ route('orders.status', $order->id) }}" method="POST">
+                                @csrf
+                                <select name="status" onchange="this.form.submit()" class="text-[9px] font-black uppercase border border-stone-200 rounded-xl px-4 py-2 bg-stone-50 cursor-pointer hover:bg-stone-100 transition">
+                                    <option value="diproses" {{ $order->status === 'diproses' ? 'selected' : '' }}>Process</option>
+                                    <option value="siap" {{ $order->status === 'siap' ? 'selected' : '' }}>Ready</option>
+                                    <option value="selesai" {{ $order->status === 'selesai' ? 'selected' : '' }}>Done</option>
+                                </select>
+                            </form>
+
+                            <form action="{{ route('admin.orders.destroy', $order->id) }}" method="POST" onsubmit="return confirm('Apakah Anda yakin ingin menghapus pesanan ini?')">
+                                @csrf 
+                                @method('DELETE')
+                                <button type="submit" class="p-2 bg-red-50 text-red-500 rounded-xl hover:bg-red-500 hover:text-white transition-all text-sm border border-red-100 shadow-sm" title="Hapus Pesanan">
+                                    🗑️
+                                </button>
+                            </form>
                         </div>
                     </div>
-
-                    <div class="px-6 text-center">
-                        <p class="font-black text-[#3C2A21] text-2xl">Rp{{ number_format($order->total_harga) }}</p>
-                    </div>
-
-                    <div class="flex items-center gap-3">
-                        <form action="{{ route('orders.status', $order->id) }}" method="POST">
-                            @csrf
-                            <select name="status" onchange="this.form.submit()" class="text-[9px] font-black uppercase border border-stone-200 rounded-xl px-4 py-2 bg-stone-50 cursor-pointer hover:bg-stone-100 transition">
-                                <option value="diproses" {{ $order->status === 'diproses' ? 'selected' : '' }}>Process</option>
-                                <option value="siap" {{ $order->status === 'siap' ? 'selected' : '' }}>Ready</option>
-                                <option value="selesai" {{ $order->status === 'selesai' ? 'selected' : '' }}>Done</option>
-                            </select>
-                        </form>
-
-                        <form action="{{ route('admin.orders.destroy', $order->id) }}" method="POST" onsubmit="return confirm('Apakah Anda yakin ingin menghapus pesanan ini?')">
-                            @csrf 
-                            @method('DELETE')
-                            <button type="submit" class="p-2 bg-red-50 text-red-500 rounded-xl hover:bg-red-500 hover:text-white transition-all text-sm border border-red-100 shadow-sm" title="Hapus Pesanan">
-                                🗑️
-                            </button>
-                        </form>
-                    </div>
-                </div>
-            @empty
-                <div class="bg-white p-10 rounded-3xl text-center text-stone-400 font-bold italic">Belum ada pesanan masuk.</div>
-            @endforelse
+                @empty
+                    <div class="bg-white p-10 rounded-3xl text-center text-stone-400 font-bold italic">Belum ada pesanan masuk.</div>
+                @endforelse
+            </div>
         </div>
+
+        <div id="chartData" 
+             data-hourly-labels='@json($hourlyData->pluck("jam")->map(fn($j) => $j . ":00"))'
+             data-hourly-values='@json($hourlyData->pluck("total"))'
+             data-monthly-values='@json($monthlyData->pluck("total"))'
+             style="display: none;">
         </div>
 
         <div class="grid grid-cols-1 lg:grid-cols-2 gap-10">
@@ -136,13 +143,22 @@
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <script>
         document.addEventListener('DOMContentLoaded', function() {
+            // Ambil data dari elemen HTML (Aman dari error editor)
+            const dataEl = document.getElementById('chartData');
+            const hourlyLabels = JSON.parse(dataEl.dataset.hourlyLabels);
+            const hourlyValues = JSON.parse(dataEl.dataset.hourlyValues);
+            const monthlyValues = JSON.parse(dataEl.dataset.monthlyValues);
+
             const commonOptions = {
                 responsive: true,
                 maintainAspectRatio: false,
                 plugins: { legend: { display: false } },
                 scales: {
                     y: { display: false, beginAtZero: true },
-                    x: { grid: { display: false }, ticks: { color: '#3C2A21', font: { weight: 'bold' } } }
+                    x: { 
+                        grid: { display: false }, 
+                        ticks: { color: '#3C2A21', font: { weight: 'bold' } } 
+                    }
                 }
             };
 
@@ -151,9 +167,9 @@
             new Chart(ctxH, {
                 type: 'line',
                 data: {
-                    labels: {!! json_encode($hourlyData->pluck('jam')->map(fn($j) => $j . ':00')) !!},
+                    labels: hourlyLabels,
                     datasets: [{
-                        data: {!! json_encode($hourlyData->pluck('total')) !!},
+                        data: hourlyValues,
                         borderColor: '#3C2A21',
                         borderWidth: 4,
                         fill: true,
@@ -172,7 +188,7 @@
                 data: {
                     labels: ['Jan', 'Feb', 'Mar', 'Apr', 'Mei', 'Jun', 'Jul', 'Agu', 'Sep', 'Okt', 'Nov', 'Des'],
                     datasets: [{
-                        data: {!! json_encode($monthlyData->pluck('total')) !!},
+                        data: monthlyValues,
                         borderColor: '#A06040',
                         borderWidth: 4,
                         fill: true,

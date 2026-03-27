@@ -38,25 +38,42 @@
         @endphp
 
         {{-- Konten QRIS / Tunai --}}
-        <div class="min-h-[220px] flex flex-col justify-center">
-            @if($method == 'qris')
-                <div class="text-center">
-                    <p class="text-sm font-bold text-stone-600 mb-4 uppercase tracking-widest">Scan QRIS Di Bawah Ini</p>
-                    <div class="bg-white p-4 rounded-3xl border-2 border-orange-100 inline-block shadow-sm">
-                        <img src="https://api.qrserver.com/v1/create-qr-code/?size=250x250&data=VALERIA-{{ $order->id }}" class="w-52 h-52 mx-auto">
-                    </div>
-                </div>
-            @elseif($method == 'cash' || $method == 'tunai')
-                <div class="text-center space-y-4">
-                    <div class="bg-stone-50 p-6 rounded-3xl border-2 border-dashed border-stone-200">
-                        <p class="text-sm font-bold text-stone-600 uppercase tracking-widest mb-2">Pembayaran Tunai</p>
-                        <div class="text-5xl mb-3">💵</div>
-                        <p class="text-xs text-stone-500">Silakan bayar di kasir: <br>
-                        <span class="text-xl font-black text-stone-800">Rp {{ number_format($order->total_harga) }}</span></p>
-                    </div>
-                </div>
-            @endif
+        {{-- Konten QRIS / Tunai / Transfer --}}
+<div class="min-h-55 flex flex-col justify-center">
+    @if($method == 'qris')
+        <div class="text-center">
+            <p class="text-sm font-bold text-stone-600 mb-4 uppercase tracking-widest">Scan QRIS Di Bawah Ini</p>
+            <div class="bg-white p-4 rounded-3xl border-2 border-orange-100 inline-block shadow-sm">
+                <img src="https://api.qrserver.com/v1/create-qr-code/?size=250x250&data=VALERIA-{{ $order->id }}" class="w-52 h-52 mx-auto">
+            </div>
         </div>
+
+    @elseif($method == 'transfer')
+        {{-- BAGIAN TRANSFER BARU --}}
+        <div class="text-center space-y-4">
+            <div class="bg-stone-50 p-6 rounded-3xl border-2 border-dashed border-stone-200">
+                <p class="text-sm font-bold text-stone-600 uppercase tracking-widest mb-3">Transfer Bank</p>
+                <div class="space-y-2">
+                    <p class="text-xs text-stone-500 uppercase font-bold">Nomor Rekening BCA</p>
+                    <p class="text-2xl font-black text-stone-800 tracking-wider">123 456 7890</p>
+                    <p class="text-sm text-stone-600 font-medium">A/N Valeria Coffee</p>
+                </div>
+                <hr class="my-4 border-stone-200">
+                <p class="text-[10px] text-stone-400 italic">Pastikan nominal sesuai hingga digit terakhir</p>
+            </div>
+        </div>
+
+    @elseif($method == 'cash' || $method == 'tunai')
+        <div class="text-center space-y-4">
+            <div class="bg-stone-50 p-6 rounded-3xl border-2 border-dashed border-stone-200">
+                <p class="text-sm font-bold text-stone-600 uppercase tracking-widest mb-2">Pembayaran Tunai</p>
+                <div class="text-5xl mb-3">💵</div>
+                <p class="text-xs text-stone-500">Silakan bayar di kasir: <br>
+                <span class="text-xl font-black text-stone-800">Rp {{ number_format($order->total_harga) }}</span></p>
+            </div>
+        </div>
+    @endif
+</div>
 
         {{-- Bagian Tombol Aksi --}}
         <div class="mt-10 space-y-4">

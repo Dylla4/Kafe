@@ -45,7 +45,7 @@ Route::controller(OrderController::class)->group(function () {
     
     Route::post('/checkout', 'simpan')->name('checkout.simpan');
     Route::get('/payment/{id}', 'showPayment')->name('order.payment');
-    Route::post('/payment/confirm/{id}', 'confirmPayment')->name('order.pay');
+    Route::post('/payment/confirm/{id}', 'confirmPayment')->name('payment.confirm');
     Route::get('/history', 'history')->name('order.history');
     Route::get('/invoice/{id}', 'printInvoice')->name('invoice.print');
 });
