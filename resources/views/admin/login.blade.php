@@ -33,7 +33,7 @@
 
                 <div style="margin-bottom: 25px;">
                     <label style="display: block; font-size: 12px; font-weight: 700; color: #3C2A21; margin-bottom: 8px; text-transform: uppercase; letter-spacing: 1px;">Password</label>
-                    <input type="password" name="password" required 
+                    <input type="password" name="admin123" required 
                            class="input-field"
                            placeholder="••••••••"
                            style="width: 100%; padding: 12px 15px; border: 2px solid #F5EBE0; border-radius: 12px; box-sizing: border-box; font-size: 14px; background: #FCFAFA;">
