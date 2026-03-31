@@ -1,11 +1,36 @@
-<style>
-    
-    body { background-color: #FDFBF7; margin: 0; font-family: 'Plus Jakarta Sans', 'Segoe UI', sans-serif; }
-    
-    .input-field:focus { border-color: #A06040; outline: none; box-shadow: 0 0 5px rgba(160, 96, 64, 0.2); }
-    
-    .btn-login:hover { background-color: #2D1F18 !important; transform: translateY(-1px); transition: 0.3s; }
-</style>
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin Login - Valeria Coffee</title>
+    <style>
+        body { 
+            background-color: #FDFBF7; 
+            margin: 0; 
+            font-family: 'Plus Jakarta Sans', 'Segoe UI', sans-serif; 
+        }
+        
+        .input-field:focus { 
+            border-color: #A06040; 
+            outline: none; 
+            box-shadow: 0 0 5px rgba(160, 96, 64, 0.2); 
+        }
+        
+        .btn-login:hover { 
+            background-color: #2D1F18 !important; 
+            transform: translateY(-1px); 
+            transition: 0.3s; 
+        }
+
+        /* Menghilangkan dekorasi default */
+        input::placeholder {
+            color: #C0B0A0;
+            opacity: 0.7;
+        }
+    </style>
+</head>
+<body>
 
 <div style="display: flex; align-items: center; justify-content: center; min-height: 100vh;">
     <div class="login-container" style="width: 100%; max-width: 400px; padding: 20px;">
@@ -23,6 +48,7 @@
             
             <form action="{{ route('login') }}" method="POST">
                 @csrf
+                
                 <div style="margin-bottom: 22px;">
                     <label style="display: block; font-size: 12px; font-weight: 700; color: #3C2A21; margin-bottom: 8px; text-transform: uppercase; letter-spacing: 1px;">Email Address</label>
                     <input type="email" name="email" value="{{ old('email') }}" required 
@@ -33,9 +59,9 @@
 
                 <div style="margin-bottom: 25px;">
                     <label style="display: block; font-size: 12px; font-weight: 700; color: #3C2A21; margin-bottom: 8px; text-transform: uppercase; letter-spacing: 1px;">Password</label>
-                    <input type="password" name="admin123" required 
+                    <input type="password" name="password" required 
                            class="input-field"
-                           placeholder="••••••••"
+                           placeholder="admin123"
                            style="width: 100%; padding: 12px 15px; border: 2px solid #F5EBE0; border-radius: 12px; box-sizing: border-box; font-size: 14px; background: #FCFAFA;">
                 </div>
 
@@ -57,3 +83,6 @@
         </p>
     </div>
 </div>
+
+</body>
+</html>

@@ -10,79 +10,139 @@
         </div>
     @endif
 
-    <form action="{{ route('ulasan.store') }}" method="POST" class="mb-10 p-6 bg-white shadow-lg rounded-xl border border-gray-100">
+    {{-- Form Utama --}}
+    <form action="{{ route('ulasan.store') }}" method="POST" enctype="multipart/form-data"
+          class="mb-10 p-6 bg-white shadow-lg rounded-xl border border-gray-100">
         @csrf
+        
         <div class="mb-4">
             <label class="block text-sm font-semibold text-gray-700 mb-1">Nama Lengkap</label>
-            <input type="text" name="nama" placeholder="Masukkan nama Anda" 
-                   class="w-full border border-gray-300 p-3 rounded-lg focus:ring-2 focus:ring-[#A06040] focus:border-transparent outline-none transition" required>
+            <input type="text" name="nama" placeholder="Masukkan nama Anda"
+                   class="w-full border border-gray-300 p-3 rounded-lg focus:ring-2 focus:ring-[#A06040] outline-none" required>
         </div>
+
         <div class="mb-4">
             <label class="block text-sm font-semibold text-gray-700 mb-1">Pesan Ulasan</label>
-            <textarea name="komentar" rows="3" placeholder="Bagaimana pengalaman Anda di Valeria Coffee?" 
-                      class="w-full border border-gray-300 p-3 rounded-lg focus:ring-2 focus:ring-[#A06040] focus:border-transparent outline-none transition" required></textarea>
+            <textarea name="komentar" rows="3" placeholder="Bagaimana pengalaman Anda di Valeria Coffee?"
+                      class="w-full border border-gray-300 p-3 rounded-lg focus:ring-2 focus:ring-[#A06040] outline-none" required></textarea>
         </div>
-        
+
+        <div class="mb-4">
+            <label class="block text-sm font-semibold text-gray-700 mb-1">Upload Foto</label>
+            {{-- Tambahkan id unik dan pastikan name="foto" --}}
+            <input type="file" name="foto" id="foto-input-ulasan" accept="image/*"
+                   class="w-full border border-gray-300 p-2 rounded-lg text-sm file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-sm file:font-semibold file:bg-[#A06040] file:text-white hover:file:bg-[#804c33] cursor-pointer">
+            
+            {{-- Preview Foto --}}
+            <div id="preview-container-ulasan" class="mt-3 hidden">
+                <p class="text-xs text-gray-500 mb-1">Preview Gambar:</p>
+                <img id="preview-img-ulasan" class="w-32 h-32 object-cover rounded-lg border border-gray-200">
+            </div>
+            @error('foto')
+                <p class="text-red-500 text-xs mt-1">{{ $message }}</p>
+            @enderror
+        </div>
+
         <div class="mb-6">
             <label class="block text-sm font-semibold text-gray-700 mb-2">Rating Anda:</label>
             <div class="flex flex-row-reverse justify-end gap-2" id="star-rating">
-                @for ($i = 5; $i >= 1; $i--)
-                    <input type="radio" id="star{{ $i }}" name="rating" value="{{ $i }}" class="hidden" required>
-                    <label for="star{{ $i }}" class="cursor-pointer text-4xl text-gray-300 hover:text-yellow-400 transition-colors duration-200">
-                        ★
-                    </label>
-                @endfor
+                {{-- Urutan input radio sangat penting untuk efek CSS flex-row-reverse --}}
+                <input type="radio" id="star5" name="rating" value="5" class="hidden" required>
+                <label for="star5" class="cursor-pointer text-4xl text-gray-300 hover:text-yellow-400 transition-colors">★</label>
+                
+                <input type="radio" id="star4" name="rating" value="4" class="hidden">
+                <label for="star4" class="cursor-pointer text-4xl text-gray-300 hover:text-yellow-400 transition-colors">★</label>
+                
+                <input type="radio" id="star3" name="rating" value="3" class="hidden">
+                <label for="star3" class="cursor-pointer text-4xl text-gray-300 hover:text-yellow-400 transition-colors">★</label>
+                
+                <input type="radio" id="star2" name="rating" value="2" class="hidden">
+                <label for="star2" class="cursor-pointer text-4xl text-gray-300 hover:text-yellow-400 transition-colors">★</label>
+                
+                <input type="radio" id="star1" name="rating" value="1" class="hidden">
+                <label for="star1" class="cursor-pointer text-4xl text-gray-300 hover:text-yellow-400 transition-colors">★</label>
             </div>
         </div>
 
-        <button type="submit" class="bg-[#A06040] text-white px-8 py-3 rounded-lg shadow-md hover:bg-[#804c33] transform hover:-translate-y-0.5 transition-all duration-200 font-bold">
+        <button type="submit" class="w-full md:w-auto bg-[#A06040] text-white px-8 py-3 rounded-lg shadow-md hover:bg-[#804c33] transition font-bold">
             Kirim Ulasan Sekarang
         </button>
     </form>
 
     <hr class="mb-10 border-gray-200">
 
+    {{-- Daftar Ulasan --}}
     <div class="space-y-8">
         @forelse($ulasans as $u)
-            <div class="p-6 bg-white border border-gray-100 rounded-xl shadow-sm hover:shadow-md transition-shadow">
-                <div class="flex flex-col md:flex-row md:items-center justify-between gap-4 mb-4">
+            <div class="p-6 bg-white border border-gray-100 rounded-xl shadow-sm hover:shadow-md transition">
+                <div class="flex flex-col md:flex-row md:items-start justify-between gap-4 mb-4">
                     <div>
-                        <h4 class="font-bold text-gray-900 text-xl flex items-center gap-2">
-                            {{ $u->nama }}
-                        </h4>
+                        <h4 class="font-bold text-gray-900 text-xl">{{ $u->nama }}</h4>
                         <div class="flex text-2xl mt-1">
                             @for($i = 1; $i <= 5; $i++)
                                 <span class="{{ $i <= $u->rating ? 'text-yellow-400' : 'text-gray-200' }}">★</span>
                             @endfor
                         </div>
                     </div>
-
                     <div class="text-left md:text-right">
                         <p class="text-sm font-semibold text-gray-600">
-                            {{ \Carbon\Carbon::parse($u->created_at)->locale('id')->translatedFormat('d F Y') }}
+                            {{ $u->created_at->translatedFormat('d F Y') }}
                         </p>
                         <p class="text-xs text-gray-400 italic">
-                            {{ \Carbon\Carbon::parse($u->created_at)->locale('id')->diffForHumans() }}
+                            {{ $u->created_at->diffForHumans() }}
                         </p>
                     </div>
                 </div>
-                
-                <div class="bg-gray-50 p-4 rounded-lg italic text-gray-700 leading-relaxed border-l-4 border-[#A06040]">
+
+                <div class="bg-gray-50 p-4 rounded-lg italic text-gray-700 border-l-4 border-[#A06040] mb-4">
                     "{{ $u->komentar }}"
                 </div>
+
+                {{-- Logic Menampilkan Foto --}}
+                @if($u->foto)
+                    <div class="mt-4">
+                        {{-- Menggunakan path storage yang benar --}}
+                        <a href="{{ asset('storage/' . $u->foto) }}" target="_blank" class="inline-block group">
+                            <img src="{{ asset('storage/' . $u->foto) }}" 
+                                 class="w-48 h-48 object-cover rounded-xl shadow-md group-hover:scale-105 transition cursor-zoom-in border border-gray-200"
+                                 alt="Foto ulasan {{ $u->nama }}">
+                        </a>
+                    </div>
+                @endif
             </div>
         @empty
-            <div class="text-center py-10 text-gray-500">
-                Belum ada ulasan. Jadilah yang pertama memberikan ulasan!
-            </div>
+            <div class="text-center py-10 text-gray-500 italic">Belum ada ulasan untuk Valeria Coffee.</div>
         @endforelse
     </div>
 </div>
 
 <style>
-    /* Logika CSS untuk sistem rating bintang */
+    /* Bintang yang dipilih dan bintang sebelumnya akan berwarna kuning */
+    #star-rating input:checked ~ label,
     #star-rating label:hover,
-    #star-rating label:hover ~ label { color: #fbbf24 !important; }
-    #star-rating input:checked ~ label { color: #fbbf24 !important; }
+    #star-rating label:hover ~ label {
+        color: #fbbf24 !important;
+    }
 </style>
+
+<script>
+    // Preview Foto dengan ID yang diperbarui
+    const ulasanFotoInput = document.getElementById('foto-input-ulasan');
+    const ulasanPreviewContainer = document.getElementById('preview-container-ulasan');
+    const ulasanPreviewImg = document.getElementById('preview-img-ulasan');
+
+    ulasanFotoInput.addEventListener('change', function() {
+        const file = this.files[0];
+        if (file) {
+            const reader = new FileReader();
+            ulasanPreviewContainer.classList.remove('hidden');
+            reader.onload = function(e) {
+                ulasanPreviewImg.src = e.target.result;
+            }
+            reader.readAsDataURL(file);
+        } else {
+            ulasanPreviewContainer.classList.add('hidden');
+        }
+    });
+</script>
 @endsection
