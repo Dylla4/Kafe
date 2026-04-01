@@ -24,16 +24,17 @@
             <p class="text-[10px] opacity-50 uppercase tracking-[0.3em] font-bold">Coffee Control Center</p>
         </div>
 
+        <nav class="flex flex-col gap-2">
             <a href="{{ route('ulasan.index') }}" class="flex items-center p-4 rounded-2xl opacity-60 hover:opacity-100 hover:bg-white/5 transition">
-                <span class="mr-3 text-lg">⭐</span> Beranda
+                <span class="mr-3 text-lg">🏠</span> Beranda
             </a>
     
             <a href="{{ route('ulasan.index') }}" class="flex items-center p-4 rounded-2xl opacity-60 hover:opacity-100 hover:bg-white/5 transition">
-                <span class="mr-3 text-lg">⭐</span> Data Pesanan
+                <span class="mr-3 text-lg">📦</span> Data Pesanan
             </a>
 
             <a href="{{ route('ulasan.index') }}" class="flex items-center p-4 rounded-2xl opacity-60 hover:opacity-100 hover:bg-white/5 transition">
-                <span class="mr-3 text-lg">⭐</span> Kurva Penjualan
+                <span class="mr-3 text-lg">📊</span> Kurva Penjualan
             </a>
 
             <a href="{{ route('ulasan.index') }}" class="flex items-center p-4 rounded-2xl opacity-60 hover:opacity-100 hover:bg-white/5 transition">
@@ -85,7 +86,7 @@
                 </div>
             </div>
 
-            <div class="space-y-6 max-h-[700px] overflow-y-auto pr-4 custom-scrollbar">
+            <div class="space-y-6 max-h-175 overflow-y-auto pr-4 custom-scrollbar">
                 @forelse($orders as $order)
                     <div class="bg-white p-8 rounded-[2.5rem] shadow-sm border border-stone-100 flex flex-col lg:flex-row justify-between items-center gap-8 hover:shadow-xl transition-all border-l-8 {{ $order->status === 'selesai' ? 'border-green-500' : 'border-accent-caramel' }}">
                         <div class="flex-1 w-full lg:w-auto">
@@ -101,7 +102,7 @@
                                 <span class="text-[10px] bg-stone-100 text-stone-500 px-3 py-1 rounded-lg font-black uppercase tracking-widest">
                                     {{ $order->metode_pembayaran }}
                                 </span>
-                                <span class="text-[10px] text-accent-caramel font-bold uppercase tracking-[0.1em]">
+                                <span class="text-[10px] text-accent-caramel font-bold uppercase tracking-widest">
                                     📅 {{ $order->created_at->format('d M Y') }} • 🕒 {{ $order->created_at->format('H:i') }} WIB
                                 </span>
                             </div>
@@ -169,7 +170,11 @@
                 }
             };
 
-            // 1. Kurva 7 Hari Terakhir
+            // Perbaikan diagnostik: Bungkus data Blade dalam tanda kutip untuk menipu parser JS di editor
+            const hourlyLabels = JSON.parse('{!! json_encode($hourlyData->pluck("jam")->map(fn($j) => $j . ":00")) !!}');
+            const hourlyValues = JSON.parse('{!! json_encode($hourlyData->pluck("total")) !!}');
+            const monthlyValues = JSON.parse('{!! json_encode($monthlyData->pluck("total")) !!}');
+
             new Chart(document.getElementById('dailyChart'), {
                 type: 'line',
                 data: {
@@ -187,13 +192,12 @@
                 options: commonOptions
             });
 
-            // 2. Grafik Per Jam
             new Chart(document.getElementById('hourlyChart'), {
                 type: 'line',
                 data: {
-                    labels: {!! json_encode($hourlyData->pluck('jam')->map(fn($j) => $j . ':00') ?? []) !!},
+                    labels: hourlyLabels,
                     datasets: [{
-                        data: {!! json_encode($hourlyData->pluck('total') ?? []) !!},
+                        data: hourlyValues,
                         borderColor: '#3C2A21',
                         borderWidth: 5,
                         fill: true,
@@ -206,13 +210,12 @@
                 options: commonOptions
             });
 
-            // 3. Grafik Bulanan
             new Chart(document.getElementById('monthlyChart'), {
                 type: 'line',
                 data: {
                     labels: ['Jan', 'Feb', 'Mar', 'Apr', 'Mei', 'Jun', 'Jul', 'Agu', 'Sep', 'Okt', 'Nov', 'Des'],
                     datasets: [{
-                        data: {!! json_encode($monthlyData->pluck('total') ?? []) !!},
+                        data: monthlyValues,
                         borderColor: '#A06040',
                         borderWidth: 5,
                         fill: true,
