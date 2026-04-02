@@ -7,28 +7,32 @@ use Illuminate\Support\Facades\Auth;
 
 class AdminAuthController extends Controller
 {
-    public function showLogin() {
-        return view('admin.login');
+    public function showLogin()
+    {
+        return view('auth.admin-login'); // Pastikan file resources/views/auth/admin-login.blade.php ada
     }
 
-    public function login(Request $request) {
+    public function login(Request $request)
+    {
         $credentials = $request->validate([
             'email' => 'required|email',
-            'password' => 'required'
+            'password' => 'required',
         ]);
 
-        if (Auth::attempt($credentials)) {
+        // Menggunakan guard admin khusus
+        if (Auth::guard('admin')->attempt($credentials)) {
             $request->session()->regenerate();
-            return redirect()->intended('/admin/orders'); // Arahkan ke dashboard admin Anda
+            return redirect()->intended(route('admin.orders'));
         }
 
-        return back()->withErrors(['email' => 'Email atau password salah.']);
+        return back()->withErrors(['email' => 'Akses ditolak. Periksa email/password admin Anda.']);
     }
 
-    public function logout(Request $request) {
-        Auth::logout();
+    public function logout(Request $request)
+    {
+        Auth::guard('admin')->logout();
         $request->session()->invalidate();
         $request->session()->regenerateToken();
-        return redirect('/admin/login');
+        return redirect()->route('admin.login');
     }
 }

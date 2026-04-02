@@ -1,74 +1,52 @@
 <?php
 
 use Illuminate\Support\Facades\Route;
-use App\Models\Menu;
-use App\Http\Controllers\OrderController;
-use App\Http\Controllers\AdminOrderController;
 use App\Http\Controllers\AdminAuthController;
+use App\Http\Controllers\AdminOrderController;
+use App\Http\Controllers\OrderController;
 use App\Http\Controllers\UlasanController;
+use App\Http\Controllers\Auth\CustomerAuthController;
 
 /*
 |--------------------------------------------------------------------------
-| Halaman Depan & Katalog (Multi-Page)
+| 1. HALAMAN PUBLIK
 |--------------------------------------------------------------------------
 */
-Route::get('/', function () {
-    return view('beranda');
-})->name('home');
-
-Route::get('/ulasan', [UlasanController::class, 'index'])->name('ulasan.index');
-Route::post('/ulasan', [UlasanController::class, 'store'])->name('ulasan.store');
-
-Route::get('/menu', function () {
-    $menus = Menu::all(); 
-    return view('menu', compact('menus'));
-})->name('menu');
-
-Route::get('/tentang', function () {
-    return view('tentang');
-})->name('tentang');
-
-Route::get('/locations', function () {
-    return view('kontak');
-})->name('kontak');
+Route::get('/', function () { return view('beranda'); })->name('home');
+Route::get('/tentang', function () { return view('tentang'); })->name('tentang'); 
 
 /*
 |--------------------------------------------------------------------------
-| Keranjang & Pesanan (Customer)
+| 2. AREA PELANGGAN (GUARD: WEB / TABEL: USERS)
 |--------------------------------------------------------------------------
 */
-Route::controller(OrderController::class)->group(function () {
-    Route::get('/cart', 'showCart')->name('cart.show');
-    Route::post('/cart/add/{id}', 'addToCart')->name('cart.add');
-    Route::post('/cart/decrease/{id}', 'decrease')->name('cart.decrease');
-    Route::delete('/cart/remove/{id}', 'remove')->name('cart.remove');
-    
-    Route::post('/checkout', 'simpan')->name('checkout.simpan');
-    Route::get('/payment/{id}', 'showPayment')->name('order.payment');
-    Route::post('/payment/confirm/{id}', 'confirmPayment')->name('payment.confirm');
-    Route::get('/history', 'history')->name('order.history');
-    Route::get('/invoice/{id}', 'printInvoice')->name('invoice.print');
+Route::get('/login', [CustomerAuthController::class, 'showLogin'])->name('login');
+Route::post('/login', [CustomerAuthController::class, 'login']);
+Route::get('/register', [CustomerAuthController::class, 'showRegister'])->name('customer.register');
+Route::post('/register', [CustomerAuthController::class, 'register']);
+
+Route::middleware('auth:web')->group(function () {
+    Route::get('/menu', [OrderController::class, 'menu'])->name('menu');
+    Route::get('/history', [OrderController::class, 'history'])->name('order.history');
+    Route::post('/ulasan', [UlasanController::class, 'store'])->name('ulasan.store');
 });
 
 /*
 |--------------------------------------------------------------------------
-| Admin Panel & Authentication
+| 3. AREA ADMIN (GUARD: ADMIN / TABEL: ADMINS)
 |--------------------------------------------------------------------------
 */
-Route::get('/admin/login', [AdminAuthController::class, 'showLogin'])->name('login');
-Route::post('/admin/login', [AdminAuthController::class, 'login']);
-Route::post('/admin/logout', [AdminAuthController::class, 'logout'])->name('logout');
+Route::prefix('admin')->group(function () {
+    // Rute Login Admin (Tanpa Proteksi)
+    Route::get('/login', [AdminAuthController::class, 'showLogin'])->name('admin.login');
+    Route::post('/login', [AdminAuthController::class, 'login']);
 
-// Lindungi semua rute admin dengan middleware 'auth'
-Route::middleware('auth')->prefix('admin')->group(function () {
-    
-    // 1. Halaman Daftar Pesanan (Semua Transaksi)
-    Route::get('/orders', [AdminOrderController::class, 'index'])->name('admin.orders');
-    
-    // 2. Halaman Statistik Harian (Baru Ditambahkan)
-    Route::get('/statistics', [AdminOrderController::class, 'statistics'])->name('admin.stats');
-    
-    // 3. Aksi Admin (Update Status & Hapus)
-    Route::post('/orders/{id}/status', [AdminOrderController::class, 'nextStatus'])->name('orders.status');
-    Route::delete('/orders/{id}', [AdminOrderController::class, 'destroy'])->name('admin.orders.destroy');
+    // Rute Terproteksi Khusus Admin
+    // Menggunakan auth:admin agar tidak terlempar ke login pelanggan
+    Route::middleware('auth:admin')->group(function () {
+        Route::get('/orders', [AdminOrderController::class, 'index'])->name('admin.orders');
+        Route::post('/orders/{id}/status', [AdminOrderController::class, 'nextStatus'])->name('admin.orders.status');
+        Route::delete('/orders/{id}', [AdminOrderController::class, 'destroy'])->name('admin.orders.destroy');
+        Route::post('/logout', [AdminAuthController::class, 'logout'])->name('admin.logout');
+    });
 });
