@@ -4,6 +4,7 @@ namespace Database\Seeders;
 
 use Illuminate\Database\Seeder;
 use App\Models\User;
+use App\Models\Admin; // Pastikan Model Admin di-import
 
 class DatabaseSeeder extends Seeder
 {
@@ -12,11 +13,23 @@ class DatabaseSeeder extends Seeder
      */
     public function run(): void
     {
-        // Menghapus data user lama agar tidak duplikat saat seeder dijalankan ulang
-        User::truncate();
+        // 1. Panggil Seeder Menu yang sudah kamu buat tadi
+        $this->call([
+            MenuSeeder::class,
+        ]);
 
+        // 2. Seed untuk Tabel Users (Pelanggan)
+        User::truncate(); 
         User::create([
-            'name' => 'Admin Valeria',
+            'name' => 'Sha',
+            'email' => 'sha12@gmail.com',
+            'password' => bcrypt('akun12345'),
+        ]);
+
+        // 3. Seed untuk Tabel Admins (Pengelola)
+        // Pastikan tabel 'admins' sudah ada di migration kamu
+        Admin::truncate();
+        Admin::create([
             'email' => 'admin@valeriacoffee.id',
             'password' => bcrypt('admin123'),
         ]);

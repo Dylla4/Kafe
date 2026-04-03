@@ -117,7 +117,7 @@ async function addToCart(id) {
         });
 
         if (response.ok) {
-            alert('Menu berhasil ditambahkan!');
+            alert('Pesanan berhasil ditambahkan!');
             window.location.reload(); 
         } else {
             alert('Gagal menambahkan ke keranjang.');

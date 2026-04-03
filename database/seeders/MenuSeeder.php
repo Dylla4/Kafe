@@ -223,14 +223,8 @@ class MenuSeeder extends Seeder
             'nama_menu' => 'Lemon Cheesecake',
             'harga' => 20000,
             'kategori' => 'Sweet Treats',
-            'foto' => 'img/LemonCheesecake.jpg'
-        ]);
-
-        Menu::create([
-            'nama_menu' => 'Lemon Cheesecake',
-            'harga' => 15000,
-            'kategori' => 'Sweet Treats',
-            'foto' => 'img/LemonCheesecake.jpg'
+            'foto' => 'img/LemonCheesecake.jpg',
+            'is_best_seller' => true
         ]);
 
         Menu::create([

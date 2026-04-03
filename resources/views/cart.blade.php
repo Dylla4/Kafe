@@ -184,28 +184,35 @@
 
                 <div>
                     <label class="block text-sm font-bold text-orange-900 mb-2">Nama Pemesan</label>
-                    <input type="text" name="nama_pembeli" required
-                           class="w-full p-3 border-2 border-orange-200 rounded-xl focus:outline-none focus:border-orange-500 transition"
-                           placeholder="Masukkan nama Anda">
+                    <input type="text" 
+                           name="nama_pemesan"
+                           value="{{ auth()->user()->name }}"
+                           readonly
+                           class="w-full px-4 py-3 rounded-xl border border-stone-200 bg-stone-50 cursor-not-allowed">
                 </div>
 
-                <div>
-                    <label class="block text-sm font-bold text-orange-900 mb-2">Jenis Pesanan</label>
-                    <select name="jenis_pesanan" id="jenis_pesanan" required
-                            class="w-full p-3 border-2 border-orange-200 rounded-xl focus:outline-none focus:border-orange-500 transition">
-                        <option value="dine_in">Makan di Tempat</option>
-                        <option value="take_away">Take Away</option>
+                <div class="mb-4">
+                    <label class="block font-bold mb-2 text-orange-900">Jenis Pesanan</label>
+                    <select name="jenis_pesanan" id="jenis_pesanan" onchange="toggleAlamatMeja()" 
+                            class="w-full border-2 border-orange-200 rounded-xl p-3 bg-white focus:border-orange-500 outline-none">
+                    <option value="dine_in">Makan di Tempat</option>
+                    <option value="take_away">Take Away (Kirim/Bungkus)</option>
                     </select>
                 </div>
 
-                <div>
-                    <label id="label_lokasi" class="block text-sm font-bold text-orange-900 mb-2">Nomor Meja</label>
-                    <input type="text" name="nomor_meja" id="input_lokasi"
-                           class="w-full p-3 border-2 border-orange-200 rounded-xl focus:outline-none focus:border-orange-500 transition"
-                           placeholder="Contoh: Meja 05">
-                    <p id="keterangan_lokasi" class="text-xs text-stone-500 mt-1">
-                        Isi jika makan di tempat (boleh kosong jika take away).
-                    </p>
+                <div class="mb-4" id="section_meja">
+                    <label class="block font-bold mb-2 text-orange-900">Nomor Meja</label>
+                    <input type="text" name="nomor_meja" id="nomor_meja"
+                        value="{{ $nomorMeja ?? $mejaOtomatis }}" 
+                        class="w-full border-2 border-orange-100 rounded-xl p-3 bg-stone-100" readonly>
+                    <p class="text-xs text-gray-500 mt-1">*Meja dipilihkan otomatis yang sedang kosong.</p>
+                </div>
+
+                <div class="mb-4 hidden" id="section_alamat">
+                    <label class="block font-bold mb-2 text-orange-900">Alamat Pengiriman</label>
+                    <textarea name="alamat" id="alamat" rows="2"
+                        class="w-full border-2 border-orange-200 rounded-xl p-3 focus:border-orange-500 outline-none"
+                        placeholder="Masukkan alamat lengkap pengiriman..."></textarea>
                 </div>
 
                 <div>
@@ -217,19 +224,6 @@
                         <option value="transfer">Transfer</option>
                     </select>
                 </div>
-
-                <div class="mb-4">
-    <label class="block font-bold mb-2">Uang Pembayaran (Rp)</label>
-    <input type="number" id="pembayaran" name="pembayaran" 
-           class="w-full p-3 border rounded-xl" placeholder="Contoh: 50000">
-</div>
-
-<div class="mb-4">
-    <label class="block font-bold mb-2">Uang Kembalian (Rp)</label>
-    <input type="number" id="kembalian" name="kembalian" 
-           class="w-full p-3 border rounded-xl bg-gray-100" placeholder="0" readonly>
-</div>
-
 
                 <div>
                     <label class="block text-sm font-bold text-orange-900 mb-2">Catatan Tambahan</label>
@@ -259,49 +253,29 @@
 </div>
 
 <script>
-    const jenisPesanan = document.getElementById('jenis_pesanan');
-    const labelLokasi = document.getElementById('label_lokasi');
-    const inputLokasi = document.getElementById('input_lokasi');
-    const keteranganLokasi = document.getElementById('keterangan_lokasi');
+function toggleAlamatMeja() {
+    const jenis = document.getElementById('jenis_pesanan').value;
+    const secMeja = document.getElementById('section_meja');
+    const secAlamat = document.getElementById('section_alamat');
+    const inputAlamat = document.getElementById('alamat');
 
-    function updateLokasiField() {
-        if (jenisPesanan.value === 'take_away') {
-            labelLokasi.innerText = 'Alamat Pengiriman / Penjemputan';
-            inputLokasi.placeholder = 'Masukkan alamat lengkap Anda...';
-            keteranganLokasi.innerText = 'Tulis alamat lengkap atau instruksi penjemputan.';
-        } else {
-            labelLokasi.innerText = 'Nomor Meja';
-            inputLokasi.placeholder = 'Contoh: Meja 05';
-            keteranganLokasi.innerText = 'Isi jika makan di tempat (boleh kosong jika take away).';
-        }
+    if (jenis === 'take_away') {
+        // Sembunyikan Meja, Tampilkan Alamat
+        secMeja.classList.add('hidden');
+        secAlamat.classList.remove('hidden');
+        inputAlamat.setAttribute('required', 'required'); // Alamat wajib isi jika Take Away
+    } else {
+        // Tampilkan Meja, Sembunyikan Alamat
+        secMeja.classList.remove('hidden');
+        secAlamat.classList.add('hidden');
+        inputAlamat.removeAttribute('required');
     }
+}
 
-    jenisPesanan.addEventListener('change', updateLokasiField);
-    updateLokasiField();
+// Jalankan fungsi sekali saat halaman dimuat untuk memastikan posisi awal benar
+document.addEventListener('DOMContentLoaded', toggleAlamatMeja);
 </script>
 
-<script>
-    // Ambil total harga dari PHP ke variabel JavaScript
-    const totalTagihan = Number ('{!!$total ?? 0!!}')
-
-    function hitungKembalian() {
-        const inputUang = document.getElementById('uang_pembayaran').value;
-        const inputKembalian = document.getElementById('kembalian');
-        
-        // Mengubah input menjadi angka (float)
-        const uang = parseFloat(inputUang) || 0;
-        
-        // Hitung selisih
-        const selisih = uang - totalTagihan;
-        
-        // Tampilkan hasil jika uang mencukupi, jika kurang tampilkan 0
-        if (uang >= totalTagihan) {
-            inputKembalian.value = selisih;
-        } else {
-            inputKembalian.value = 0;
-        }
-    }
-</script>
 <script>
     document.addEventListener('DOMContentLoaded', function() {
         const inputPembayaran = document.getElementById('pembayaran');

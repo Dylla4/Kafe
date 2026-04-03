@@ -8,14 +8,14 @@ use Illuminate\Support\Facades\Auth;
 
 class EnsureUserIsAdmin
 {
-    public function handle(Request $request, Closure $next)
-    {
-        // Mengecek apakah user login dan memiliki role admin
-        if (Auth::check() && Auth::user()->role === 'admin') {
-            return $next($request);
-        }
-
-        // Jika bukan admin, tendang ke beranda
-        return redirect('/')->with('error', 'Akses khusus admin!');
+public function handle(Request $request, Closure $next)
+{
+    // Cek apakah yang login adalah admin menggunakan guard 'admin'
+    if (!Auth::guard('admin')->check()) {
+        // JANGAN arahkan ke route('login'), tapi ke admin.login
+        return redirect()->route('admin.login')->with('error', 'Silakan login sebagai admin.');
     }
+
+    return $next($request);
+}
 }

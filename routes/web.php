@@ -17,32 +17,54 @@ Route::get('/tentang', function () { return view('tentang'); })->name('tentang')
 
 /*
 |--------------------------------------------------------------------------
-| 2. AREA PELANGGAN (GUARD: WEB / TABEL: USERS)
+| 2. AUTH PELANGGAN (GUEST)
 |--------------------------------------------------------------------------
 */
-Route::get('/login', [CustomerAuthController::class, 'showLogin'])->name('login');
-Route::post('/login', [CustomerAuthController::class, 'login']);
-Route::get('/register', [CustomerAuthController::class, 'showRegister'])->name('customer.register');
-Route::post('/register', [CustomerAuthController::class, 'register']);
+Route::middleware('guest:web')->group(function () {
+    Route::get('/login', [CustomerAuthController::class, 'showLogin'])->name('login');
+    Route::post('/login', [CustomerAuthController::class, 'login']);
+    Route::get('/register', [CustomerAuthController::class, 'showRegister'])->name('customer.register');
+    Route::post('/register', [CustomerAuthController::class, 'register']);
+});
+Route::post('/logout', [CustomerAuthController::class, 'logout'])->name('customer.logout');
 
+/*
+|--------------------------------------------------------------------------
+| 3. AREA PELANGGAN TERPROTEKSI (GUARD: WEB)
+|--------------------------------------------------------------------------
+*/
 Route::middleware('auth:web')->group(function () {
+    // Menu & Keranjang
     Route::get('/menu', [OrderController::class, 'menu'])->name('menu');
+    Route::get('/cart', [OrderController::class, 'showCart'])->name('cart.show');
+    Route::post('/cart/add/{id}', [OrderController::class, 'addToCart'])->name('cart.add');
+    Route::post('/cart/decrease/{id}', [OrderController::class, 'decrease'])->name('cart.decrease');
+    Route::post('/cart/remove/{id}', [OrderController::class, 'remove'])->name('cart.remove');
+
+    // Checkout & Pembayaran
+    Route::post('/checkout/simpan', [OrderController::class, 'simpan'])->name('checkout.simpan');
+    Route::get('/payment/{id}', [OrderController::class, 'showPayment'])->name('order.payment');
+    Route::post('/payment/confirm/{id}', [OrderController::class, 'confirmPayment'])->name('payment.confirm');
+    Route::get('/invoice/{id}', [OrderController::class, 'printInvoice'])->name('invoice.print');
     Route::get('/history', [OrderController::class, 'history'])->name('order.history');
+
+    // Ulasan
+    Route::get('/ulasan', [UlasanController::class, 'index'])->name('ulasan.index'); 
     Route::post('/ulasan', [UlasanController::class, 'store'])->name('ulasan.store');
 });
 
 /*
 |--------------------------------------------------------------------------
-| 3. AREA ADMIN (GUARD: ADMIN / TABEL: ADMINS)
+| 4. AREA ADMIN (GUARD: ADMIN)
 |--------------------------------------------------------------------------
 */
 Route::prefix('admin')->group(function () {
-    // Rute Login Admin (Tanpa Proteksi)
+    //login admin
     Route::get('/login', [AdminAuthController::class, 'showLogin'])->name('admin.login');
-    Route::post('/login', [AdminAuthController::class, 'login']);
+    // Tambahkan ->name('admin.login.submit') agar jelas bedanya
+    Route::post('/login', [AdminAuthController::class, 'login'])->name('admin.login.submit');
 
-    // Rute Terproteksi Khusus Admin
-    // Menggunakan auth:admin agar tidak terlempar ke login pelanggan
+    // Admin Terproteksi
     Route::middleware('auth:admin')->group(function () {
         Route::get('/orders', [AdminOrderController::class, 'index'])->name('admin.orders');
         Route::post('/orders/{id}/status', [AdminOrderController::class, 'nextStatus'])->name('admin.orders.status');

@@ -9,23 +9,24 @@ return new class extends Migration
     /**
      * Run the migrations.
      */
-public function up(): void
-{
-    Schema::table('orders', function (Blueprint $table) {
-        // Hapus baris yang mencoba menambah 'status' karena sudah ada di database
-        if (!Schema::hasColumn('orders', 'bayar')) {
-            $table->integer('bayar')->nullable()->after('metode_pembayaran');
-        }
-        if (!Schema::hasColumn('orders', 'kembalian')) {
-            $table->integer('kembalian')->nullable()->after('bayar');
-        }
-    });
-}
+    public function up(): void
+    {
+        Schema::table('orders', function (Blueprint $table) {
+            if (!Schema::hasColumn('orders', 'alamat')) {
+                $table->text('alamat')->nullable()->after('nomor_meja');
+            }
+        });
+    }
 
-public function down(): void
-{
-    Schema::table('orders', function (Blueprint $table) {
-        $table->dropColumn(['bayar', 'kembalian']);
-    });
-}
+    /**
+     * Reverse the migrations.
+     */
+    public function down(): void
+    {
+        Schema::table('orders', function (Blueprint $table) {
+            if (Schema::hasColumn('orders', 'alamat')) {
+                $table->dropColumn('alamat');
+            }
+        });
+    }
 };

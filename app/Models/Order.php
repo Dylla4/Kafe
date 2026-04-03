@@ -11,14 +11,13 @@ class Order extends Model
 
     // Baris ini memberi izin agar kolom-kolom ini bisa diisi data
     protected $fillable = [
+        'user_id',
         'nama_pembeli', 
         'nomor_meja', 
         'catatan', 
         'item_pesanan', 
         'total_harga',
         'metode_pembayaran',
-        'bayar',
-        'kembalian',
         'status'
     ];
 }

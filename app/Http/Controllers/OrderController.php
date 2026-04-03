@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\Menu;
 use App\Models\Order;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 
 class OrderController extends Controller
 {
@@ -16,6 +17,20 @@ class OrderController extends Controller
         
         return view('welcome', compact('menus', 'promoMenus'));
     }
+
+    // Tambahkan ini di dalam class OrderController
+public function menu() 
+{
+    // 1. Ambil data menu dari database
+    $menus = Menu::all();
+    
+    // 2. Ambil data promo (opsional, seperti di fungsi index kamu)
+    $today = date('Ymd'); 
+    $promoMenus = Menu::inRandomOrder($today)->take(2)->get();
+    
+    // 3. Arahkan ke view 'menu' (pastikan file resources/views/menu.blade.php sudah ada)
+    return view('menu', compact('menus', 'promoMenus'));
+}
 
     public function addToCart($id)
     {
@@ -66,14 +81,28 @@ class OrderController extends Controller
 {
     $cartItems = session()->get('cart', []);
     
-    // TAMBAHKAN LOGIKA HITUNG TOTAL DI SINI
+    // 1. Hitung Total Harga
     $total_harga = 0;
     foreach($cartItems as $item) {
         $total_harga += $item['harga'] * $item['quantity'];
     }
 
-    // Kirim $total_harga ke view agar JavaScript bisa membacanya
-    return view('cart', compact('cartItems', 'total_harga'));
+    // 2. Logika Mencari Meja Kosong
+    $semuaMeja = ['Meja 01', 'Meja 02', 'Meja 03', 'Meja 04', 'Meja 05', 'Meja 06', 'Meja 07', 'Meja 08', 'Meja 09', 'Meja 10']; // Sesuaikan jumlahnya
+    
+    // Ambil nomor meja yang sedang terpakai (status bukan 'selesai' atau 'dibatalkan')
+    // Di dalam fungsi showCart()
+$mejaTerpakai = Order::whereIn('status', ['diproses', 'menunggu_pembayaran', 'sukses'])
+                    ->pluck('nomor_meja')
+                    ->toArray();
+
+    // Cari meja yang ada di $semuaMeja tapi tidak ada di $mejaTerpakai
+    $mejaKosong = array_diff($semuaMeja, $mejaTerpakai);
+    
+    // Ambil satu meja pertama yang kosong (jika ada)
+    $mejaOtomatis = !empty($mejaKosong) ? reset($mejaKosong) : 'Penuh';
+
+    return view('cart', compact('cartItems', 'total_harga', 'mejaOtomatis'));
 }
 
     /**
@@ -99,15 +128,13 @@ class OrderController extends Controller
 
         // Simpan ke Database termasuk metode_pembayaran
     $order = Order::create([
-        'nama_pembeli'      => $request->nama_pembeli,
+        'user_id'           => Auth::id(),
+        'nama_pembeli'      => $request->nama_pemesan,
         'nomor_meja'        => $lokasi,
         'catatan'           => $request->catatan ?? '-',
         'item_pesanan'      => json_encode($cart),
         'total_harga'       => $total,
         'metode_pembayaran' => $request->metode_pembayaran,
-        // TAMBAHKAN DUA BARIS INI:
-        'bayar'             => $request->pembayaran, // ambil dari input 'pembayaran'
-        'kembalian'         => $request->kembalian,   // ambil dari input 'kembalian'
         'status'            => ($request->metode_pembayaran == 'cash') ? 'diproses' : 'menunggu_pembayaran'
     ]);
 
@@ -148,8 +175,10 @@ class OrderController extends Controller
  */
 public function history()
 {
-    // Mengambil semua pesanan dari database MySQL
-    $orders = Order::orderBy('created_at', 'desc')->get();
+    // Mengambil pesanan yang HANYA milik user yang sedang login
+    $orders = Order::where('user_id', Auth::id()) 
+                    ->orderBy('created_at', 'desc')
+                    ->get();
     
     return view('history', compact('orders'));
 }

@@ -32,8 +32,6 @@
                    class="{{ request()->is('tentang') ? 'text-[#A06040] border-b-2 border-[#A06040]' : 'text-stone-400' }} pb-1 hover:text-[#3C2A21] transition">About Us</a>
                 <a href="{{ route('menu') }}" 
                    class="{{ request()->is('menu') ? 'text-[#A06040] border-b-2 border-[#A06040]' : 'text-stone-400' }} pb-1 hover:text-[#3C2A21] transition">Our Menu</a>
-                <a href="#kontak" 
-                   class="text-stone-400 pb-1 hover:text-[#3C2A21] transition">Locations</a>
                 <a href="{{ route('ulasan.index') }}" 
                    class="{{ request()->is('ulasan') ? 'text-[#A06040] border-b-2 border-[#A06040]' : 'text-stone-400' }} pb-1 hover:text-[#3C2A21] transition">Review</a>
             </div>

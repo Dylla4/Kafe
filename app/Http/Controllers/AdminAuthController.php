@@ -9,7 +9,7 @@ class AdminAuthController extends Controller
 {
     public function showLogin()
     {
-        return view('auth.admin-login'); // Pastikan file resources/views/auth/admin-login.blade.php ada
+        return view('admin.login'); 
     }
 
     public function login(Request $request)

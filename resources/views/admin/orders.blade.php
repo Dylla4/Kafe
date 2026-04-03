@@ -29,7 +29,7 @@
             </div>
         </nav>
 
-        <form action="{{ route('logout') }}" method="POST" class="mt-auto pt-4 border-t border-white/5">
+        <form action="{{ route('admin.logout') }}" method="POST" class="mt-auto pt-4 border-t border-white/5">
             @csrf
             <button type="submit" class="w-full flex items-center p-3 rounded-xl bg-red-500/10 hover:bg-red-600 text-red-400 hover:text-white transition font-bold text-[10px] uppercase tracking-widest">
                 <span class="mr-3">🚪</span> Logout
@@ -90,7 +90,7 @@
                             <p class="font-black text-[#3C2A21] text-xl">Rp{{ number_format($order->total_harga) }}</p>
                         </div>
                         <div class="flex items-center gap-2">
-                            <form action="{{ route('orders.status', $order->id) }}" method="POST">
+                            <form action="{{ route('admin.orders.status', $order->id) }}" method="POST">
                                 @csrf
                                 <select name="status" onchange="this.form.submit()" class="text-[9px] font-black uppercase tracking-widest border border-stone-200 rounded-xl px-4 py-2 bg-stone-50 outline-none cursor-pointer">
                                     <option value="diproses" {{ $status === 'diproses' ? 'selected' : '' }}>Process</option>

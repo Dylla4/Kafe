@@ -46,7 +46,8 @@
                 Valeria Coffee Management
             </p>
             
-            <form action="{{ route('login') }}" method="POST">
+            {{-- Perbaikan pada route action: Diarahkan ke admin.login.submit --}}
+            <form action="{{ route('admin.login.submit') }}" method="POST">
                 @csrf
                 
                 <div style="margin-bottom: 22px;">
