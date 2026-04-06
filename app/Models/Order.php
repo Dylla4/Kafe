@@ -2,22 +2,25 @@
 
 namespace App\Models;
 
-use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
 class Order extends Model
 {
-    use HasFactory;
-
-    // Baris ini memberi izin agar kolom-kolom ini bisa diisi data
     protected $fillable = [
-        'user_id',
+        'user_id', 
         'nama_pembeli', 
         'nomor_meja', 
-        'catatan', 
+        'alamat',    // Tambahkan ini (ada di database)
+        'catatan',   // Tambahkan ini (ada di database)
         'item_pesanan', 
-        'total_harga',
-        'metode_pembayaran',
-        'status'
+        'total_harga', 
+        'metode_pembayaran', 
+        'status',
+        'tanggal_booking', 
+        'jam_booking'
+    ];
+
+    protected $casts = [
+        'item_pesanan' => 'array', // Penting agar JSON database otomatis jadi Array PHP
     ];
 }

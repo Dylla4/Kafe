@@ -9,20 +9,19 @@ return new class extends Migration
     /**
      * Run the migrations.
      */
-    public function up(): void
+    public function up()
 {
     Schema::create('orders', function (Blueprint $table) {
         $table->id();
-        $table->string('user_id')->constrained('users')->onDelete('cascade');
-        $table->string('nama_pembeli');
+        $table->string('nama_pemesan');
+        $table->enum('jenis_pesanan', ['dine_in', 'take_away']);
         $table->string('nomor_meja')->nullable();
+        $table->text('alamat')->nullable();
+        $table->string('metode_pembayaran');
         $table->text('catatan')->nullable();
-        $table->text('item_pesanan');
-        $table->integer('total_harga');
-        // TAMBAHKAN BARIS INI:
-        $table->string('metode_pembayaran')->nullable(); 
-        $table->string('status')->default('pending');
-        $table->timestamps();
+        $table->decimal('total_bayar', 12, 2);
+        $table->string('status')->default('Diproses'); // Untuk jadwal antrean
+        $table->timestamps(); // Ini otomatis mencatat waktu pesan
     });
 }
 

@@ -2,7 +2,7 @@
 
 return [
     'defaults' => [
-        'guard' => 'web',
+        'guard' => 'web', // Default untuk pelanggan
         'passwords' => 'users',
     ],
 
@@ -11,6 +11,7 @@ return [
             'driver' => 'session',
             'provider' => 'users',
         ],
+        // Tambahkan guard admin ini
         'admin' => [
             'driver' => 'session',
             'provider' => 'admins',
@@ -22,20 +23,12 @@ return [
             'driver' => 'eloquent',
             'model' => App\Models\User::class,
         ],
+        // Arahkan ke model Admin Anda
         'admins' => [
             'driver' => 'eloquent',
             'model' => App\Models\Admin::class,
         ],
     ],
-
-    'passwords' => [
-        'users' => [
-            'provider' => 'users',
-            'table' => 'password_reset_tokens',
-            'expire' => 60,
-            'throttle' => 60,
-        ],
-    ],
-
-    'password_timeout' => 10800,
+    
+    // ... pastikan semua kurung tutup ']' sudah lengkap sampai akhir file
 ];
