@@ -71,6 +71,14 @@
                         <label class="block text-xs font-bold text-orange-900 mb-1 uppercase">Nomor Meja</label>
                         <input type="text" name="nomor_meja" value="{{ $mejaOtomatis }}" readonly class="w-full p-2 border rounded-lg bg-stone-100 font-bold text-orange-700">
                     </div>
+                    <div class="mt-4">
+                        <label class="block text-xs font-bold uppercase tracking-widest text-stone-500 mb-2">Metode Pembayaran</label>
+                        <select name="metode_pembayaran" class="w-full bg-stone-50 border border-stone-200 rounded-2xl p-4 outline-none focus:border-[#A06040] transition">
+                            <option value="cash">Tunai (Bayar di Kasir)</option>
+                            <option value="dana">DANA</option>
+                            <option value="qris">QRIS / Scan QR</option>
+                        </select>
+                    </div>
                 </div>
                 
                 {{-- Tombol Oranye Solid --}}
