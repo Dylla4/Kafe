@@ -23,7 +23,7 @@ class OrderController extends Controller
     /**
      * Menambahkan item ke keranjang belanja (Session)
      */
-    public function tambahKeKeranjang($id)
+    public function addToCart($id)
     {
         $menu = Menu::find($id);
         
@@ -84,6 +84,7 @@ class OrderController extends Controller
         $request->validate([
             'nama_pemesan'    => 'required|string|max:255',
             'nomor_meja'      => 'required',
+            'metode_pembayaran' => 'required',
             'tanggal_booking' => 'required|date',
             'jam_booking'     => 'required',
         ]);
@@ -103,20 +104,53 @@ class OrderController extends Controller
         $user = Auth::user();
         $userId = $user ? $user->id : 1; 
 
-        // Simpan ke tabel orders sesuai struktur database terbaru
-        Order::create([
+        $newOrder = Order::create([
             'user_id'           => $userId, 
             'nama_pembeli'      => $request->nama_pemesan,
             'nomor_meja'        => $request->nomor_meja,
-            'item_pesanan'      => $cart, // Dicast menjadi array di Model
+            'item_pesanan'      => $cart,
             'total_harga'       => $total_harga,
-            'metode_pembayaran' => 'cash',
+            'metode_pembayaran' => $request->metode_pembayaran,
             'status'            => 'diproses',
             'tanggal_booking'   => $request->tanggal_booking, 
             'jam_booking'       => $request->jam_booking,     
-        ]);
+]);
+    session()->forget('cart');
+    return redirect()->route('order.payment', ['id' => $newOrder->id]);
+    }
 
-        session()->forget('cart');
-        return redirect()->route('cart.show')->with('success', 'Booking berhasil dibuat!');
+    /**
+ * Menampilkan halaman instruksi pembayaran
+ */
+    public function showPayment($id)
+    {
+        $order = Order::findOrFail($id);
+        return view('payment', compact('order'));
+    }
+
+    public function confirmPayment(Request $request, $id)
+    {
+        // Cari data order
+        $order = Order::findOrFail($id);
+        // Update status menjadi 'sukses' atau sesuai logika bisnismu
+        $order->update([
+            'status' => 'sukses'
+            ]);
+
+    // Redirect ke halaman history atau invoice dengan pesan sukses
+        return redirect()->route('order.history')->with('success', 'Pembayaran berhasil dikonfirmasi!');
+    }
+
+    /**
+ * Menampilkan riwayat pesanan pelanggan yang sedang login
+ */
+    public function history()
+    {
+        // Mengambil semua pesanan milik pelanggan yang sedang login
+            $orders = Order::where('user_id', Auth::id())
+                    ->orderBy('created_at', 'desc')
+                    ->get();
+
+        return view('history', compact('orders'));
     }
 }
