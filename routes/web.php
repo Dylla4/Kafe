@@ -44,7 +44,7 @@ Route::middleware('auth:web')->group(function () {
 
     // Checkout & Pembayaran
     // Pastikan mengarah ke CheckoutController jika Anda memisahkan logic simpan di sana
-    Route::post('/checkout/simpan', [CheckoutController::class, 'simpan'])->name('checkout.simpan');
+    Route::post('/checkout/simpan', [OrderController::class, 'simpan'])->name('checkout.simpan');
     
     // PERBAIKAN UTAMA: Nama rute diubah menjadi 'history' agar sesuai dengan script Blade Anda
     Route::get('/history', [OrderController::class, 'history'])->name('order.history');

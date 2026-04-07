@@ -3,12 +3,13 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
-use Midtrans\Config;
+use Midtrans\Config; // Ini akan merujuk ke vendor/midtrans/midtrans-php
 use Midtrans\Snap;
-use App\Models\Pesanan; // Pastikan ini sesuai dengan folder Model Anda
+use App\Models\Pesanan;
 
 class CheckoutController extends Controller
 {
+    
     public function simpan(Request $request)
     {
         // 1. Konfigurasi Midtrans - PASTIKAN SERVER KEY BENAR

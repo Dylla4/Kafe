@@ -5,6 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Keranjang - Kafe Kita</title>
     <script src="https://cdn.tailwindcss.com"></script>
+    
     <script type="text/javascript"
             src="https://app.sandbox.midtrans.com/snap/snap.js"
             data-client-key="MASUKKAN_CLIENT_KEY_ANDA"></script>
@@ -26,6 +27,7 @@
 
         @if(!empty($cartItems) && count($cartItems) > 0)
             @php $total = 0; @endphp
+            
             <div class="overflow-x-auto mb-8">
                 <table class="w-full text-left border-collapse">
                     <thead class="border-b-2 border-stone-100 text-stone-400 uppercase text-xs">
@@ -39,7 +41,7 @@
                     <tbody>
                         @foreach($cartItems as $id => $details)
                         @php $total += $details['harga'] * $details['quantity']; @endphp
-                        <tr class="border-b border-stone-50">
+                        <tr class="border-b border-stone-50 text-sm md:text-base">
                             <td class="py-4 font-bold">{{ $details['nama_menu'] }}</td>
                             <td>Rp {{ number_format($details['harga'], 0, ',', '.') }}</td>
                             <td class="text-center">{{ $details['quantity'] }}</td>
@@ -63,49 +65,68 @@
                 
                 <form id="form-pembayaran" class="space-y-5">
                     @csrf
+                    
                     <div>
                         <label class="block text-xs font-bold text-orange-900 mb-2 uppercase">Nama Pemesan</label>
-                        <input type="text" name="nama_pemesan" value="{{ auth()->user()->name ?? 'Pelanggan' }}" readonly class="w-full p-3 rounded-lg border bg-stone-100 text-sm cursor-not-allowed">
+                        <input type="text" name="nama_pemesan" value="{{ auth()->user()->name ?? 'Pelanggan' }}" readonly class="w-full p-3 rounded-lg border bg-stone-100 text-sm cursor-not-allowed outline-none">
+                    </div>
+
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                        <div>
+                            <label class="block text-xs font-bold text-orange-900 mb-2 uppercase">Tanggal Booking</label>
+                            <input type="date" name="tanggal_booking" id="tanggal_booking" class="w-full p-3 border border-stone-200 rounded-lg text-sm bg-white focus:ring-2 focus:ring-orange-500 outline-none transition-all" required>
+                        </div>
+                        <div>
+                            <label class="block text-xs font-bold text-orange-900 mb-2 uppercase">Jam Booking</label>
+                            <input type="time" name="jam_booking" id="jam_booking" class="w-full p-3 border border-stone-200 rounded-lg text-sm bg-white focus:ring-2 focus:ring-orange-500 outline-none transition-all" required>
+                        </div>
                     </div>
 
                     <div>
                         <label class="block text-xs font-bold text-orange-900 mb-2 uppercase">Tipe Pesanan</label>
-                        <select name="jenis_pesanan" id="pilihan_tipe" class="w-full p-3 border rounded-lg text-sm">
+                        <select name="jenis_pesanan" id="pilihan_tipe" class="w-full p-3 border border-stone-200 rounded-lg text-sm bg-white focus:ring-2 focus:ring-orange-500 outline-none transition-all">
                             <option value="dine_in">Makan di Tempat</option>
                             <option value="take_away">Take Away</option>
                         </select>
                     </div>
 
-                    <div id="kolom_alamat" class="hidden">
+                    <div id="kolom_alamat" class="hidden animate-fade-in">
                         <label class="block text-xs font-bold text-orange-900 mb-2 uppercase">Alamat Pengiriman</label>
-                        <textarea name="alamat" rows="3" class="w-full p-3 border rounded-lg text-sm" placeholder="Masukkan alamat lengkap..."></textarea>
+                        <textarea name="alamat" rows="3" class="w-full p-3 border border-stone-200 rounded-lg text-sm bg-white focus:ring-2 focus:ring-orange-500 outline-none" placeholder="Masukkan alamat lengkap..."></textarea>
                     </div>
 
                     <div id="container_meja">
                         <label class="block text-xs font-bold text-orange-900 mb-2 uppercase">Nomor Meja</label>
-                        <input type="text" name="nomor_meja" value="Meja 01" class="w-full p-3 border rounded-lg bg-white font-bold text-orange-700 text-lg">
+                        <input type="text" name="nomor_meja" value="Meja 01" class="w-full p-3 border border-stone-200 rounded-lg bg-white font-bold text-orange-700 text-lg focus:ring-2 focus:ring-orange-500 outline-none transition-all">
                     </div>
 
                     <div>
                         <label class="block text-xs font-bold text-orange-900 mb-2 uppercase">Metode Pembayaran</label>
-                        <select name="metode_pembayaran" id="pilihan_pembayaran" class="w-full p-3 border rounded-lg text-sm">
+                        <select name="metode_pembayaran" id="pilihan_pembayaran" class="w-full p-3 border border-stone-200 rounded-lg text-sm bg-white font-bold focus:ring-2 focus:ring-orange-500 outline-none transition-all">
                             <option value="cash">Cash (Bayar di Kasir)</option>
-                            <option value="transfer">Transfer (DANA/QRIS)</option>
+                            <option value="transfer">Transfer (DANA/QRIS via Midtrans)</option>
                         </select>
                     </div>
-                </div>
-                
-                {{-- Tombol Oranye Solid --}}
-                <div class="pt-4 space-y-3">
-                    <button type="submit" class="w-full py-4 bg-orange-700 text-white rounded-xl font-bold uppercase tracking-widest hover:bg-orange-800 shadow-lg transition-all">
-                        Konfirmasi Pesanan
-                    </button>
-                    <a href="{{ route('menu') }}" class="block w-full py-4 bg-orange-700 text-white text-center rounded-xl font-bold uppercase tracking-widest hover:bg-orange-800 shadow-lg transition-all">
-                        Kembali ke Menu
-                    </a>
-                </div>
-            </form>
-        </div>
+
+                    <div class="pt-4 space-y-3">
+                        <button type="submit" id="btn-submit" class="w-full py-4 bg-orange-700 text-white rounded-xl font-bold uppercase tracking-widest hover:bg-orange-800 shadow-lg transition-all active:scale-95 disabled:bg-stone-400 disabled:cursor-not-allowed">
+                            Konfirmasi Pesanan
+                        </button>
+                        <a href="{{ route('menu') }}" class="block w-full py-4 border-2 border-orange-700 text-orange-700 text-center rounded-xl font-bold uppercase tracking-widest hover:bg-orange-50 transition-all">
+                            Kembali ke Menu
+                        </a>
+                    </div>
+                </form>
+            </div>
+        @else
+            <div class="text-center py-20">
+                <div class="text-6xl mb-4 opacity-50">☕</div>
+                <h2 class="text-2xl font-bold text-stone-400 mb-6">Keranjang Anda masih kosong</h2>
+                <a href="{{ route('menu') }}" class="px-8 py-3 bg-orange-700 text-white rounded-xl font-bold uppercase tracking-widest hover:bg-orange-800 transition-all">
+                    Lihat Menu Sekarang
+                </a>
+            </div>
+        @endif
     </div>
 
     <script>
@@ -116,18 +137,32 @@
         const containerMeja = document.getElementById('container_meja');
         const pilihanPembayaran = document.getElementById('pilihan_pembayaran');
 
-        // Toggle Alamat vs Meja
+        // Toggle Alamat/Meja
         pilihanTipe?.addEventListener('change', function() {
-            kolomAlamat.classList.toggle('hidden', this.value !== 'take_away');
-            containerMeja.classList.toggle('hidden', this.value === 'take_away');
+            if(this.value === 'take_away') {
+                kolomAlamat.classList.remove('hidden');
+                containerMeja.classList.add('hidden');
+            } else {
+                kolomAlamat.classList.add('hidden');
+                containerMeja.classList.remove('hidden');
+            }
         });
 
-        // Proses Simpan & Bayar
+        // Submit Logic
         form?.addEventListener('submit', function(e) {
             e.preventDefault();
-
+            
+            // UI Feedback
             btnSubmit.disabled = true;
-            btnSubmit.innerHTML = "PROCESSING..."; // Indikator loading
+            btnSubmit.innerHTML = `
+                <span class="flex items-center justify-center">
+                    <svg class="animate-spin -ml-1 mr-3 h-5 w-5 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                        <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+                        <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                    </svg>
+                    Memproses...
+                </span>
+            `;
 
             const formData = new FormData(form);
 
@@ -141,31 +176,31 @@
             })
             .then(response => response.json())
             .then(data => {
-                if (data.error) {
-                    alert("Gagal: " + data.error);
+                if (data.error || !data.success) {
+                    alert("Gagal: " + (data.error || data.message));
                     resetButton();
                     return;
                 }
 
-                // Jika Transfer, buka Midtrans Snap
-                if (pilihanPembayaran.value === 'transfer' && data.snap_token) {
-                    window.snap.pay(data.snap_token, {
-                        onSuccess: function(result) { window.location.href = "{{ route('order.history') }}"; },
-                        onPending: function(result) { window.location.href = "{{ route('order.history') }}"; },
-                        onError: function(result) { alert("Pembayaran Gagal!"); resetButton(); },
-                        onClose: function() { 
-                            // Tetap arahkan ke riwayat karena data sudah tersimpan di DB
-                            window.location.href = "{{ route('order.history') }}"; 
-                        }
-                    });
+                if (pilihanPembayaran.value === 'transfer') {
+                    if (data.snap_token) {
+                        window.snap.pay(data.snap_token, {
+                            onSuccess: function(result) { window.location.href = "/payment/" + data.order_id; },
+                            onPending: function(result) { window.location.href = "/payment/" + data.order_id; },
+                            onError: function(result) { alert("Pembayaran Gagal!"); resetButton(); },
+                            onClose: function() { alert('Anda menutup jendela pembayaran.'); resetButton(); }
+                        });
+                    } else {
+                        alert("Gagal mendapatkan token pembayaran Midtrans.");
+                        resetButton();
+                    }
                 } else {
-                    // Jika Cash, langsung pindah ke riwayat
-                    window.location.href = "{{ route('order.history') }}";
+                    window.location.href = "/payment/" + data.order_id;
                 }
             })
             .catch(error => {
                 console.error("Error:", error);
-                alert("Terjadi kesalahan sistem.");
+                alert("Terjadi kesalahan koneksi ke server.");
                 resetButton();
             });
         });
@@ -175,5 +210,15 @@
             btnSubmit.innerHTML = "Konfirmasi Pesanan";
         }
     </script>
+
+    <style>
+        .animate-fade-in {
+            animation: fadeIn 0.3s ease-in-out;
+        }
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(-10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+    </style>
 </body>
 </html>
