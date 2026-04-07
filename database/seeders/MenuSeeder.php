@@ -64,13 +64,6 @@ class MenuSeeder extends Seeder
         ]);
 
         Menu::create([
-            'nama_menu' => 'Matcha Latte',
-            'harga' => 18000,
-            'kategori' => 'Minuman',
-            'foto' => 'img/MatchaLatte.jpg'
-        ]);
-
-        Menu::create([
             'nama_menu' => 'Strawberry Milkshake',
             'harga' => 21000,
             'kategori' => 'Minuman',
