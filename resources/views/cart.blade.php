@@ -93,26 +93,19 @@
                             <option value="transfer">Transfer (DANA/QRIS)</option>
                         </select>
                     </div>
-
-                    <div>
-                        <label class="block text-xs font-bold text-orange-900 mb-2 uppercase">Catatan (Opsional)</label>
-                        <textarea name="catatan" rows="2" class="w-full p-3 border rounded-lg text-sm" placeholder="Contoh: Kurangi gula..."></textarea>
-                    </div>
-                    
-                    <div class="pt-6">
-                        <button type="submit" id="btn-submit" class="w-full py-4 bg-orange-700 text-white rounded-xl font-bold uppercase tracking-widest hover:bg-orange-800 shadow-md transition-all active:scale-95">
-                            Konfirmasi Pesanan
-                        </button>
-                    </div>
-                </form>
-            </div>
-        @else
-            <div class="text-center py-20 bg-stone-50 rounded-2xl border-2 border-dashed border-stone-200">
-                <div class="text-6xl mb-4">🛒</div>
-                <h2 class="text-xl font-bold text-stone-600">Keranjang Kosong</h2>
-                <a href="{{ route('menu') }}" class="mt-4 inline-block px-8 py-3 bg-orange-700 text-white rounded-xl font-bold">Lihat Menu</a>
-            </div>
-        @endif
+                </div>
+                
+                {{-- Tombol Oranye Solid --}}
+                <div class="pt-4 space-y-3">
+                    <button type="submit" class="w-full py-4 bg-orange-700 text-white rounded-xl font-bold uppercase tracking-widest hover:bg-orange-800 shadow-lg transition-all">
+                        Konfirmasi Pesanan
+                    </button>
+                    <a href="{{ route('menu') }}" class="block w-full py-4 bg-orange-700 text-white text-center rounded-xl font-bold uppercase tracking-widest hover:bg-orange-800 shadow-lg transition-all">
+                        Kembali ke Menu
+                    </a>
+                </div>
+            </form>
+        </div>
     </div>
 
     <script>
