@@ -24,11 +24,16 @@
         }
     </style>
 </head>
+
 <body class="bg-stone-100 p-4 md:p-10 text-stone-800 flex justify-center items-start min-h-screen">
 
-    {{-- PERBAIKAN: border-t-[12px] diubah menjadi border-t-12 sesuai saran IntelliSense --}}
+    @php
+        $items = is_array($order->item_pesanan) ? $order->item_pesanan : json_decode($order->item_pesanan, true);
+    @endphp
+
     <div class="max-w-md w-full bg-white p-8 shadow-2xl rounded-3xl border-t-12 border-[#3C2A21] receipt-card">
         
+        {{-- Header Struk --}}
         <div class="text-center mb-8">
             <h1 class="text-2xl font-black uppercase tracking-tighter text-[#3C2A21]">
                 <span class="text-[#A06040]">☕</span> Valeria Coffee
@@ -37,6 +42,7 @@
             <p class="text-[9px] text-stone-400 mt-2 italic">Jl. Kopi Nikmat No. 123, Indonesia</p>
         </div>
 
+        {{-- Info Pesanan --}}
         <div class="space-y-2 text-[11px] border-y border-stone-100 py-4 mb-6">
             <div class="flex justify-between">
                 <span class="text-stone-400 font-bold uppercase tracking-tighter text-[9px]">Pelanggan</span>
@@ -58,6 +64,7 @@
             </div>
         </div>
 
+        {{-- Tabel Menu --}}
         <div class="font-mono-receipt text-xs mb-8">
             <table class="w-full">
                 <thead class="border-b border-dashed border-stone-200">
@@ -82,10 +89,11 @@
             </table>
         </div>
 
+        {{-- Total & Pembayaran --}}
         <div class="border-t-2 border-dashed border-stone-200 pt-6 space-y-2">
             <div class="flex justify-between text-xs text-stone-500 font-medium">
                 <span>Pembayaran</span>
-                <span class="font-bold text-stone-700">Rp {{ number_format($order->bayar ?? 0) }}</span>
+                <span class="font-bold text-stone-700">Rp {{ number_format($order->bayar ?? $order->total_harga) }}</span>
             </div>
             <div class="flex justify-between text-xs text-stone-500 font-medium pb-2">
                 <span>Kembalian</span>
@@ -99,6 +107,7 @@
             </div>
         </div>
 
+        {{-- Footer Struk --}}
         <div class="mt-12 text-center">
             <div class="inline-block px-4 py-1 border-2 border-dashed border-stone-100 rounded-full mb-4">
                 <p class="text-[9px] font-black text-stone-300 uppercase tracking-[0.3em]">Terima Kasih</p>
@@ -109,16 +118,30 @@
             </div>
         </div>
 
+        {{-- Navigasi Tombol Opsi (Tidak Diprint) --}}
         <div class="mt-10 space-y-3 no-print"> 
             <button onclick="window.print()" class="flex items-center justify-center gap-2 bg-[#3C2A21] hover:bg-[#2a1d17] text-white px-6 py-4 rounded-xl font-bold w-full transition-all active:scale-[0.98] shadow-lg">
-                <span>🖨️</span> Cetak Struk
+                <span>🖨️</span> Cetak Struk Fisik
             </button>
             
-            {{-- Tombol Kembali Berwarna Coklat Sesuai Permintaan --}}
-            <a href="{{ url('/') }}" class="flex items-center justify-center bg-[#A06040] hover:bg-[#8d5438] text-white px-6 py-4 rounded-xl font-bold w-full text-center transition-all active:scale-[0.98] shadow-lg">
+            {{-- Tambahkan tanda kutip satu di sekitar Blade tag --}}
+<button onclick="sendEmail('{{ $order->id }}')" class="flex items-center justify-center gap-2 bg-blue-600 hover:bg-blue-700 text-white px-6 py-4 rounded-xl font-bold w-full transition-all active:scale-[0.98] shadow-lg">
+    <span>📧</span> Kirim Struk ke Email
+</button>
+            
+            <a href="{{ route('menu') }}" class="flex items-center justify-center bg-[#A06040] hover:bg-[#8d5438] text-white px-6 py-4 rounded-xl font-bold w-full text-center transition-all active:scale-[0.98] shadow-lg">
                 Kembali ke Menu
             </a>
         </div>
     </div>
+
+    <script>
+        function sendEmail(orderId) {
+            if(confirm('Kirim struk pesanan ini ke email Anda?')) {
+                // Arahkan ke route pengiriman email
+                window.location.href = "/order/email/" + orderId;
+            }
+        }
+    </script>
 </body>
 </html>

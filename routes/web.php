@@ -5,7 +5,7 @@ use App\Http\Controllers\AdminAuthController;
 use App\Http\Controllers\AdminOrderController;
 use App\Http\Controllers\OrderController;
 use App\Http\Controllers\UlasanController;
-use App\Http\Controllers\CheckoutController;
+use App\Http\Controllers\HomeController;
 use App\Http\Controllers\Auth\CustomerAuthController;
 
 /*
@@ -14,7 +14,8 @@ use App\Http\Controllers\Auth\CustomerAuthController;
 |--------------------------------------------------------------------------
 */
 Route::get('/', function () { return view('beranda'); })->name('home');
-Route::get('/tentang', function () { return view('tentang'); })->name('tentang'); 
+Route::get('/tentang', function () { return view('tentang'); })->name('tentang');
+Route::get('/', [HomeController::class, 'index'])->name('home'); 
 
 /*
 |--------------------------------------------------------------------------
@@ -43,8 +44,7 @@ Route::middleware('auth:web')->group(function () {
     Route::post('/cart/remove/{id}', [OrderController::class, 'remove'])->name('cart.remove');
 
     // Checkout & Pembayaran
-    // Pastikan mengarah ke CheckoutController jika Anda memisahkan logic simpan di sana
-    Route::post('/checkout/simpan', [OrderController::class, 'simpan'])->name('checkout.simpan');
+    Route::post('/order/simpan', [OrderController::class, 'simpan'])->name('order.simpan');
     
     // PERBAIKAN UTAMA: Nama rute diubah menjadi 'history' agar sesuai dengan script Blade Anda
     Route::get('/history', [OrderController::class, 'history'])->name('order.history');
@@ -52,6 +52,7 @@ Route::middleware('auth:web')->group(function () {
     Route::get('/payment/{id}', [OrderController::class, 'showPayment'])->name('order.payment');
     Route::post('/payment/confirm/{id}', [OrderController::class, 'confirmPayment'])->name('payment.confirm');
     Route::get('/invoice/{id}', [OrderController::class, 'printInvoice'])->name('invoice.print');
+    Route::get('/order/email/{id}', [App\Http\Controllers\OrderController::class, 'sendEmail'])->name('order.email');
 
     // Ulasan
     Route::get('/ulasan', [UlasanController::class, 'index'])->name('ulasan.index'); 

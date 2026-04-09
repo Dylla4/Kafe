@@ -10,8 +10,8 @@ class Order extends Model
         'user_id', 
         'nama_pembeli', 
         'nomor_meja', 
-        'alamat',    // Tambahkan ini (ada di database)
-        'catatan',   // Tambahkan ini (ada di database)
+        'alamat',    
+        'catatan',   
         'item_pesanan', 
         'total_harga', 
         'metode_pembayaran', 
@@ -21,6 +21,6 @@ class Order extends Model
     ];
 
     protected $casts = [
-        'item_pesanan' => 'array', // Penting agar JSON database otomatis jadi Array PHP
+        'item_pesanan' => 'array', // Mengonversi JSON DB ke Array PHP otomatis
     ];
 }

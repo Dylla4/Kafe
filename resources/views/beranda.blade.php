@@ -29,44 +29,50 @@
     </div>
 </section>
 
-<section class="py-24 bg-[#FDFBF7]">
-    <div class="max-w-7xl mx-auto px-6 text-center">
-        <h2 class="text-3xl font-black text-[#3C2A21] mb-16 uppercase tracking-widest">Kenapa Memilih Kami?</h2>
-        
-        <div class="grid grid-cols-1 md:grid-cols-4 gap-8">
-            <div class="bg-white p-8 rounded-3xl shadow-sm hover:shadow-2xl transition duration-500 group border border-stone-100">
-                <div class="w-16 h-16 bg-[#F5EBE0] rounded-2xl flex items-center justify-center mx-auto mb-6 group-hover:bg-[#A06040] transition-colors duration-300">
-                    <span class="text-3xl group-hover:scale-110 transition">🌱</span>
-                </div>
-                <h4 class="font-bold text-lg mb-3 text-[#3C2A21]">Biji Pilihan</h4>
-                <p class="text-stone-500 text-sm leading-relaxed">Hanya menggunakan biji kopi arabika terbaik dari petani lokal.</p>
+<section class="py-24 bg-white">
+    <div class="max-w-7xl mx-auto px-6">
+        <div class="flex flex-col md:flex-row md:items-end justify-between mb-16 gap-6">
+            <div class="max-w-xl">
+                <span class="text-[#A06040] font-black uppercase tracking-[0.3em] text-xs mb-3 block">Rekomendasi Terbaik</span>
+                <h2 class="text-4xl font-black text-[#3C2A21] leading-tight">Menu Favorit <br><span class="italic text-[#A06040]">Valeria Coffee</span></h2>
             </div>
+            <a href="/menu" class="group flex items-center text-[#3C2A21] font-black uppercase tracking-widest text-sm hover:text-[#A06040] transition-colors">
+                Lihat Semua Menu 
+                <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 ml-2 group-hover:translate-x-2 transition-transform" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 8l4 4m0 0l-4 4m4-4H3" />
+                </svg>
+            </a>
+        </div>
 
-            <div class="bg-white p-8 rounded-3xl shadow-sm hover:shadow-2xl transition duration-500 group border border-stone-100">
-                <div class="w-16 h-16 bg-[#F5EBE0] rounded-2xl flex items-center justify-center mx-auto mb-6 group-hover:bg-[#A06040] transition-colors duration-300">
-                    <span class="text-3xl group-hover:scale-110 transition">🧑‍🍳</span>
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-10">
+            @foreach($featuredMenus as $menu)
+            <div class="group relative bg-stone-50 rounded-[2.5rem] p-5 border border-stone-100 hover:shadow-2xl transition-all duration-500 hover:-translate-y-2">
+                <div class="aspect-square rounded-[2rem] overflow-hidden mb-8 shadow-inner relative">
+                    @if($menu->foto)
+                        <img src="{{ asset($menu->foto) }}" ... > 
+                             alt="{{ $menu->nama_menu }}" 
+                             class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700">
+                    @else
+                        <div class="w-full h-full flex items-center justify-center bg-stone-200 text-5xl font-bold">☕</div>
+                    @endif
+                    <div class="absolute top-4 right-4 bg-white/90 backdrop-blur-sm px-4 py-2 rounded-2xl shadow-sm">
+                        <span class="text-[#A06040] font-black text-sm">Rp {{ number_format($menu->harga, 0, ',', '.') }}</span>
+                    </div>
                 </div>
-                <h4 class="font-bold text-lg mb-3 text-[#3C2A21]">Ahli Barista</h4>
-                <p class="text-stone-500 text-sm leading-relaxed">Diseduh oleh tangan profesional untuk hasil konsisten.</p>
-            </div>
 
-            <div class="bg-white p-8 rounded-3xl shadow-sm hover:shadow-2xl transition duration-500 group border border-stone-100">
-                <div class="w-16 h-16 bg-[#F5EBE0] rounded-2xl flex items-center justify-center mx-auto mb-6 group-hover:bg-[#A06040] transition-colors duration-300">
-                    <span class="text-3xl group-hover:scale-110 transition">🛒</span>
+                <div class="px-2 pb-4">
+                    <h3 class="text-xl font-black text-[#3C2A21] uppercase tracking-tight mb-2">{{ $menu->nama_menu }}</h3>
+                    <p class="text-stone-400 text-sm line-clamp-2 mb-8 leading-relaxed">
+                        {{ $menu->deskripsi ?? 'Nikmati sensasi rasa kopi autentik yang dibuat dengan sepenuh hati.' }}
+                    </p>
+                    
+                    <a href="/menu" class="flex items-center justify-center w-full py-4 bg-[#3C2A21] text-white rounded-2xl font-black uppercase tracking-widest text-xs group-hover:bg-[#A06040] shadow-lg shadow-black/5 transition-all active:scale-95">
+                        Pesan Sekarang
+                    </a>
                 </div>
-                <h4 class="font-bold text-lg mb-3 text-[#3C2A21]">Pesan Mudah</h4>
-                <p class="text-stone-500 text-sm leading-relaxed">Sistem keranjang yang cepat dan riwayat pesanan transparan.</p>
             </div>
-
-            <div class="bg-white p-8 rounded-3xl shadow-sm hover:shadow-2xl transition duration-500 group border border-stone-100">
-                <div class="w-16 h-16 bg-[#F5EBE0] rounded-2xl flex items-center justify-center mx-auto mb-6 group-hover:bg-[#A06040] transition-colors duration-300">
-                    <span class="text-3xl group-hover:scale-110 transition">✨</span>
-                </div>
-                <h4 class="font-bold text-lg mb-3 text-[#3C2A21]">Vibe Estetik</h4>
-                <p class="text-stone-500 text-sm leading-relaxed">Tempat yang nyaman untuk nugas ataupun sekadar bersantai.</p>
-            </div>
+            @endforeach
         </div>
     </div>
 </section>
-
 @endsection
