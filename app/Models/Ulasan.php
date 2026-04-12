@@ -12,6 +12,7 @@ class Ulasan extends Model
 
     // Menentukan kolom mana saja yang boleh diisi secara massal
     protected $fillable = [
+        'user_id',
         'nama', 
         'komentar', 
         'rating', 

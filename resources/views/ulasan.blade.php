@@ -17,8 +17,10 @@
         
         <div class="mb-4">
             <label class="block text-sm font-semibold text-gray-700 mb-1">Nama Lengkap</label>
-            <input type="text" name="nama" placeholder="Masukkan nama Anda"
-                   class="w-full border border-gray-300 p-3 rounded-lg focus:ring-2 focus:ring-[#A06040] outline-none" required>
+            <input type="text" name="nama" 
+                    value="{{ auth()->user()->name }}" 
+                    class="w-full border border-gray-300 p-3 rounded-lg focus:ring-2 focus:ring-[#A06040] outline-none bg-gray-50 cursor-not-allowed" 
+                    readonly required>
         </div>
 
         <div class="mb-4">

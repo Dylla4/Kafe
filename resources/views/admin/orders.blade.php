@@ -16,7 +16,7 @@
 </head>
 <body class="flex bg-[#FDFBF7] min-h-screen text-[#3C2A21]">
 
-    <div class="w-64 bg-coffee-admin text-[#FDFBF7] shrink-0 p-6 flex flex-col sticky top-0 h-screen shadow-2xl">
+    <div class="w-64 bg-coffee-admin text-[#FDFBF7] shrink-0 p-6 flex flex-col sticky top-0 h-screen shadow-2xl z-50">
         <h1 class="text-2xl font-black tracking-tighter text-accent-caramel uppercase text-center">Valeria<span class="text-white opacity-50">Admin</span></h1>
         <p class="text-[10px] opacity-50 mb-8 uppercase tracking-[0.3em] font-bold text-center">Coffee Control Center</p>
         
@@ -37,7 +37,8 @@
         </form>
     </div>
 
-    <div class="flex-1 p-10">
+    <div class="flex-1 p-10 overflow-x-hidden">
+        
         <div class="grid grid-cols-1 md:grid-cols-2 gap-8 mb-12">
             <div class="bg-white p-8 rounded-4xl shadow-sm border-b-8 border-accent-caramel">
                 <p class="text-[10px] text-stone-400 font-black uppercase tracking-[0.2em] mb-2">Orders Today</p>
@@ -62,22 +63,23 @@
                 </div>
             </div>
 
-            <div class="space-y-4 max-h-150 overflow-y-auto pr-2 custom-scrollbar">
+            <div class="space-y-4 max-h-[600px] overflow-y-auto pr-2 custom-scrollbar">
                 @forelse($orders as $order)
                     @php
-                        $status = $order->status ?? 'diproses';
+                        $status = strtolower($order->status);
                         $badgeColor = match ($status) {
                             'diproses', 'process' => 'bg-blue-50 text-blue-600 border-blue-100',
-                            'siap', 'ready' => 'bg-amber-50 text-amber-600 border-amber-100',
-                            'selesai', 'done', 'sukses' => 'bg-green-50 text-green-600 border-green-200',
-                            default => 'bg-stone-50 text-stone-600 border-stone-100',
+                            'siap', 'ready'       => 'bg-amber-50 text-amber-600 border-amber-100',
+                            'sukses', 'done', 'selesai' => 'bg-green-50 text-green-600 border-green-200',
+                            default               => 'bg-stone-50 text-stone-600 border-stone-100',
                         };
                     @endphp
-                    <div class="bg-white p-6 rounded-4xl shadow-sm border border-stone-100 flex flex-col md:flex-row justify-between items-center gap-4 hover:shadow-md transition-all">
+
+                    <div class="bg-white p-6 rounded-3xl shadow-sm border border-stone-100 flex flex-col md:flex-row justify-between items-center gap-4 hover:shadow-md transition-all">
                         <div class="flex-1">
                             <div class="flex items-center gap-3 mb-1">
                                 <span class="font-black text-xl text-[#3C2A21]">#{{ $order->id }}</span>
-                                <span class="px-3 py-0.5 rounded-full text-[8px] font-black uppercase border {{ $badgeColor }}">
+                                <span class="px-3 py-1 rounded-full text-[9px] font-black uppercase border {{ $badgeColor }}">
                                     {{ str_replace('_', ' ', $status) }}
                                 </span>
                             </div>
@@ -86,26 +88,30 @@
                                 {{ $order->metode_pembayaran }} • {{ $order->created_at->format('d M, H:i') }}
                             </p>
                         </div>
-                        <div class="px-6 border-x border-stone-50 text-center">
+
+                        <div class="px-10 border-x border-stone-100 text-center">
+                            <p class="text-[10px] text-stone-400 font-bold uppercase tracking-widest mb-1">Total Bayar</p>
                             <p class="font-black text-[#3C2A21] text-xl">Rp{{ number_format($order->total_harga) }}</p>
                         </div>
-                        <div class="flex items-center gap-2">
+
+                        <div class="flex items-center gap-3">
                             <form action="{{ route('admin.orders.status', $order->id) }}" method="POST">
                                 @csrf
-                                <select name="status" onchange="this.form.submit()" class="text-[9px] font-black uppercase tracking-widest border border-stone-200 rounded-xl px-4 py-2 bg-stone-50 outline-none cursor-pointer">
-                                    <option value="diproses" {{ $status === 'diproses' ? 'selected' : '' }}>Process</option>
-                                    <option value="siap" {{ $status === 'siap' ? 'selected' : '' }}>Ready</option>
-                                    <option value="selesai" {{ $status === 'selesai' ? 'selected' : '' }}>Done</option>
+                                <select name="status" onchange="this.form.submit()" 
+                                    class="bg-stone-50 border border-stone-200 text-[#3C2A21] text-[10px] font-bold uppercase tracking-wider rounded-xl px-4 py-2.5 focus:ring-2 focus:ring-accent-caramel outline-none cursor-pointer transition-all hover:bg-white">
+                                    <option value="diproses" {{ $status === 'diproses' || $status === 'process' ? 'selected' : '' }}>Process</option>
+                                    <option value="siap" {{ $status === 'siap' || $status === 'ready' ? 'selected' : '' }}>Ready</option>
+                                    <option value="sukses" {{ $status === 'sukses' || $status === 'done' ? 'selected' : '' }}>Done</option>
                                 </select>
                             </form>
-                            <form action="{{ route('admin.orders.destroy', $order->id) }}" method="POST" onsubmit="return confirm('Hapus?')">
-                                @csrf @method('DELETE')
-                                <button type="submit" class="p-2 bg-red-50 text-red-400 rounded-xl hover:bg-red-500 hover:text-white transition-all text-sm">🗑️</button>
-                            </form>
+                            
+                            
                         </div>
                     </div>
                 @empty
-                    <div class="bg-white p-10 rounded-4xl text-center text-stone-400 font-bold">Belum ada pesanan masuk.</div>
+                    <div class="text-center py-20 bg-white rounded-4xl border-2 border-dashed border-stone-100">
+                        <p class="text-stone-400 font-bold italic text-sm text-center">Belum ada pesanan hari ini.</p>
+                    </div>
                 @endforelse
             </div>
         </div>
