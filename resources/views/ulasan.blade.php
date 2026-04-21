@@ -12,43 +12,31 @@
 
     {{-- Form Utama --}}
     <form action="{{ route('ulasan.store') }}" method="POST" enctype="multipart/form-data"
-          class="mb-10 p-6 bg-white shadow-lg rounded-xl border border-gray-100">
+          class="mb-10 p-8 bg-white shadow-xl rounded-2xl border border-gray-100">
         @csrf
         
-        <div class="mb-4">
-            <label class="block text-sm font-semibold text-gray-700 mb-1">Nama Lengkap</label>
-            <input type="text" name="nama" 
-                    value="{{ auth()->user()->name }}" 
-                    class="w-full border border-gray-300 p-3 rounded-lg focus:ring-2 focus:ring-[#A06040] outline-none bg-gray-50 cursor-not-allowed" 
-                    readonly required>
-        </div>
+        {{-- ID Pesanan Tersembunyi - Sangat Penting! --}}
+        <input type="hidden" name="order_id" value="{{ $order->id }}">
 
-        <div class="mb-4">
-            <label class="block text-sm font-semibold text-gray-700 mb-1">Pesan Ulasan</label>
-            <textarea name="komentar" rows="3" placeholder="Bagaimana pengalaman Anda di Valeria Coffee?"
-                      class="w-full border border-gray-300 p-3 rounded-lg focus:ring-2 focus:ring-[#A06040] outline-none" required></textarea>
-        </div>
-
-        <div class="mb-4">
-            <label class="block text-sm font-semibold text-gray-700 mb-1">Upload Foto</label>
-            {{-- Tambahkan id unik dan pastikan name="foto" --}}
-            <input type="file" name="foto" id="foto-input-ulasan" accept="image/*"
-                   class="w-full border border-gray-300 p-2 rounded-lg text-sm file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-sm file:font-semibold file:bg-[#A06040] file:text-white hover:file:bg-[#804c33] cursor-pointer">
-            
-            {{-- Preview Foto --}}
-            <div id="preview-container-ulasan" class="mt-3 hidden">
-                <p class="text-xs text-gray-500 mb-1">Preview Gambar:</p>
-                <img id="preview-img-ulasan" class="w-32 h-32 object-cover rounded-lg border border-gray-200">
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
+            <div>
+                <label class="block text-sm font-semibold text-gray-700 mb-2">Nama Lengkap</label>
+                <input type="text" name="nama" 
+                        value="{{ auth()->user()->name }}" 
+                        class="w-full border border-gray-300 p-3 rounded-xl bg-gray-50 cursor-not-allowed outline-none" 
+                        readonly required>
             </div>
-            @error('foto')
-                <p class="text-red-500 text-xs mt-1">{{ $message }}</p>
-            @enderror
+            <div>
+                <label class="block text-sm font-semibold text-gray-700 mb-2">Nomor Pesanan</label>
+                <input type="text" value="#VAL-{{ str_pad($order->id, 4, '0', STR_PAD_LEFT) }}" 
+                        class="w-full border border-gray-300 p-3 rounded-xl bg-gray-50 cursor-not-allowed outline-none" 
+                        readonly>
+            </div>
         </div>
 
         <div class="mb-6">
             <label class="block text-sm font-semibold text-gray-700 mb-2">Rating Anda:</label>
             <div class="flex flex-row-reverse justify-end gap-2" id="star-rating">
-                {{-- Urutan input radio sangat penting untuk efek CSS flex-row-reverse --}}
                 <input type="radio" id="star5" name="rating" value="5" class="hidden" required>
                 <label for="star5" class="cursor-pointer text-4xl text-gray-300 hover:text-yellow-400 transition-colors">★</label>
                 
@@ -66,20 +54,44 @@
             </div>
         </div>
 
-        <button type="submit" class="w-full md:w-auto bg-[#A06040] text-white px-8 py-3 rounded-lg shadow-md hover:bg-[#804c33] transition font-bold">
+        <div class="mb-6">
+            <label class="block text-sm font-semibold text-gray-700 mb-2">Pesan Ulasan</label>
+            <textarea name="komentar" rows="4" placeholder="Bagaimana pengalaman Anda di Valeria Coffee?"
+                      class="w-full border border-gray-300 p-4 rounded-xl focus:ring-2 focus:ring-[#A06040] outline-none transition" required></textarea>
+        </div>
+
+        <div class="mb-8">
+            <label class="block text-sm font-semibold text-gray-700 mb-2">Upload Foto (Opsional)</label>
+            <input type="file" name="foto" id="foto-input-ulasan" accept="image/*"
+                   class="w-full border border-gray-300 p-2 rounded-xl text-sm file:mr-4 file:py-2 file:px-6 file:rounded-full file:border-0 file:text-sm file:font-bold file:bg-[#A06040] file:text-white hover:file:bg-[#804c33] cursor-pointer shadow-sm">
+            
+            <div id="preview-container-ulasan" class="mt-4 hidden">
+                <p class="text-xs text-gray-500 mb-2 font-medium">Preview Gambar:</p>
+                <img id="preview-img-ulasan" class="w-40 h-40 object-cover rounded-2xl border-2 border-dashed border-gray-200 p-1">
+            </div>
+            @error('foto')
+                <p class="text-red-500 text-xs mt-2 font-medium">{{ $message }}</p>
+            @enderror
+        </div>
+
+        <button type="submit" class="w-full bg-[#3C2A21] text-white py-4 rounded-2xl font-black uppercase tracking-widest hover:bg-black transition-all shadow-lg active:scale-95">
             Kirim Ulasan Sekarang
         </button>
     </form>
 
-    <hr class="mb-10 border-gray-200">
+    <div class="flex items-center gap-4 mb-10">
+        <div class="h-[1px] bg-gray-200 flex-1"></div>
+        <span class="text-gray-400 font-bold text-xs uppercase tracking-widest">Ulasan Lainnya</span>
+        <div class="h-[1px] bg-gray-200 flex-1"></div>
+    </div>
 
     {{-- Daftar Ulasan --}}
     <div class="space-y-8">
         @forelse($ulasans as $u)
-            <div class="p-6 bg-white border border-gray-100 rounded-xl shadow-sm hover:shadow-md transition">
+            <div class="p-6 bg-white border border-gray-100 rounded-2xl shadow-sm hover:shadow-md transition duration-300">
                 <div class="flex flex-col md:flex-row md:items-start justify-between gap-4 mb-4">
                     <div>
-                        <h4 class="font-bold text-gray-900 text-xl">{{ $u->nama }}</h4>
+                        <h4 class="font-black text-gray-900 text-xl tracking-tight">{{ $u->nama }}</h4>
                         <div class="flex text-2xl mt-1">
                             @for($i = 1; $i <= 5; $i++)
                                 <span class="{{ $i <= $u->rating ? 'text-yellow-400' : 'text-gray-200' }}">★</span>
@@ -87,39 +99,38 @@
                         </div>
                     </div>
                     <div class="text-left md:text-right">
-                        <p class="text-sm font-semibold text-gray-600">
+                        <p class="text-xs font-bold text-gray-500 uppercase tracking-wider">
                             {{ $u->created_at->translatedFormat('d F Y') }}
                         </p>
-                        <p class="text-xs text-gray-400 italic">
+                        <p class="text-[10px] text-gray-400 italic mt-1">
                             {{ $u->created_at->diffForHumans() }}
                         </p>
                     </div>
                 </div>
 
-                <div class="bg-gray-50 p-4 rounded-lg italic text-gray-700 border-l-4 border-[#A06040] mb-4">
+                <div class="bg-stone-50 p-5 rounded-2xl italic text-stone-700 border-l-4 border-[#A06040] mb-4 text-lg">
                     "{{ $u->komentar }}"
                 </div>
 
-                {{-- Logic Menampilkan Foto --}}
                 @if($u->foto)
                     <div class="mt-4">
-                        {{-- Menggunakan path storage yang benar --}}
                         <a href="{{ asset('storage/' . $u->foto) }}" target="_blank" class="inline-block group">
                             <img src="{{ asset('storage/' . $u->foto) }}" 
-                                 class="w-48 h-48 object-cover rounded-xl shadow-md group-hover:scale-105 transition cursor-zoom-in border border-gray-200"
+                                 class="w-56 h-56 object-cover rounded-2xl shadow-sm group-hover:scale-105 transition duration-300 cursor-zoom-in border border-gray-100"
                                  alt="Foto ulasan {{ $u->nama }}">
                         </a>
                     </div>
                 @endif
             </div>
         @empty
-            <div class="text-center py-10 text-gray-500 italic">Belum ada ulasan untuk Valeria Coffee.</div>
+            <div class="text-center py-16 bg-gray-50 rounded-3xl border-2 border-dashed border-gray-200">
+                <p class="text-gray-400 italic font-medium">Belum ada ulasan untuk Valeria Coffee.</p>
+            </div>
         @endforelse
     </div>
 </div>
 
 <style>
-    /* Bintang yang dipilih dan bintang sebelumnya akan berwarna kuning */
     #star-rating input:checked ~ label,
     #star-rating label:hover,
     #star-rating label:hover ~ label {
@@ -128,7 +139,6 @@
 </style>
 
 <script>
-    // Preview Foto dengan ID yang diperbarui
     const ulasanFotoInput = document.getElementById('foto-input-ulasan');
     const ulasanPreviewContainer = document.getElementById('preview-container-ulasan');
     const ulasanPreviewImg = document.getElementById('preview-img-ulasan');

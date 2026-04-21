@@ -34,6 +34,12 @@
                     @error('email') <p class="text-red-500 text-xs mt-1">{{ $message }}</p> @enderror
                 </div>
 
+                <div class="mb-4">
+                    <label class="block text-sm font-bold mb-2">Nomor WhatsApp (Gunakan awalan 62)</label>
+                   <input type="number" name="nomor_wa" value="{{ optional(auth()->user())->nomor_wa ?? old('nomor_wa') }}"
+                            placeholder="Contoh: 62812345678" class="w-full p-3 border rounded-xl">
+                </div>
+
                 <div>
                     <label class="block text-sm font-bold text-stone-700 mb-2">Password</label>
                     <input type="password" name="password" required 

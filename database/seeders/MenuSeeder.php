@@ -13,9 +13,15 @@ class MenuSeeder extends Seeder
 
         Menu::create([
             'nama_menu' => 'Americano',
-            'harga' => 19000,
-            'kategori' => 'Minuman',
-            'foto' => 'img/Americano.jpeg'
+            'harga'     => 19000,
+            'kategori'  => 'Minuman',
+            'foto'      => 'img/Americano.jpeg',
+            'deskripsi' => "Nikmati kesegaran Americano Coffee dengan cita rasa kopi hitam yang bold, smooth, dan autentik.\n\n" .
+                            "Komposisi:\n" .
+                            "- Double shot espresso\n" .
+                            "- Air mineral\n" .
+                            "- Es batu\n" .
+                            "- Gula cair (opsional)"
         ]);
 
         Menu::create([
@@ -23,6 +29,14 @@ class MenuSeeder extends Seeder
             'harga' => 25000,
             'kategori' => 'Minuman',
             'foto' => 'img/AlmoundCoffee.jpeg',
+            'deskripsi' => "Segarkan harimu dengan Almond Coffee, perpaduan sempurna antara espresso premium, susu creamy, dan sentuhan rasa almond yang lembut. Disajikan dingin dengan tampilan lapisan kopi dan susu yang cantik, minuman ini memberikan sensasi creamy, manis, dan aroma kopi yang menggoda. Topping whipped cream lembut dengan taburan potongan almond renyah membuat setiap tegukan terasa lebih spesial. Cocok untuk menemani waktu santai, bekerja, maupun berkumpul bersama teman.\n\n" .
+                            "Komposisi:\n" .
+                            "- Espresso premium\n" .
+                            "- Sirup almond\n" .
+                            "- Es batu\n" .
+                            "- Gula cair\n" .
+                            "- Whipped cream\n" .
+                            "- Potongan almond panggang",
             'is_best_seller' => true
         ]);
 

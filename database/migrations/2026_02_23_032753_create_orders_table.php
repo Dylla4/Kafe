@@ -13,15 +13,24 @@ return new class extends Migration
 {
     Schema::create('orders', function (Blueprint $table) {
         $table->id();
+        $table->foreignId('user_id')->constrained('users'); // Penting untuk sistem ulasan
         $table->string('nama_pemesan');
-        $table->enum('jenis_pesanan', ['dine_in', 'take_away']);
+        $table->json('item_pesanan');
+        $table->enum('jenis_pesanan', ['dine_in', 'take_away', 'delivery']); 
         $table->string('nomor_meja')->nullable();
         $table->text('alamat')->nullable();
-        $table->string('metode_pembayaran');
+        $table->string('metode_pembayaran'); // 'cash' atau 'qris'
         $table->text('catatan')->nullable();
         $table->decimal('total_bayar', 12, 2);
-        $table->string('status')->default('Diproses'); // Untuk jadwal antrean
-        $table->timestamps(); // Ini otomatis mencatat waktu pesan
+        
+        // Status sebaiknya punya opsi 'Selesai' untuk memicu tombol ulasan
+        $table->enum('status', ['Diproses', 'Siap', 'Sukses', 'Dibatalkan'])->default('diproses');
+        
+        // Tambahkan kolom untuk waktu booking
+        $table->date('tanggal_booking')->nullable();
+        $table->string('jam_booking')->nullable();
+        
+        $table->timestamps();
     });
 }
 

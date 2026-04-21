@@ -3,155 +3,143 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Struk Valeria Coffee - {{ $order->nomor_pesanan }}</title>
+    <title>Invoice #{{ $order->nomor_pesanan }} - Valeria Coffee</title>
     <script src="https://cdn.tailwindcss.com"></script>
-    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;700;800&family=Courier+Prime&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;600;700;800&family=Courier+Prime&display=swap" rel="stylesheet">
     <style>
         body { font-family: 'Plus Jakarta Sans', sans-serif; }
-        .font-mono-receipt { font-family: 'Courier Prime', monospace; }
-        
+        .font-receipt { font-family: 'Courier Prime', monospace; }
         @media print {
             .no-print { display: none !important; }
-            body { background: white !important; padding: 0 !important; margin: 0 !important; }
-            .receipt-card { 
-                box-shadow: none !important; 
-                border: none !important; 
-                margin: 0 !important; 
-                padding: 5mm !important;
-                width: 100% !important;
-                max-width: 80mm !important;
-            }
+            body { background-color: white; padding: 0; }
+            .receipt-card { box-shadow: none !important; border: 1px solid #eee !important; }
         }
     </style>
 </head>
+<body class="bg-stone-100 p-4 md:p-10 flex items-center justify-center min-h-screen">
 
-<body class="bg-stone-100 p-4 md:p-10 text-stone-800 flex justify-center items-start min-h-screen">
-
-    @php
-        $items = is_array($order->item_pesanan) ? $order->item_pesanan : json_decode($order->item_pesanan, true);
+    <div class="max-w-sm w-full bg-white shadow-2xl border-t-[12px] border-[#3C2A21] rounded-b-3xl overflow-hidden receipt-card">
         
-        // Menyusun teks rincian item untuk isi email
-        $itemDetails = "";
-        foreach($items as $item) {
-            $itemDetails .= "- " . ($item['nama_menu'] ?? 'Menu') . " (x" . ($item['quantity'] ?? 1) . ")%0D%0A";
-        }
-    @endphp
-
-    <div class="max-w-md w-full bg-white p-8 shadow-2xl rounded-3xl border-t-12 border-[#3C2A21] receipt-card">
-        
-        {{-- Header Struk --}}
-        <div class="text-center mb-8">
-            <h1 class="text-2xl font-black uppercase tracking-tighter text-[#3C2A21]">
-                <span class="text-[#A06040]">☕</span> Valeria Coffee
-            </h1>
-            <p class="text-[10px] text-stone-400 uppercase font-bold tracking-[0.2em] mt-1">Quality Coffee & Roastery</p>
-            <p class="text-[9px] text-stone-400 mt-2 italic">Jl. Kopi Nikmat No. 123, Indonesia</p>
+        {{-- Header Section --}}
+        <div class="p-6 text-center border-b border-dashed border-stone-200">
+            <h1 class="font-black text-2xl uppercase tracking-tighter text-[#3C2A21]">Valeria Coffee</h1>
+            <p class="text-[10px] text-[#A06040] font-bold uppercase tracking-[0.2em] mt-1">Quality Coffee & Roastery</p>
         </div>
 
-        {{-- Info Pesanan --}}
-        <div class="space-y-3 text-[11px] border-y border-stone-100 py-4 mb-6">
-            <div class="flex justify-between">
-                <span class="text-stone-400 font-bold uppercase tracking-tighter text-[9px]">No. Pesanan</span>
-                <span class="font-bold text-[#3C2A21]">{{ $order->nomor_pesanan }}</span>
+        <div class="p-6">
+            {{-- Box Informasi Utama (Dinamis Berdasarkan Jenis Pesanan) --}}
+            <div class="bg-stone-900 py-6 px-4 rounded-2xl mb-6 text-center shadow-lg text-white">
+                @if($order->jenis_pesanan === 'dine_in')
+                    <p class="text-[10px] text-stone-400 uppercase font-black tracking-widest mb-1 opacity-70">Nomor Meja</p>
+                    <span class="text-5xl font-black italic text-[#A06040]">{{ $order->nomor_meja ?? '-' }}</span>
+                @elseif($order->jenis_pesanan === 'delivery')
+                    <p class="text-[10px] text-stone-400 uppercase font-black tracking-widest mb-1 opacity-70">Alamat Pengiriman</p>
+                    <span class="text-sm font-bold leading-tight block px-2">{{ $order->alamat }}</span>
+                @else
+                    <p class="text-[10px] text-stone-400 uppercase font-black tracking-widest mb-1 opacity-70">Nomor Pesanan</p>
+                    <span class="text-3xl font-black italic text-[#A06040]">#{{ $order->nomor_pesanan }}</span>
+                @endif
             </div>
 
-            <div class="flex justify-between">
-                <span class="text-stone-400 font-bold uppercase tracking-tighter text-[9px]">Pelanggan</span>
-                <span class="font-bold text-[#3C2A21]">{{ $order->nama_pembeli }}</span>
-            </div>
-            
-            @if($order->nomor_meja)
-            <div class="flex justify-between">
-                <span class="text-stone-400 font-bold uppercase tracking-tighter text-[9px]">Nomor Meja</span>
-                <span class="font-bold text-[#A06040]">{{ $order->nomor_meja }}</span>
-            </div>
-            @else
-            <div class="flex justify-between">
-                <span class="text-stone-400 font-bold uppercase tracking-tighter text-[9px]">Layanan</span>
-                <span class="font-bold text-blue-600 uppercase text-[9px]">Take Away / Delivery</span>
-            </div>
-            @endif
+            {{-- Detail Informasi --}}
+            <div class="space-y-3 mb-6 border-b border-dashed border-stone-200 pb-4 text-stone-600">
+                <div class="flex justify-between text-xs">
+                    <span class="uppercase tracking-widest text-[9px] font-black text-stone-400">Pemesan</span>
+                    <span class="font-bold text-stone-900">{{ $order->nama_pemesan }}</span>
+                </div>
 
-            <div class="flex justify-between">
-                <span class="text-stone-400 font-bold uppercase tracking-tighter text-[9px]">Waktu</span>
-                <span class="font-medium text-stone-500">{{ $order->created_at->format('d/m/Y H:i') }}</span>
+                <div class="flex justify-between text-xs">
+                    <span class="uppercase tracking-widest text-[9px] font-black text-stone-400">Layanan</span>
+                    <span class="font-bold text-[#A06040] uppercase">
+                        {{ str_replace('_', ' ', $order->jenis_pesanan) }}
+                    </span>
+                </div>
+
+                <div class="flex justify-between text-xs">
+                    <span class="uppercase tracking-widest text-[9px] font-black text-stone-400">Waktu</span>
+                    <span class="font-bold text-stone-900">{{ $order->created_at->format('d/m/Y H:i') }} WIB</span>
+                </div>
             </div>
 
-            <div class="flex justify-between items-center">
-                <span class="text-stone-400 font-bold uppercase tracking-tighter text-[9px]">Metode</span>
-                <span class="px-2 py-0.5 bg-orange-50 text-[#A06040] rounded-md text-[9px] font-black uppercase tracking-widest border border-orange-100">
-                    {{ strtoupper($order->metode_pembayaran) }}
-                </span>
-            </div>
-        </div>
-
-        {{-- Tabel Menu --}}
-        <div class="font-mono-receipt text-xs mb-8">
-            <table class="w-full">
-                <thead class="border-b border-dashed border-stone-200">
-                    <tr class="text-stone-400 text-[10px] uppercase">
-                        <th class="text-left py-2 font-normal">Item</th>
-                        <th class="text-center py-2 font-normal">Qty</th>
-                        <th class="text-right py-2 font-normal">Subtotal</th>
-                    </tr>
-                </thead>
-                <tbody class="divide-y divide-dashed divide-stone-100">
+            {{-- Rincian Menu (Font Mono ala Struk) --}}
+            <div class="mb-6 font-receipt">
+                <p class="text-[10px] font-black text-stone-400 uppercase tracking-widest mb-3 font-sans">Rincian Item</p>
+                @php 
+                    $items = is_array($order->item_pesanan) ? $order->item_pesanan : json_decode($order->item_pesanan, true);
+                    $waItemString = "";
+                @endphp
+                
+                <div class="space-y-3">
                     @foreach($items as $item)
-                    <tr>
-                        <td class="py-3 pr-2 leading-tight">
-                            <span class="block font-bold text-stone-700 uppercase tracking-tighter">{{ $item['nama_menu'] }}</span>
-                            <span class="text-[10px] text-stone-400">@ Rp{{ number_format($item['harga'], 0, ',', '.') }}</span>
-                        </td>
-                        <td class="text-center text-stone-500 font-bold font-sans">x{{ $item['quantity'] }}</td>
-                        <td class="text-right font-bold text-stone-700 tracking-tighter">Rp{{ number_format($item['harga'] * $item['quantity'], 0, ',', '.') }}</td>
-                    </tr>
+                        @php 
+                            $nama = $item['nama_menu'] ?? $item['name'];
+                            $qty = $item['quantity'] ?? $item['qty'];
+                            $harga = $item['harga'] ?? $item['price'];
+                            $waItemString .= "• " . $nama . " (x" . $qty . ")\n"; 
+                        @endphp
+                        <div class="flex justify-between items-start text-xs">
+                            <div class="flex-1">
+                                <span class="font-bold text-stone-800 uppercase">{{ $nama }}</span>
+                                <span class="text-stone-400 text-[10px] block">{{ $qty }}x @ {{ number_format($harga, 0, ',', '.') }}</span>
+                            </div>
+                            <span class="font-bold text-stone-900 italic">{{ number_format($harga * $qty, 0, ',', '.') }}</span>
+                        </div>
                     @endforeach
-                </tbody>
-            </table>
-        </div>
+                </div>
+            </div>
 
-        {{-- Total & Pembayaran --}}
-        <div class="border-t-2 border-dashed border-stone-200 pt-6 space-y-2">
-            <div class="flex justify-between text-xs text-stone-500 font-medium">
-                <span>Total Item</span>
-                <span class="font-bold text-stone-700">{{ collect($items)->sum('quantity') }}</span>
+            {{-- Total Akhir --}}
+            <div class="border-t-2 border-[#3C2A21] pt-4 mb-8">
+                <div class="flex justify-between items-center">
+                    <span class="font-black text-[10px] uppercase tracking-widest text-stone-400">Total Bayar</span>
+                    <span class="font-black text-2xl text-[#3C2A21]">Rp{{ number_format($order->total_bayar ?? $order->total_harga, 0, ',', '.') }}</span>
+                </div>
             </div>
-            <div class="flex justify-between items-center pt-3 border-t border-stone-50">
-                <span class="text-[10px] font-black uppercase tracking-[0.2em] text-stone-400">Total Akhir</span>
-                <span class="font-black text-2xl text-[#3C2A21] tracking-tighter">
-                    Rp{{ number_format($order->total_harga, 0, ',', '.') }}
-                </span>
-            </div>
-        </div>
 
-        {{-- Footer Struk --}}
-        <div class="mt-12 text-center">
-            <div class="inline-block px-4 py-1 border-2 border-dashed border-stone-100 rounded-full mb-4">
-                <p class="text-[9px] font-black text-stone-300 uppercase tracking-[0.3em]">Terima Kasih</p>
-            </div>
-            <p class="text-[10px] text-stone-400 italic">"Momen hangat di setiap pertemuan"</p>
-            
-            <div class="mt-6 opacity-10 font-black text-4xl text-stone-900 tracking-tighter uppercase">
-                {{ $order->nomor_pesanan }}
-            </div>
-        </div>
+            {{-- Tombol Aksi (Tidak Diprint) --}}
+            <div class="space-y-3 no-print">
+                @php
+                    $adminPhone = "6282115937845"; // Ganti dengan nomor WhatsApp Kafe
+                    
+                    $waHeader = ($order->jenis_pesanan === 'dine_in') ? "*E-TIKET RESERVASI*" : "*STRUK PESANAN ONLINE*";
+                    $waLayananInfo = ($order->jenis_pesanan === 'dine_in') ? "Meja: " . $order->nomor_meja : ($order->jenis_pesanan === 'delivery' ? "Alamat: " . $order->alamat : "Layanan: Take Away");
 
-        {{-- Navigasi Tombol Opsi (Tidak Diprint) --}}
-        <div class="mt-10 space-y-3 no-print"> 
-            <button onclick="window.print()" class="flex items-center justify-center gap-2 bg-[#3C2A21] hover:bg-[#2a1d17] text-white px-6 py-4 rounded-xl font-bold w-full transition-all active:scale-[0.95] shadow-lg">
-                <span>🖨️</span> Cetak Struk Fisik
-            </button>
-            
-            {{-- Perubahan mailto: --}}
-            <a href="mailto:?subject=Struk Belanja Valeria Coffee - {{ $order->nomor_pesanan }}&body=Halo {{ $order->nama_pembeli }},%0D%0A%0D%0ABerikut adalah rincian pesanan Anda di Valeria Coffee:%0D%0A%0D%0ANomor Pesanan: {{ $order->nomor_pesanan }}%0D%0ATotal Bayar: Rp{{ number_format($order->total_harga, 0, ',', '.') }}%0D%0A%0D%0ARincian Item:%0D%0A{!! $itemDetails !!}%0D%0ATerima kasih atas kunjungan Anda!" 
-               class="flex items-center justify-center gap-2 bg-blue-600 hover:bg-blue-700 text-white px-6 py-4 rounded-xl font-bold w-full transition-all active:scale-[0.95] shadow-lg">
-                <span>📧</span> Kirim Struk ke Email
-            </a>
-            
-            <a href="{{ url('/') }}" class="flex items-center justify-center bg-[#A06040] hover:bg-[#8d5438] text-white px-6 py-4 rounded-xl font-bold w-full text-center transition-all active:scale-[0.95] shadow-lg">
-                Kembali ke Menu
-            </a>
+                    $waMessage = $waHeader . " - VALERIA COFFEE\n";
+                    $waMessage .= "----------------------------------\n";
+                    $waMessage .= "No: #" . $order->nomor_pesanan . "\n";
+                    $waMessage .= "Nama: " . $order->nama_pemesan . "\n";
+                    $waMessage .= $waLayananInfo . "\n";
+                    $waMessage .= "----------------------------------\n";
+                    $waMessage .= "*PESANAN:*\n" . $waItemString;
+                    $waMessage .= "\n*TOTAL: Rp " . number_format($order->total_bayar ?? $order->total_harga, 0, ',', '.') . "*\n";
+                    $waMessage .= "----------------------------------\n";
+                    $waMessage .= "Terima kasih telah memesan!";
+
+                    $waUrl = "https://wa.me/" . $adminPhone . "?text=" . urlencode($waMessage);
+                @endphp
+
+                <button onclick="window.print()" class="w-full bg-stone-900 text-white py-4 rounded-2xl text-xs font-black uppercase tracking-widest hover:bg-black transition-all active:scale-95 shadow-lg">
+                    Cetak Struk Fisik
+                </button>
+
+                <a href="{{ $waUrl }}" target="_blank" class="w-full bg-[#25D366] text-white py-4 rounded-2xl text-xs font-black uppercase tracking-widest flex items-center justify-center hover:bg-[#20ba59] transition-all active:scale-95 shadow-lg">
+                    Konfirmasi WhatsApp
+                </a>
+
+                <a href="{{ url('/') }}" class="block text-center text-[10px] font-bold text-stone-400 uppercase tracking-widest hover:text-[#A06040] transition-colors pt-2">
+                    ← Kembali ke Beranda
+                </a>
+            </div>
+
+            {{-- Footer Note --}}
+            <div class="mt-8 text-center border-t border-stone-50 pt-4">
+                <p class="text-[9px] text-stone-400 italic leading-relaxed">
+                    "Momen hangat di setiap pertemuan"<br>
+                    Simpan struk ini sebagai bukti pembayaran sah.
+                </p>
+            </div>
         </div>
     </div>
+
 </body>
 </html>

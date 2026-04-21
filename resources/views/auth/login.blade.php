@@ -20,6 +20,12 @@
                     <input type="email" name="email" required class="w-full px-4 py-3 rounded-xl border border-stone-200 outline-none focus:ring-2 focus:ring-[#3C2A21]">
                 </div>
 
+                <div class="mb-4">
+                    <label class="block text-sm font-bold mb-2">Nomor WhatsApp (Gunakan awalan 62)</label>
+                    <input type="number" name="nomor_wa" value="{{ optional(auth()->user())->nomor_wa }}" 
+                            placeholder="Contoh: 62812345678" class="w-full p-3 border rounded-xl">
+                </div>
+
                 <div>
                     <label class="block text-sm font-bold text-stone-700 mb-2">Password</label>
                     <input type="password" name="password" required class="w-full px-4 py-3 rounded-xl border border-stone-200 outline-none focus:ring-2 focus:ring-[#3C2A21]">

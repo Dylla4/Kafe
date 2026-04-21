@@ -4,17 +4,26 @@ namespace App\Http\Controllers;
 
 use App\Models\Menu;
 use App\Models\Order;
+use App\Models\Ulasan;
+use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\DB;
 
 class OrderController extends Controller
 {
+    /**
+     * Menampilkan daftar menu
+     */
     public function menu()
     {
         $menus = Menu::all();
         return view('menu', compact('menus'));
     }
 
+    /**
+     * Menampilkan halaman keranjang
+     */
     public function showCart()
     {
         $cartItems = session()->get('cart', []);
@@ -23,135 +32,156 @@ class OrderController extends Controller
             return (int)$item['harga'] * (int)$item['quantity'];
         });
 
-        // Logika Nomor Meja Otomatis (Hanya untuk Dine In)
         $semuaMeja = ['Meja 01', 'Meja 02', 'Meja 03', 'Meja 04', 'Meja 05', 'Meja 06', 'Meja 07', 'Meja 08', 'Meja 09', 'Meja 10'];
-        $mejaTerpakai = Order::whereIn('status', ['pending', 'diproses', 'dikemas', 'sukses'])
+        $mejaTerpakai = Order::whereIn('status', ['pending', 'diproses', 'siap', 'sukses'])
                              ->whereNotNull('nomor_meja')
                              ->pluck('nomor_meja')
                              ->toArray();
-                             
+                                     
         $mejaKosong = array_diff($semuaMeja, $mejaTerpakai);
         $mejaOtomatis = !empty($mejaKosong) ? reset($mejaKosong) : 'Penuh';
 
         return view('cart', compact('cartItems', 'total_harga', 'mejaOtomatis'));
     }
 
+    /**
+     * Menyimpan pesanan baru (Checkout)
+     */
     public function simpan(Request $request)
     {
-        // 1. Validasi Input
+        $jenis = $request->jenis_pesanan;
+        
         $request->validate([
             'nama_pemesan'      => 'required|string|max:255',
+            'nomor_wa'          => 'required|numeric|min:10',
             'metode_pembayaran' => 'required',
-            'jenis_pesanan'     => 'required', // dine_in, delivery, atau take_away
+            'jenis_pesanan'     => 'required|in:dine_in,delivery,take_away',
             'tanggal_booking'   => 'required|date|after_or_equal:today',
             'jam_booking'       => 'required',
         ]);
 
-        // 2. Validasi Jam Operasional (09:00 - 22:00)
         if ($request->jam_booking < "09:00" || $request->jam_booking > "22:00") {
             return response()->json(['success' => false, 'error' => 'Jam operasional 09:00 - 22:00'], 422);
         }
 
-        // 3. Validasi Keranjang
         $cart = session()->get('cart', []);
         if (empty($cart)) {
             return response()->json(['success' => false, 'error' => 'Keranjang Anda masih kosong!'], 400);
         }
 
-        // 4. Hitung Total Harga
         $total_harga = collect($cart)->sum(function($item) {
             return (int)$item['harga'] * (int)$item['quantity'];
         });
 
-        // 5. Logika Nomor Pesanan (Antrean Baru)
-        // Format: INV-Tgl-Urutan (Contoh: INV-20260411-001)
         $jumlahPesananHariIni = Order::whereDate('created_at', today())->count() + 1;
         $nomorPesanan = 'INV-' . date('Ymd') . '-' . str_pad($jumlahPesananHariIni, 3, '0', STR_PAD_LEFT);
 
-        // 6. Logika Penentuan Nomor Meja
-        $nomorMeja = null; 
-        if ($request->jenis_pesanan === 'dine_in') {
-            $nomorMeja = $request->nomor_meja;
-        }
-
         try {
-            // 7. Simpan Pesanan ke Database
+            $user = Auth::user();
+
+            if ($request->nomor_wa && Auth::user()->nomor_wa !== $request->nomor_wa) {
+                User::where('id', Auth::id())->update(['nomor_wa' => $request->nomor_wa]);
+            }
+
             $newOrder = Order::create([
-                'user_id'           => Auth::id(), 
-                'nomor_pesanan'     => $nomorPesanan, // Simpan ke kolom baru
-                'nama_pembeli'      => $request->nama_pemesan,
-                'nomor_meja'        => $nomorMeja,    // Akan null jika bukan dine_in
-                'alamat'            => $request->alamat,
+                'user_id'           => $user->id, 
+                'nomor_pesanan'     => $nomorPesanan,
+                'nama_pemesan'      => $request->nama_pemesan,
+                'email_pembeli'     => $user->email,
+                'nomor_wa'          => $request->nomor_wa, 
+                'jenis_pesanan'     => $jenis,
+                'nomor_meja'        => ($request->jenis_pesanan === 'dine_in') ? $request->nomor_meja : null,
+                'alamat'            => ($request->jenis_pesanan === 'delivery') ? $request->alamat : null,
                 'item_pesanan'      => $cart, 
-                'total_harga'       => $total_harga,
+                'total_bayar'       => $total_harga,
                 'metode_pembayaran' => $request->metode_pembayaran,
-                'status'            => 'pending',
+                'status'            => 'diproses',
                 'tanggal_booking'   => $request->tanggal_booking, 
                 'jam_booking'       => $request->jam_booking,     
             ]);
 
             session()->forget('cart');
-
-            return response()->json([
-                'success' => true,
-                'order_id' => $newOrder->id 
-            ]);
+            return response()->json(['success' => true, 'order_id' => $newOrder->id]);
 
         } catch (\Exception $e) {
-            return response()->json([
-                'success' => false, 
-                'error' => 'Gagal menyimpan pesanan: ' . $e->getMessage()
-            ], 500);
+            return response()->json(['success' => false, 'error' => 'Gagal: ' . $e->getMessage()], 500);
         }
     }
+
+    /**
+ * Mengurangi jumlah item di keranjang
+ */
+public function decrease($id)
+{
+    $cart = session()->get('cart', []);
+
+    if(isset($cart[$id])) {
+        if($cart[$id]['quantity'] > 1) {
+            $cart[$id]['quantity']--;
+        } else {
+            unset($cart[$id]); // Jika tinggal 1, maka hapus item
+        }
+        session()->put('cart', $cart);
+        return response()->json(['success' => true]);
+    }
+
+    return response()->json(['success' => false, 'error' => 'Item tidak ditemukan'], 404);
+}
+
+/**
+ * Menghapus item sepenuhnya dari keranjang
+ */
+public function remove($id)
+{
+    $cart = session()->get('cart', []);
+
+    if(isset($cart[$id])) {
+        unset($cart[$id]);
+        session()->put('cart', $cart);
+        return response()->json(['success' => true]);
+    }
+
+    return response()->json(['success' => false, 'error' => 'Gagal menghapus item'], 404);
+}
+
+    public function history()
+    {
+        $orders = Order::where('user_id', Auth::id())->with('review')->latest()->get();
+        return view('history', compact('orders'));
+    }
+
+    /**
+     * Konfirmasi Lunas & Redirect ke Invoice Tunggal
+     */
+    public function konfirmasi($id)
+    {
+        $order = Order::findOrFail($id);
+        $order->update(['status' => 'sukses']); 
+        return redirect()->route('order.invoice', $order->id);
+    }
+
+    /**
+     * Tampilan Invoice Tunggal (Dine-in, Delivery, Take-away)
+     */
+    public function printInvoice($id)
+    {
+        $order = Order::findOrFail($id);
+        $items = is_array($order->item_pesanan) ? $order->item_pesanan : json_decode((string)$order->item_pesanan, true);
+        
+        return view('invoice', compact('order', 'items'));
+    }
+
+    // Alias agar rute lama tidak error, semua diarahkan ke printInvoice
+    public function receipt($id) { return $this->printInvoice($id); }
+    public function reservation($id) { return $this->printInvoice($id); }
 
     public function showPayment($id)
     {
         $order = Order::findOrFail($id);
-        
-        if (in_array($order->status, ['sukses', 'lunas', 'diproses'])) {
-            return redirect()->route('order.history')->with('info', 'Pesanan ini sudah dalam tahap pemrosesan.');
+        if (in_array($order->status, ['sukses', 'lunas'])) {
+            return redirect()->route('order.history')->with('info', 'Pesanan sudah selesai.');
         }
-
         return view('payment', compact('order'));
-    }
-
-    public function confirmPayment($id)
-    {
-        try {
-            $order = Order::findOrFail($id);
-            $order->update(['status' => 'sukses']); 
-
-            return response()->json([
-                'success' => true,
-                'message' => 'Pembayaran berhasil dikonfirmasi!',
-                'order_id' => $id 
-            ]);
-        } catch (\Exception $e) {
-            return response()->json([
-                'success' => false, 
-                'message' => 'Gagal konfirmasi: ' . $e->getMessage()
-            ], 500);
-        }
-    }
-
-    public function sendEmail($id)
-    {
-        try {
-            $order = Order::findOrFail($id);
-            return redirect()->back()->with('success', 'Fitur email sedang dalam pengembangan, tetapi data pesanan ' . $order->nomor_pesanan . ' ditemukan.');
-        } catch (\Exception $e) {
-            return redirect()->back()->with('error', 'Gagal menemukan pesanan: ' . $e->getMessage());
-        }
-    }
-
-    public function history()
-    {
-        $orders = Order::where('user_id', Auth::id())
-                       ->orderBy('created_at', 'desc')
-                       ->get();
-
-        return view('history', compact('orders'));
     }
 
     public function addToCart(Request $request, $id)
@@ -171,71 +201,16 @@ class OrderController extends Controller
         }
 
         session()->put('cart', $cart);
-
-        return response()->json([
-            'success' => true,
-            'cart_count' => count($cart)
-        ]);
+        return response()->json(['success' => true, 'cart_count' => count($cart)]);
     }
 
-    public function showReceipt($id)
-{
-    // Ambil data pesanan berdasarkan ID
-    $order = Order::findOrFail($id);
-
-    // Tampilkan view struk yang sudah Anda buat sebelumnya
-    return view('orders.receipt', compact('order'));
-}
-
-public function showReservation($id)
-{
-    $order = Order::findOrFail($id);
-    
-    // Pastikan memanggil 'reservation_proof' saja jika filenya di resources/views/
-    return view('reservation_proof', compact('order'));
-}
-
-public function konfirmasi($id)
-{
-    $order = Order::findOrFail($id);
-    $order->update(['status' => 'sukses']); 
-
-    // Jika Dine In (ada nomor meja) -> ke Bukti Reservasi
-    if ($order->nomor_meja) {
-        return redirect()->route('order.reservation', $order->id);
-    }
-
-    // Jika Take Away / Delivery (tidak ada nomor meja) -> ke Receipt
-    return redirect()->route('order.receipt', $order->id);
-}
-
-// Di dalam OrderController.php
-public function receipt($id)
-{
-    $order = Order::findOrFail($id);
-    
-    // PERBAIKAN: Langsung panggil 'receipt' karena filenya ada di views/receipt.blade.php
-    return view('receipt', compact('order'));
-}
-    public function printInvoice($id)
+    public function updateStatus(Request $request, $id)
     {
+        $request->validate(['status' => 'required|in:pending,diproses,siap,sukses,batal']);
         $order = Order::findOrFail($id);
-        
-        $items = is_array($order->item_pesanan) 
-                 ? $order->item_pesanan 
-                 : json_decode((string)$order->item_pesanan, true);
-        
-        return view('invoice', compact('order', 'items'));
+        $order->status = strtolower($request->status); 
+        $order->save();
+
+        return redirect()->back()->with('success', 'Status pesanan #' . $order->id . ' diperbarui!');
     }
-
-public function updateStatus(Request $request, $id)
-{
-    $order = Order::findOrFail($id);
-
-    // Ubah ke strtolower agar sinkron dengan database "sukses"
-    $order->status = strtolower($request->status); 
-    $order->save();
-
-    return redirect()->back()->with('success', 'Status diperbarui!');
-}
 }

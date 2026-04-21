@@ -42,20 +42,21 @@ public function index()
     return view('admin.orders', compact('orders', 'ordersToday', 'hourlyData', 'monthlyData'));
 }
 
-    public function nextStatus($id)
-    {
-        $order = Order::findOrFail($id);
-        
-        // Logika sederhana untuk mengubah status
-        if ($order->status == 'menunggu_pembayaran') {
-            $order->status = 'diproses';
-        } elseif ($order->status == 'diproses') {
-            $order->status = 'selesai';
-        }
-        
-        $order->save();
-        return back()->with('success', 'Status pesanan berhasil diperbarui!');
-    }
+    // Ganti fungsi nextStatus menjadi ini:
+public function updateStatus(Request $request, $id)
+{
+    $order = Order::findOrFail($id);
+    
+    // Validasi agar status yang masuk sesuai dengan pilihan yang ada
+    $request->validate([
+        'status' => 'required|in:diproses,siap,sukses'
+    ]);
+
+    $order->status = $request->status;
+    $order->save();
+
+    return back()->with('success', 'Status pesanan #' . $id . ' berhasil diubah ke ' . $request->status);
+}
 
     public function destroy($id)
     {

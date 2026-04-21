@@ -7,8 +7,8 @@
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;600;700;800&display=swap" rel="stylesheet">
     
-    {{-- Refresh otomatis jika status masih pending untuk deteksi QRIS --}}
-    @if(in_array(strtolower($order->status), ['pending', 'waiting']))
+    {{-- Refresh otomatis jika status masih pending/diproses untuk cek update admin --}}
+    @if(in_array(strtolower($order->status), ['pending', 'waiting', 'diproses']))
         <meta http-equiv="refresh" content="15">
     @endif
 
@@ -35,7 +35,8 @@
         <div class="flex justify-between items-end mb-8 pb-6 border-b border-stone-100">
             <div>
                 <p class="text-[10px] text-stone-400 uppercase font-black tracking-widest mb-1">Total Tagihan</p>
-                <p class="text-3xl font-black text-orange-700">Rp {{ number_format($order->total_harga, 0, ',', '.') }}</p>
+                {{-- Menggunakan total_bayar agar sinkron dengan Controller --}}
+                <p class="text-3xl font-black text-orange-700">Rp {{ number_format($order->total_bayar ?? $order->total_harga, 0, ',', '.') }}</p>
             </div>
             <div class="text-right">
                 <p class="text-[10px] text-stone-400 uppercase font-black tracking-widest mb-1">ID Pesanan</p>
@@ -45,8 +46,8 @@
 
         @php
             $method = strtolower(trim($order->metode_pembayaran ?? ''));
-            // Status yang dianggap sudah bayar/selesai
-            $isSuccess = in_array(strtolower($order->status), ['sukses', 'diproses', 'selesai', 'lunas']);
+            // PERBAIKAN: 'diproses' dihapus agar QRIS tetap muncul sebelum benar-benar 'sukses'
+            $isSuccess = in_array(strtolower($order->status), ['sukses', 'selesai', 'lunas']);
         @endphp
 
         <div class="min-h-62.5 flex flex-col justify-center">
@@ -64,8 +65,9 @@
                 <div class="text-center">
                     <p class="text-[10px] font-black text-stone-400 mb-4 uppercase tracking-[0.2em]">Scan QRIS Resmi Kami</p>
                     <div class="relative group inline-block">
-                        <div class="absolute -inset-1 bg-linear-to-r from-orange-600 to-stone-400 rounded-3xl blur opacity-20 transition duration-1000"></div>
+                        <div class="absolute -inset-1 bg-gradient-to-r from-orange-600 to-stone-400 rounded-3xl blur opacity-20 transition duration-1000"></div>
                         <div class="relative bg-white p-3 rounded-3xl border-2 border-dashed border-stone-200">
+                            {{-- Pastikan file ini ada di public/img/qris-bank.jpeg --}}
                             <img src="{{ asset('img/qris-bank.jpeg') }}" alt="QRIS" class="w-56 h-auto mx-auto rounded-xl">
                         </div>
                     </div>
@@ -83,7 +85,7 @@
                         <div class="text-5xl mb-4">💵</div>
                         <p class="text-xs text-stone-600 font-medium leading-relaxed">
                             Silakan lakukan pembayaran langsung di kasir senilai:<br>
-                            <span class="text-xl font-black text-stone-800">Rp {{ number_format($order->total_harga, 0, ',', '.') }}</span>
+                            <span class="text-xl font-black text-stone-800">Rp {{ number_format($order->total_bayar ?? $order->total_harga, 0, ',', '.') }}</span>
                         </p>
                     </div>
                 </div>

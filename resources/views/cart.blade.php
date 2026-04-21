@@ -49,7 +49,6 @@
                             @foreach($cartItems as $id => $details)
                                 @php $total += $details['harga'] * $details['quantity']; @endphp
                                 <tr class="group">
-                                    {{-- Kolom Menu --}}
                                     <td class="py-5">
                                         <div class="flex items-center gap-4">
                                             <div class="w-16 h-16 shrink-0 bg-stone-100 rounded-2xl overflow-hidden border border-stone-100 group-hover:scale-105 transition-transform">
@@ -65,32 +64,16 @@
                                             </div>
                                         </div>
                                     </td>
-
-                                    {{-- Kolom Harga (Desktop) --}}
                                     <td class="hidden md:table-cell text-stone-500 font-medium text-sm">
                                         Rp {{ number_format($details['harga'], 0, ',', '.') }}
                                     </td>
-
-                                    {{-- Kolom Qty dengan Tombol --}}
                                     <td class="py-5 text-center">
                                         <div class="inline-flex items-center gap-3 bg-stone-50 p-2 rounded-2xl border border-stone-100">
-                                            <button type="button" 
-                                                    onclick="updateQuantity('{{ $id }}', 'decrease')" 
-                                                    class="w-8 h-8 flex items-center justify-center rounded-xl bg-white border border-stone-200 text-stone-600 hover:bg-orange-50 hover:text-orange-700 hover:border-orange-200 transition-all shadow-sm active:scale-90 font-bold">
-                                                -
-                                            </button>
-                                            <span class="font-black text-stone-800 text-sm min-w-5">
-                                                {{ $details['quantity'] }}
-                                            </span>
-                                            <button type="button" 
-                                                    onclick="updateQuantity('{{ $id }}', 'increase')" 
-                                                    class="w-8 h-8 flex items-center justify-center rounded-xl bg-stone-900 text-white hover:bg-orange-700 transition-all shadow-md active:scale-90 font-bold">
-                                                +
-                                            </button>
+                                            <button type="button" onclick="updateQuantity('{{ $id }}', 'decrease')" class="w-8 h-8 flex items-center justify-center rounded-xl bg-white border border-stone-200 text-stone-600 hover:bg-orange-50 hover:text-orange-700 transition-all shadow-sm active:scale-90 font-bold">-</button>
+                                            <span class="font-black text-stone-800 text-sm min-w-5">{{ $details['quantity'] }}</span>
+                                            <button type="button" onclick="updateQuantity('{{ $id }}', 'increase')" class="w-8 h-8 flex items-center justify-center rounded-xl bg-stone-900 text-white hover:bg-orange-700 transition-all shadow-md active:scale-90 font-bold">+</button>
                                         </div>
                                     </td>
-
-                                    {{-- Kolom Subtotal --}}
                                     <td class="text-right font-bold text-stone-900">
                                         Rp {{ number_format($details['harga'] * $details['quantity'], 0, ',', '.') }}
                                     </td>
@@ -125,7 +108,7 @@
                         </div>
 
                         <div>
-                            <label class="block text-[10px] font-black text-orange-900 mb-2 uppercase tracking-widest">Jam Booking</label>
+                            <label id="label-jam" class="block text-[10px] font-black text-orange-900 mb-2 uppercase tracking-widest">Jam Booking</label>
                             <select name="jam_booking" id="jam_booking" class="w-full p-4 border border-stone-200 rounded-2xl text-sm bg-white shadow-sm outline-none focus:ring-2 focus:ring-orange-500 transition-all font-bold cursor-pointer" required>
                                 <option value="" disabled selected>Pilih Jam</option>
                                 @for ($i = 9; $i <= 22; $i++)
@@ -141,7 +124,7 @@
 
                         <div>
                             <label class="block text-[10px] font-black text-orange-900 mb-2 uppercase tracking-widest">Metode Layanan</label>
-                            <select name="jenis_pesanan" id="metode_layanan" onchange="toggleLayanan()" class="w-full p-4 border border-stone-200 rounded-2xl text-sm bg-white shadow-sm outline-none focus:ring-2 focus:ring-orange-500 font-bold cursor-pointer">
+                            <select name="jenis_pesanan" id="jenis_pesanan" onchange="toggleLayanan()" class="w-full p-4 border border-stone-200 rounded-2xl text-sm bg-white shadow-sm outline-none focus:ring-2 focus:ring-orange-500 font-bold cursor-pointer">
                                 <option value="dine_in">🍽️ Makan di Tempat</option>
                                 <option value="delivery">🚚 Delivery</option>
                                 <option value="take_away">🥡 Take Away (Bawa Pulang)</option>
@@ -166,10 +149,15 @@
 
                     <div>
                         <label class="block text-[10px] font-black text-orange-900 mb-2 uppercase tracking-widest">Metode Pembayaran</label>
-                        <select name="metode_pembayaran" class="w-full p-4 border border-stone-200 rounded-2xl text-sm bg-white shadow-sm font-black text-stone-700">
+                        <select name="metode_pembayaran" id="metode_pembayaran" class="w-full p-4 border border-stone-200 rounded-2xl text-sm bg-white shadow-sm font-black text-stone-700">
                             <option value="cash">💵 Bayar Langsung di Kasir</option>
                             <option value="qris">📱 QRIS</option>
                         </select>
+                    </div>
+
+                    <div>
+                        <label class="block text-[10px] font-black text-orange-900 mb-2 uppercase tracking-widest">Konfirmasi WhatsApp (Otomatis)</label>
+                        <input type="number" name="nomor_wa" value="{{ auth()->user()->nomor_wa }}" class="w-full p-4 rounded-2xl border border-stone-200 bg-white text-sm font-bold shadow-sm outline-none focus:ring-2 focus:ring-orange-500" placeholder="Contoh: 62812345678" required>
                     </div>
 
                     <div class="pt-6 grid grid-cols-1 gap-4">
@@ -186,53 +174,72 @@
             <div class="text-center py-32 px-8">
                 <div class="inline-flex items-center justify-center w-24 h-24 bg-stone-50 rounded-full text-5xl mb-6 shadow-inner">☕</div>
                 <h2 class="text-2xl font-black text-stone-800 uppercase tracking-widest mb-2">Keranjang Kosong</h2>
-                <p class="text-stone-400 mb-10 max-w-xs mx-auto text-sm">Sepertinya Anda belum memilih menu favorit dari Valeria Coffee hari ini.</p>
-                <a href="{{ route('menu') }}" class="inline-block px-12 py-5 bg-orange-700 text-white rounded-2xl font-black uppercase tracking-widest hover:bg-orange-800 transition-all shadow-2xl active:scale-95">
-                    Mulai Belanja
-                </a>
+                <p class="text-stone-400 mb-10 max-w-xs mx-auto text-sm">Sepertinya Anda belum memilih menu favorit.</p>
+                <a href="{{ route('menu') }}" class="inline-block px-12 py-5 bg-orange-700 text-white rounded-2xl font-black uppercase tracking-widest hover:bg-orange-800 transition-all shadow-2xl active:scale-95">Mulai Belanja</a>
             </div>
         @endif
     </div>
 
     <script>
         function toggleLayanan() {
-            const layanan = document.getElementById('metode_layanan').value;
+            const layanan = document.getElementById('jenis_pesanan').value;
             const sectionMeja = document.getElementById('section-meja');
             const sectionAlamat = document.getElementById('section-alamat');
             const sectionTakeAway = document.getElementById('section-takeaway');
+            const labelJam = document.getElementById('label-jam');
+            const selectPembayaran = document.querySelector('select[name="metode_pembayaran"]');
+            const opsiCash = selectPembayaran.querySelector('option[value="cash"]');
 
             sectionMeja.classList.add('hidden');
             sectionAlamat.classList.add('hidden');
             sectionTakeAway.classList.add('hidden');
 
-            if (layanan === 'dine_in') sectionMeja.classList.remove('hidden');
-            else if (layanan === 'delivery') sectionAlamat.classList.remove('hidden');
-            else if (layanan === 'take_away') sectionTakeAway.classList.remove('hidden');
+            if (layanan === 'dine_in') {
+                sectionMeja.classList.remove('hidden');
+                labelJam.innerText = 'Jam Booking';
+                opsiCash.disabled = false;
+                opsiCash.style.display = 'block';
+            } else if (layanan === 'delivery') {
+                sectionAlamat.classList.remove('hidden');
+                labelJam.innerText = 'Jam Delivery';
+                selectPembayaran.value = 'qris'; 
+                opsiCash.disabled = true;
+                opsiCash.style.display = 'none';
+            } else if (layanan === 'take_away') {
+                sectionTakeAway.classList.remove('hidden');
+                labelJam.innerText = 'Jam Pengambilan';
+                opsiCash.disabled = false;
+                opsiCash.style.display = 'block';
+            }
         }
 
         function updateQuantity(id, action) {
-            fetch(`/cart/update/${id}`, {
-                method: 'POST',
-                headers: {
-                    'X-CSRF-TOKEN': '{{ csrf_token() }}',
-                    'Content-Type': 'application/json',
-                    'Accept': 'application/json'
-                },
-                body: JSON.stringify({ action: action })
-            })
-            .then(res => res.json())
-            .then(data => {
-                if (data.success) window.location.reload();
-                else alert(data.error || "Gagal memperbarui jumlah.");
-            })
-            .catch(() => alert("Terjadi kesalahan koneksi."));
-        }
+    // Tentukan URL secara dinamis berdasarkan tombol yang diklik
+    let url = action === 'increase' ? `/cart/add/${id}` : `/cart/decrease/${id}`;
 
-        const selectJam = document.getElementById('jam_booking');
-        const inputTgl = document.getElementById('tanggal_booking');
+    fetch(url, {
+        method: 'POST',
+        headers: { 
+            'X-CSRF-TOKEN': '{{ csrf_token() }}', 
+            'Content-Type': 'application/json', 
+            'Accept': 'application/json' 
+        }
+    })
+    .then(async res => {
+        if (res.ok) {
+            window.location.reload(); // Refresh halaman jika berhasil
+        } else {
+            const data = await res.json();
+            alert(data.error || "Gagal memperbarui jumlah.");
+        }
+    })
+    .catch(() => alert("Terjadi kesalahan koneksi ke server."));
+}
 
         function filterJam() {
             const sekarang = new Date();
+            const selectJam = document.getElementById('jam_booking');
+            const inputTgl = document.getElementById('tanggal_booking');
             const tglPilihan = inputTgl.value;
             const tglHariIni = sekarang.toISOString().split('T')[0];
             const options = selectJam.options;
@@ -241,7 +248,6 @@
                 const [jam, menit] = options[i].value.split(':');
                 const waktuOpsi = new Date();
                 waktuOpsi.setHours(parseInt(jam), parseInt(menit), 0);
-
                 if (tglPilihan === tglHariIni && waktuOpsi < sekarang) {
                     options[i].disabled = true;
                     options[i].style.display = 'none';
@@ -255,25 +261,40 @@
         document.getElementById('form-pembayaran')?.addEventListener('submit', function(e) {
             e.preventDefault();
             const btn = document.getElementById('btn-submit');
+            const originalText = btn.innerHTML;
+            
             btn.disabled = true;
-            btn.innerHTML = `<span class="flex items-center justify-center tracking-normal uppercase"><svg class="animate-spin h-5 w-5 mr-3" viewBox="0 0 24 24"><circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle><path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z"></path></svg> Memproses...</span>`;
+            btn.innerHTML = `<span class="flex items-center justify-center"><svg class="animate-spin h-5 w-5 mr-3" viewBox="0 0 24 24"><circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle><path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z"></path></svg> Memproses...</span>`;
 
             fetch("{{ route('order.simpan') }}", {
                 method: "POST",
                 body: new FormData(this),
                 headers: { "X-CSRF-TOKEN": "{{ csrf_token() }}", "Accept": "application/json" }
             })
-            .then(res => res.json())
-            .then(data => {
-                // Ganti baris 166 yang lama dengan ini:
-            if (data.success) {
-                window.location.href = "/order/konfirmasi/" + data.order_id;
-            }
+            .then(async res => {
+                const data = await res.json();
+                if (!res.ok) throw data; // Lempar data error jika status bukan 2xx
+                return data;
             })
-            .catch(() => { 
-                alert("Koneksi bermasalah."); 
-                btn.disabled = false; 
-                btn.innerHTML = "Konfirmasi Pesanan Sekarang";
+            .then(data => {
+                if (data.success) {
+                    const metode = document.querySelector('select[name="metode_pembayaran"]').value;
+                    window.location.href = (metode === 'qris') 
+                        ? "/payment/" + data.order_id 
+                        : "/order/konfirmasi/" + data.order_id;
+                }
+            })
+            .catch(err => {
+                btn.disabled = false;
+                btn.innerHTML = originalText;
+                
+                // Tampilkan pesan error validasi jika ada
+                if (err.errors) {
+                    let errors = Object.values(err.errors).flat().join('\n');
+                    alert("Validasi Gagal:\n" + errors);
+                } else {
+                    alert(err.error || "Terjadi kesalahan pada server.");
+                }
             });
         });
 
@@ -281,7 +302,7 @@
             filterJam();
             toggleLayanan();
         };
-        inputTgl?.addEventListener('change', filterJam);
+        document.getElementById('tanggal_booking')?.addEventListener('change', filterJam);
     </script>
 </body>
 </html>

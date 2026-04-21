@@ -10,7 +10,7 @@ class HomeController extends Controller
     public function index()
     {
         // Mengambil 3 menu secara acak untuk ditampilkan di Home
-        $featuredMenus = Menu::inRandomOrder()->take(3)->get();
+        $featuredMenus = Menu::inRandomOrder()->take(5)->get();
 
         return view('beranda', compact('featuredMenus'));
     }

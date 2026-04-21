@@ -73,6 +73,15 @@
                             'sukses', 'done', 'selesai' => 'bg-green-50 text-green-600 border-green-200',
                             default               => 'bg-stone-50 text-stone-600 border-stone-100',
                         };
+
+                        // Logic WhatsApp
+                        $phone = preg_replace('/[^0-9]/', '', $order->nomor_wa);
+                        $pesan = "Halo *{$order->nama_pemesan}*,\n\nTerima kasih telah memesan di *Valeria Coffee*.\n\n" .
+                                 "Detail Pesanan:\n" .
+                                 "- ID: #INV-" . $order->id . "\n" .
+                                 "- Total: Rp" . number_format($order->total_harga) . "\n" .
+                                 "- Status: " . strtoupper($order->status) . "\n\n" .
+                                 "Pesanan Anda sedang kami siapkan! ☕";
                     @endphp
 
                     <div class="bg-white p-6 rounded-3xl shadow-sm border border-stone-100 flex flex-col md:flex-row justify-between items-center gap-4 hover:shadow-md transition-all">
@@ -83,13 +92,13 @@
                                     {{ str_replace('_', ' ', $status) }}
                                 </span>
                             </div>
-                            <h4 class="font-bold text-stone-800">{{ $order->nama_pembeli }}</h4>
+                            <h4 class="font-bold text-stone-800">{{ $order->nama_pemesan }}</h4>
                             <p class="text-[9px] text-accent-caramel font-bold uppercase tracking-widest mt-1">
                                 {{ $order->metode_pembayaran }} • {{ $order->created_at->format('d M, H:i') }}
                             </p>
                         </div>
 
-                        <div class="px-10 border-x border-stone-100 text-center">
+                        <div class="px-10 border-x border-stone-100 text-center hidden md:block">
                             <p class="text-[10px] text-stone-400 font-bold uppercase tracking-widest mb-1">Total Bayar</p>
                             <p class="font-black text-[#3C2A21] text-xl">Rp{{ number_format($order->total_harga) }}</p>
                         </div>
@@ -99,13 +108,17 @@
                                 @csrf
                                 <select name="status" onchange="this.form.submit()" 
                                     class="bg-stone-50 border border-stone-200 text-[#3C2A21] text-[10px] font-bold uppercase tracking-wider rounded-xl px-4 py-2.5 focus:ring-2 focus:ring-accent-caramel outline-none cursor-pointer transition-all hover:bg-white">
-                                    <option value="diproses" {{ $status === 'diproses' || $status === 'process' ? 'selected' : '' }}>Process</option>
-                                    <option value="siap" {{ $status === 'siap' || $status === 'ready' ? 'selected' : '' }}>Ready</option>
-                                    <option value="sukses" {{ $status === 'sukses' || $status === 'done' ? 'selected' : '' }}>Done</option>
+                                    <option value="diproses" {{ in_array($status, ['diproses', 'process']) ? 'selected' : '' }}>Process</option>
+                                    <option value="siap" {{ in_array($status, ['siap', 'ready']) ? 'selected' : '' }}>Ready</option>
+                                    <option value="sukses" {{ in_array($status, ['sukses', 'done', 'selesai']) ? 'selected' : '' }}>Done</option>
                                 </select>
                             </form>
                             
-                            
+                            <a href="https://wa.me/{{ $phone }}?text={{ urlencode($pesan) }}" target="_blank" 
+                               class="p-2.5 bg-green-50 text-green-600 rounded-xl border border-green-200 hover:bg-green-600 hover:text-white transition-all flex items-center gap-2 text-[10px] font-black uppercase"
+                               title="Kirim Struk WA">
+                               <span>💬 WA</span>
+                            </a>
                         </div>
                     </div>
                 @empty

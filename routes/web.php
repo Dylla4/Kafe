@@ -45,23 +45,28 @@ Route::middleware('auth:web')->group(function () {
 
     // Checkout & Pembayaran
     Route::post('/order/simpan', [OrderController::class, 'simpan'])->name('order.simpan');
+    Route::get('/payment/{id}', [OrderController::class, 'showPayment'])->name('order.payment');
+    Route::post('/order/konfirmasi/{id}', [OrderController::class, 'konfirmasi'])->name('order.konfirmasi');
     Route::get('/order/konfirmasi/{id}', [OrderController::class, 'konfirmasi'])->name('order.konfirmasi');
 
     // Route untuk menampilkan Bukti Reservasi
-    Route::get('/order/reservation/{id}', [OrderController::class, 'showReservation'])->name('order.reservation');
-    Route::get('/order/receipt/{id}', [OrderController::class, 'receipt'])->name('order.receipt');
+    //Route::get('/reservation/{id}', [OrderController::class, 'reservation'])->name('order.reservation');
+    //Route::get('/order/receipt/{id}', [OrderController::class, 'receipt'])->name('order.receipt');
     
     // PERBAIKAN UTAMA: Nama rute diubah menjadi 'history' agar sesuai dengan script Blade Anda
     Route::get('/history', [OrderController::class, 'history'])->name('order.history');
 
     Route::get('/payment/{id}', [OrderController::class, 'showPayment'])->name('order.payment');
     Route::post('/payment/confirm/{id}', [OrderController::class, 'confirmPayment'])->name('payment.confirm');
+    Route::get('/order/invoice/{id}', [OrderController::class, 'printInvoice'])->name('order.invoice');
     Route::get('/invoice/{id}', [OrderController::class, 'printInvoice'])->name('invoice.print');
-    Route::get('/order/email/{id}', [App\Http\Controllers\OrderController::class, 'sendEmail'])->name('order.email');
+    //Route::get('/order/email/{id}', [App\Http\Controllers\OrderController::class, 'sendEmail'])->name('order.email');
 
     // Ulasan
-    Route::get('/ulasan', [UlasanController::class, 'index'])->name('ulasan.index'); 
+    Route::get('/ulasan', [UlasanController::class, 'create'])->name('ulasan.create');
+    //Route::get('/ulasan', [UlasanController::class, 'index'])->name('ulasan.index'); 
     Route::post('/ulasan', [UlasanController::class, 'store'])->name('ulasan.store');
+    
 });
 
 /*
@@ -77,9 +82,8 @@ Route::prefix('admin')->group(function () {
     // Admin Terproteksi
     Route::middleware('auth:admin')->group(function () {
         Route::get('/orders', [AdminOrderController::class, 'index'])->name('admin.orders');
-        Route::post('/orders/{id}/status', [AdminOrderController::class, 'nextStatus'])->name('admin.orders.status');
-        // Gunakan Route::post karena error kamu meminta method POST
-Route::post('/admin/orders/{id}/status', [OrderController::class, 'updateStatus'])->name('admin.orders.status');
+        //Route::post('/orders/{id}/status', [AdminOrderController::class, 'nextStatus'])->name('admin.orders.status');
+        Route::post('/admin/orders/{id}/status', [OrderController::class, 'updateStatus'])->name('admin.orders.status');
         Route::delete('/orders/{id}', [AdminOrderController::class, 'destroy'])->name('admin.orders.destroy');
         Route::post('/logout', [AdminAuthController::class, 'logout'])->name('admin.logout');
     });
