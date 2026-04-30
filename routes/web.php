@@ -74,17 +74,17 @@ Route::middleware('auth:web')->group(function () {
 | 4. AREA ADMIN (GUARD: ADMIN)
 |--------------------------------------------------------------------------
 */
-Route::prefix('admin')->group(function () {
+    Route::prefix('admin')->group(function () {
     // Login Admin
     Route::get('/login', [AdminAuthController::class, 'showLogin'])->name('admin.login');
     Route::post('/login', [AdminAuthController::class, 'login'])->name('admin.login.submit');
 
     // Admin Terproteksi
     Route::middleware('auth:admin')->group(function () {
-        Route::get('/orders', [AdminOrderController::class, 'index'])->name('admin.orders');
-        //Route::post('/orders/{id}/status', [AdminOrderController::class, 'nextStatus'])->name('admin.orders.status');
-        Route::post('/admin/orders/{id}/status', [OrderController::class, 'updateStatus'])->name('admin.orders.status');
-        Route::delete('/orders/{id}', [AdminOrderController::class, 'destroy'])->name('admin.orders.destroy');
-        Route::post('/logout', [AdminAuthController::class, 'logout'])->name('admin.logout');
+    Route::get('/orders', [AdminOrderController::class, 'index'])->name('admin.orders');
+    //Route::post('/orders/{id}/status', [AdminOrderController::class, 'nextStatus'])->name('admin.orders.status');
+    Route::post('/admin/orders/{id}/status', [OrderController::class, 'updateStatus'])->name('admin.orders.status');
+    Route::delete('/orders/{id}', [AdminOrderController::class, 'destroy'])->name('admin.orders.destroy');
+    Route::post('/logout', [AdminAuthController::class, 'logout'])->name('admin.logout');
     });
 });

@@ -201,7 +201,10 @@ public function remove($id)
         }
 
         session()->put('cart', $cart);
+        if ($request->ajax()) {
         return response()->json(['success' => true, 'cart_count' => count($cart)]);
+    }
+        return redirect()->back()->with('success', 'Pesanan berhasil ditambahkan!');
     }
 
     public function updateStatus(Request $request, $id)

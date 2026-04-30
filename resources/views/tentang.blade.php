@@ -64,13 +64,13 @@
             <div class="absolute inset-0 bg-[#A06040]/5 rounded-full blur-3xl transform group-hover:scale-125 transition-transform duration-1000"></div>
             
             <div class="relative z-10 w-full max-w-[400px] aspect-square rounded-2xl overflow-hidden shadow-2xl border-4 border-stone-50">
-                <img src="{{ asset('img/kpop.jpeg') }}" alt="Valeria S. Adeline - Founder"
+                <img src="{{ asset('staff/Owner.jpeg') }}" alt="Valeria S. Adeline - Founder"
                     class="w-full h-full object-cover transition-transform duration-1000 group-hover:scale-105">
             </div>
             
             <div class="absolute -bottom-8 -left-10 bg-[#1C1C1C] text-white p-8 rounded-2xl shadow-2xl z-20 transition-all duration-500 group-hover:-translate-y-3">
                 <p class="text-[10px] uppercase tracking-[0.5em] font-bold text-orange-400 mb-2">Founder & Brand Director</p>
-                <p class="font-serif text-3xl text-white opacity-90 tracking-tighter">Nama Lengkap</p>
+                <p class="font-serif text-3xl text-white opacity-90 tracking-tighter">Alexander Valerie</p>
             </div>
         </div>
     </div>
@@ -94,6 +94,76 @@
                     Perjalanan ini bermula dari kekaguman saya pada filosofi kopi—pahit yang menguatkan dan aroma yang menenangkan. Sebagai kurator di balik Valeria Coffee, saya berkomitmen untuk menjaga integritas rasa sambil terus memberdayakan ekosistem petani lokal demi masa depan industri kopi yang berkelanjutan.
                 </p>
             </div>
+    </div>
+</section>
+
+{{-- SECTION 3: OUR PROFESSIONAL BARISTAS --}}
+<section class="py-24 bg-white overflow-hidden">
+    <div class="max-w-7xl mx-auto px-6">
+        
+        {{-- Header Section dengan Navigasi --}}
+        <div class="flex flex-col md:flex-row md:items-end justify-between mb-16 gap-6">
+            <div class="text-center md:text-left">
+                <span class="text-[#A06040] font-bold uppercase tracking-[0.4em] text-[10px] mb-3 block">
+                    The Experts Behind the Cup
+                </span>
+                <h2 class="text-stone-900 text-5xl font-bold tracking-tighter">
+                    Meet Our <span class="font-serif italic font-light text-[#A06040]">Baristas</span>
+                </h2>
+            </div>
+
+            {{-- Tombol Navigasi --}}
+            <div class="hidden md:flex gap-2">
+                <button onclick="document.getElementById('staff-container').scrollBy({left: -350, behavior: 'smooth'})" 
+                        class="p-4 border border-stone-200 text-stone-400 hover:border-[#A06040] hover:text-[#A06040] rounded-full transition-all bg-white shadow-sm active:scale-90">
+                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7" /></svg>
+                </button>
+                <button onclick="document.getElementById('staff-container').scrollBy({left: 350, behavior: 'smooth'})" 
+                        class="p-4 border border-stone-200 text-stone-400 hover:border-[#A06040] hover:text-[#A06040] rounded-full transition-all bg-white shadow-sm active:scale-90">
+                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7" /></svg>
+                </button>
+            </div>
+        </div>
+
+        {{-- Container Bergeser (Horizontal Scroll) --}}
+        <div id="staff-container" class="flex overflow-x-auto gap-10 pb-12 snap-x snap-mandatory scrollbar-hide" style="scroll-behavior: smooth;">
+            @php
+                $staffs = [
+                    ['name' => 'Jeje', 'role' => 'Head Roaster', 'img' => 'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?q=80&w=400'],
+                    ['name' => 'Sarah Jenkins', 'role' => 'Senior Barista', 'img' => 'https://images.unsplash.com/photo-1494790108377-be9c29b29330?q=80&w=400'],
+                    ['name' => 'Michael Chen', 'role' => 'Latte Art Specialist', 'img' => 'https://images.unsplash.com/photo-1500648767791-00dcc994a43e?q=80&w=400'],
+                    ['name' => 'Emma Watson', 'role' => 'Coffee Sommelier', 'img' => 'https://images.unsplash.com/photo-1438761681033-6461ffad8d80?q=80&w=400'],
+                    ['name' => 'David Miller', 'role' => 'Brew Master', 'img' => 'https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?q=80&w=400'],
+                ];
+            @endphp
+
+            @foreach($staffs as $staff)
+            <div class="min-w-70 md:min-w-[320px] snap-start group">
+                {{-- Foto Staf --}}
+                <div class="relative overflow-hidden aspect-3/4 mb-6 rounded-2xl shadow-sm group-hover:shadow-xl transition-all duration-500">
+                    <img src="{{ $staff['img'] }}" 
+                         class="w-full h-full object-cover grayscale group-hover:grayscale-0 group-hover:scale-105 transition-all duration-700" 
+                         alt="{{ $staff['name'] }}">
+                    
+                    <div class="absolute inset-0 bg-linear-to-t from-[#3C2A21]/80 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500 flex items-end justify-center pb-8">
+                        <div class="flex gap-4">
+                            <span class="text-white text-[10px] uppercase tracking-widest font-bold">View Profile</span>
+                        </div>
+                    </div>
+                </div>
+
+                {{-- Info Staf --}}
+                <div class="text-center">
+                    <h3 class="text-stone-800 font-bold uppercase tracking-widest text-sm mb-1 group-hover:text-[#A06040] transition-colors">
+                        {{ $staff['name'] }}
+                    </h3>
+                    <p class="text-stone-400 font-serif italic text-xs">
+                        {{ $staff['role'] }}
+                    </p>
+                </div>
+            </div>
+            @endforeach
+        </div>
     </div>
 </section>
 

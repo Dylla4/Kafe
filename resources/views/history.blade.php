@@ -69,7 +69,7 @@
                 <div class="w-full md:w-auto flex md:flex-col justify-between items-center md:items-end gap-4 border-t md:border-t-0 pt-4 md:pt-0">
                     <div class="text-left md:text-right">
                         <p class="text-[10px] text-stone-400 font-black uppercase tracking-widest">Total Bayar</p>
-                        <p class="text-2xl font-black text-[#3C2A21]">Rp {{ number_format($order->total_harga, 0, ',', '.') }}</p>
+                        <p class="text-2xl font-black text-[#3C2A21]">Rp {{ number_format($order->total_bayar, 0, ',', '.') }}</p>
                     </div>
                     
                     <div class="flex items-center gap-2">

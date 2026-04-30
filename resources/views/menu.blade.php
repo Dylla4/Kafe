@@ -10,7 +10,8 @@
                 @php
                     $categories = $menus->pluck('kategori')->unique();
                     $icons = [
-                        'Minuman'      => '🍹',
+                        'Coffee'        => '☕',
+                        'Non-Coffee'    => '🍹',
                         'Makanan'      => '🍽️',
                         'Sweet Treats' => '🍰'
                     ];

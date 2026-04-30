@@ -9,107 +9,162 @@ class MenuSeeder extends Seeder
 {
     public function run(): void
     {
-        Menu::truncate(); // supaya tidak duplikat
+        Menu::truncate();
 
         Menu::create([
             'nama_menu' => 'Americano',
             'harga'     => 19000,
-            'kategori'  => 'Minuman',
+            'kategori'  => 'Coffee',
             'foto'      => 'img/Americano.jpeg',
             'deskripsi' => "Nikmati kesegaran Americano Coffee dengan cita rasa kopi hitam yang bold, smooth, dan autentik.\n\n" .
-                            "Komposisi:\n" .
-                            "- Double shot espresso\n" .
-                            "- Air mineral\n" .
-                            "- Es batu\n" .
-                            "- Gula cair (opsional)"
+                            "Komposisi Utama: Double Shot Espresso, Water."
         ]);
 
         Menu::create([
             'nama_menu' => 'Almond Coffee',
             'harga' => 25000,
-            'kategori' => 'Minuman',
+            'kategori' => 'Coffee',
             'foto' => 'img/AlmoundCoffee.jpeg',
-            'deskripsi' => "Segarkan harimu dengan Almond Coffee, perpaduan sempurna antara espresso premium, susu creamy, dan sentuhan rasa almond yang lembut. Disajikan dingin dengan tampilan lapisan kopi dan susu yang cantik, minuman ini memberikan sensasi creamy, manis, dan aroma kopi yang menggoda. Topping whipped cream lembut dengan taburan potongan almond renyah membuat setiap tegukan terasa lebih spesial. Cocok untuk menemani waktu santai, bekerja, maupun berkumpul bersama teman.\n\n" .
-                            "Komposisi:\n" .
-                            "- Espresso premium\n" .
-                            "- Sirup almond\n" .
-                            "- Es batu\n" .
-                            "- Gula cair\n" .
-                            "- Whipped cream\n" .
-                            "- Potongan almond panggang",
+            'deskripsi' => "Nikmati perpaduan bold dari espresso premium dan creamy-nya susu segar dengan sentuhan sirup almond yang aromatik. Disajikan dingin dengan topping whipped cream lembut dan taburan kacang almond panggang yang renyah. Pilihan sempurna untuk penyemangat harimu.\n\n" .
+                            "Komposisi Utama: Espresso, Fresh Milk, Almond Syrup, Whipped Cream, Roasted Almond.",
             'is_best_seller' => true
         ]);
 
         Menu::create([
             'nama_menu' => 'Biskuit Coffee',
             'harga' => 22000,
-            'kategori' => 'Minuman',
+            'kategori' => 'Coffee',
             'foto' => 'img/BiskiesCoffee.jpeg',
+            'deskripsi' => "Kopi susu vanila premium dengan topping whipped cream melimpah dan taburan biskuit crunchy. Cara manis untuk menikmati kopi dengan gaya modern.\n\n".
+                            "Komposisi Utama: Espresso, Milk, Vanilla, Cookie Crumbs, Whipped Cream.",
             'is_best_seller' => true
         ]);
 
         Menu::create([
             'nama_menu' => 'Caramel Latte',
             'harga' => 20000,
-            'kategori' => 'Minuman',
+            'kategori' => 'Coffee',
             'foto' => 'img/CaramelCoffee.jpeg',
+            'deskripsi' => "Kopi susu lembut dengan sensasi manis karamel yang mewah. Pilihan tepat untuk kamu yang menginginkan kopi creamy dengan aroma karamel yang memanjakan lidah.\n\n".
+                            "Komposis Utama: Espresso, Fresh Milk, Premium Caramel Syrup.",
             'is_best_seller' => true
         ]);
 
         Menu::create([
             'nama_menu' => 'Hot Chocolate',
             'harga' => 20000,
-            'kategori' => 'Minuman',
-            'foto' => 'img/ChocolateHot.jpeg'
+            'kategori' => 'Non-Coffee',
+            'foto' => 'img/ChocolateHot.jpeg',
+            'deskripsi' => "Nikmati kelembutan cokelat premium yang creamy dan silky. Minuman klasik yang tak lekang oleh waktu, cocok untuk kamu yang menginginkan ketenangan di tengah hari yang sibuk.\n\n".
+                            "Komposisi Utama: Premium Cocoa Blend, Steamed Milk, Foam."
         ]);
 
         Menu::create([
             'nama_menu' => 'Coffee Latte',
             'harga' => 20000,
-            'kategori' => 'Minuman',
-            'foto' => 'img/CoffeLattee.jpeg'
+            'kategori' => 'Coffee',
+            'foto' => 'img/CoffeLattee.jpeg',
+            'deskripsi' => "Nikmati harmoni rasa espresso pilihan dan kelembutan susu segar. Teksturnya yang creamy dan rasanya yang halus menjadikan minuman ini teman terbaik untuk segala suasana.\n\n".
+                            "Komposisi Utama: Espresso, Steamed Milk, Micro-foam."
         ]);
 
         Menu::create([
             'nama_menu' => 'Matcha Latte',
             'harga' => 22000,
-            'kategori' => 'Minuman',
-            'foto' => 'img/MatchaLatte.jpg'
+            'kategori' => 'Non-Coffee',
+            'foto' => 'img/MatchaLatte.jpg',
+            'deskripsi' => "Perpaduan sempurna finest matcha dan susu segar yang lembut. Minuman kaya antioksidan dengan rasa yang halus dan aroma menenangkan. Cocok dinikmati panas maupun dingin.\n\n".
+                            "Komposisi Utama: Premium Matcha, Fresh Milk."
         ]);
 
         Menu::create([
             'nama_menu' => 'Strawberry Milkshake',
             'harga' => 21000,
-            'kategori' => 'Minuman',
-            'foto' => 'img/StrawberryMilkshake.jpg'
+            'kategori' => 'Non-Coffee',
+            'foto' => 'img/StrawberryMilkshake.jpg',
+            'deskripsi' => "Manjakan dirimu dengan kelembutan susu segar dan ekstrak stroberi premium yang di-blend sempurna. Minuman manis yang dingin dan mengenyangkan, lengkap dengan whipped cream di atasnya.\n\n".
+                            "Komposisi Utama: Strawberry, Fresh Milk, Vanilla Ice Cream, Whipped Cream."
         ]);
 
         Menu::create([
             'nama_menu' => 'Dalgona Coffee',
             'harga' => 20000,
-            'kategori' => 'Minuman',
-            'foto' => 'img/Dalgona.jpeg'
+            'kategori' => 'Coffee',
+            'foto' => 'img/Dalgona.jpeg',
+            'deskripsi' => "Perpaduan estetik dari susu segar dingin dan busa kopi kental yang manis di atasnya. Cara seru dan creamy untuk menikmati kopi dingin yang sedang tren.\n\n".
+                            "Komposisi Utama: Coffee Foam, Fresh Milk, Ice, Brown Sugar."
         ]);
 
         Menu::create([
-            'nama_menu' => 'Gula Aren Coffee',
+            'nama_menu' => 'Palm Sugar Coffee',
             'harga' => 18000,
-            'kategori' => 'Minuman',
-            'foto' => 'img/GulaAren.jpeg'
+            'kategori' => 'Coffee',
+            'foto' => 'img/GulaAren.jpeg',
+            'deskripsi' => "Kopi susu gula aren favorit! Espresso premium berpadu sempurna dengan kelembutan susu segar dan pemanis alami gula aren. Segar, manis, dan bikin semangat lagi.\n\n".
+                            "Komposisi Utama: Espresso, Fresh Milk, Liquid Palm Sugar, Ice."
         ]);
 
         Menu::create([
             'nama_menu' => 'Lemon Coffee',
             'harga' => 18000,
-            'kategori' => 'Minuman',
-            'foto' => 'img/LemonCoffee.jpeg'
+            'kategori' => 'Coffee',
+            'foto' => 'img/LemonCoffee.jpeg',
+            'deskripsi' => "Kesegaran ganda dalam satu gelas. Perpaduan espresso yang kuat dengan sensasi citrus dari buah lemon asli. Minuman yang ringan, jernih, dan sangat membangkitkan mood.\n\n".
+                            "Komposisi Utama: Espresso, Lemon Juice, Simple Syrup, Ice."
+        ]);
+
+        Menu::create([
+            'nama_menu' => 'Peach Earl Grey',
+            'harga' => 25000,
+            'kategori' => 'Non-Coffee',
+            'foto' => 'img/PeachEarlGreyTea.jpg',
+            'deskripsi' => "Kesegaran teh Earl Grey premium dengan potongan buah dan sirup peach yang manis. Pilihan tepat bagi kamu yang menginginkan minuman teh dengan aroma bunga dan rasa buah yang berkelas.\n\n".
+                            "Komposisi Utama: Earl Grey Tea, Peach Syrup, Fresh Peach, Ice."
+        ]);
+
+        Menu::create([
+            'nama_menu' => 'Lemon Tea',
+            'harga' => 20000,
+            'kategori' => 'Non-Coffee',
+            'foto' => 'img/LemonTea.jpg',
+            'deskripsi' => "Teh dingin yang menyegarkan dengan sentuhan lemon alami. Perpaduan klasik yang selalu berhasil mengembalikan semangatmu.\n\n".
+                            "Komposisi Utama: Black Tea, Fresh Lemon Juice, Fresh Lemon, Sugar, Ice."
+        ]);
+
+        Menu::create([
+            'nama_menu' => 'Lychee Tea',
+            'harga' => 20000,
+            'kategori' => 'Non-Coffee',
+            'foto' => 'img/LycheeTea.jpg',
+            'deskripsi' => "Kesegaran teh dingin dengan aroma leci yang manis dan menenangkan. Dilengkapi dengan buah leci asli sebagai pelengkap kesegaran harimu.\n\n".
+                            "Komposisi Utama: BBlack Tea, Lychee Syrup, Fresh Lychee, Ice."
+        ]);
+
+        Menu::create([
+            'nama_menu' => 'Strawberry Sparkle',
+            'harga' => 25000,
+            'kategori' => 'Non-Coffee',
+            'foto' => 'img/StrawberrySparkle.jpg',
+            'deskripsi' => "Minuman soda stroberi yang dingin dan menyegarkan. Perpaduan sempurna antara manisnya buah stroberi dan sensasi sparkling yang bikin nagih. Look-nya yang cantik sangat cocok untuk foto estetikmu!\n\n".
+                            "Komposisi Utama: Strawberry Syrup, Sparkling Water, Fresh Strawberry, Ice."
+        ]);
+
+        Menu::create([
+            'nama_menu' => 'Cherry Sparkle',
+            'harga' => 24000,
+            'kategori' => 'Non-Coffee',
+            'foto' => 'img/CherrySparkle.jpg',
+            'deskripsi' => "Ledakan rasa ceri yang manis bertemu dengan segarnya soda dingin. Minuman berwarna merah cantik yang tidak hanya menyegarkan dahaga, tapi juga mencerahkan hari kamu.\n\n".
+                            "Komposisi Utama: Red Cherry Syrup, Sparkling Water, Maraschino Cherry, Ice."
         ]);
 
         Menu::create([
             'nama_menu' => 'Ayam Geprek',
             'harga' => 17000,
             'kategori' => 'Makanan',
-            'foto' => 'img/AyamGeprek.jpeg'
+            'foto' => 'img/AyamGeprek.jpeg',
+            'deskripsi' => "Ayam krispi gurih yang digeprek dengan sambal bawang asli yang pedasnya juara. Lengkap dengan nasi dan lalapan. Simple, kenyang, dan memuaskan!\n\n".
+                            "Komposisi Utama: Ayam Krispi, Sambal Bawang, Nasi Putih, Timun, Selada."
         ]);
 
         Menu::create([
@@ -195,13 +250,6 @@ class MenuSeeder extends Seeder
             'harga' => 23000,
             'kategori' => 'Makanan',
             'foto' => 'img/Burgerbeef.jpeg'
-        ]);
-
-        Menu::create([
-            'nama_menu' => 'French Fries',
-            'harga' => 13000,
-            'kategori' => 'Makanan',
-            'foto' => 'img/KentangGoreng.jpeg'
         ]);
 
         Menu::create([
@@ -312,6 +360,75 @@ class MenuSeeder extends Seeder
             'kategori' => 'Sweet Treats',
             'foto' => 'img/StrawberryCheesecake.jpg',
             'is_best_seller' => true
+        ]);
+        
+        Menu::create([
+            'nama_menu' => 'Red Velvet Milkshake',
+            'harga' => 20000,
+            'kategori' => 'promo',
+            'foto' => 'img/RedVelvetMilkshake.jpg'
+        ]);
+
+        Menu::create([
+            'nama_menu' => 'Hazelnut Bliss',
+            'harga' => 25000,
+            'kategori' => 'promo', 
+            'foto' => 'img/HazelnutBliss.jpg'
+        ]);
+
+        Menu::create([
+            'nama_menu' => 'Pure Matcha',
+            'harga' => 26000,
+            'kategori' => 'promo', 
+            'foto' => 'img/PureMatcha.jpg'
+        ]);
+        
+        Menu::create([
+            'nama_menu' => 'Espresso',
+            'harga' => 26000,
+            'kategori' => 'promo', 
+            'foto' => 'img/EspressoSolo.jpg'
+        ]);
+
+         Menu::create([
+            'nama_menu' => 'Caramel Bliss',
+            'harga' => 24000,
+            'kategori' => 'promo', 
+            'foto' => 'img/CaramelBliss.jpg'
+        ]);
+
+         Menu::create([
+            'nama_menu' => 'Iced Americano',
+            'harga' => 22000,
+            'kategori' => 'promo', 
+            'foto' => 'img/IcedAmericano.jpg'
+        ]);
+
+         Menu::create([
+            'nama_menu' => 'Mango Smoothie',
+            'harga' => 25000,
+            'kategori' => 'promo', 
+            'foto' => 'img/MangoSmoothie.jpg'
+        ]);
+         Menu::create([
+            'nama_menu' => 'Midnight Mocha',
+            'harga' => 23000,
+            'kategori' => 'promo', 
+            'foto' => 'img/MidnightMochaBrew.jpg'
+        ]);
+
+         Menu::create([
+            'nama_menu' => 'Mocha Magic',
+            'harga' => 21000,
+            'kategori' => 'promo', 
+            'foto' => 'img/MochaMagic.jpg'
+        ]);
+
+         Menu::create([
+            'nama_menu' => 'Vanilla Velvet',
+            'harga' => 26000,
+            'kategori' => 'promo', 
+            'foto' => 'img/VanillaVelvet.jpg'
         ]);
     }
 }
