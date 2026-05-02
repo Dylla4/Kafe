@@ -4,7 +4,7 @@
 
 {{-- SECTION: PROMO BANNER ALA SHOPEE --}}
 <section class="bg-[#FDFBF7] py-6 border-b border-stone-200">
-    <div class="max-w-275 mx-auto px-4 md:px-10">
+    <div class="max-w-[1100px] mx-auto px-4 md:px-10">
         
         {{-- Slider Container --}}
         <div id="shopeeSlider" class="flex overflow-x-auto snap-x snap-mandatory scrollbar-hide gap-6 pb-4 scroll-smooth">
