@@ -111,7 +111,7 @@ class OrderController extends Controller
     /**
  * Mengurangi jumlah item di keranjang
  */
-public function decrease($id)
+public function decrease(int $id)
 {
     $cart = session()->get('cart', []);
 
@@ -131,7 +131,7 @@ public function decrease($id)
 /**
  * Menghapus item sepenuhnya dari keranjang
  */
-public function remove($id)
+public function remove(int $id)
 {
     $cart = session()->get('cart', []);
 
@@ -153,7 +153,7 @@ public function remove($id)
     /**
      * Konfirmasi Lunas & Redirect ke Invoice Tunggal
      */
-    public function konfirmasi($id)
+    public function konfirmasi(string $id)
     {
         $order = Order::findOrFail($id);
         $order->update(['status' => 'sukses']); 
@@ -163,7 +163,7 @@ public function remove($id)
     /**
      * Tampilan Invoice Tunggal (Dine-in, Delivery, Take-away)
      */
-    public function printInvoice($id)
+    public function printInvoice(string $id)
     {
         $order = Order::findOrFail($id);
         $items = is_array($order->item_pesanan) ? $order->item_pesanan : json_decode((string)$order->item_pesanan, true);
@@ -172,10 +172,10 @@ public function remove($id)
     }
 
     // Alias agar rute lama tidak error, semua diarahkan ke printInvoice
-    public function receipt($id) { return $this->printInvoice($id); }
-    public function reservation($id) { return $this->printInvoice($id); }
+    public function receipt(string $id) { return $this->printInvoice($id); }
+    public function reservation(string $id) { return $this->printInvoice($id); }
 
-    public function showPayment($id)
+    public function showPayment(string $id)
     {
         $order = Order::findOrFail($id);
         if (in_array($order->status, ['sukses', 'lunas'])) {
@@ -184,11 +184,21 @@ public function remove($id)
         return view('payment', compact('order'));
     }
 
-    public function addToCart(Request $request, $id)
-    {
-        $menu = Menu::findOrFail($id);
-        $cart = session()->get('cart', []);
+    public function addToCart(int $id)
+{
+    try {
+        // Gunakan find alih-alih findOrFail agar tidak langsung melempar error 404
+        $menu = Menu::find($id);
 
+        if (!$menu) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Menu tidak ditemukan di database!'
+            ], 404);
+        }
+
+        $cart = session()->get('cart', []);
+        
         if(isset($cart[$id])) {
             $cart[$id]['quantity']++;
         } else {
@@ -201,13 +211,17 @@ public function remove($id)
         }
 
         session()->put('cart', $cart);
-        if ($request->ajax()) {
         return response()->json(['success' => true, 'cart_count' => count($cart)]);
-    }
-        return redirect()->back()->with('success', 'Pesanan berhasil ditambahkan!');
-    }
 
-    public function updateStatus(Request $request, $id)
+    } catch (\Exception $e) {
+        return response()->json([
+            'success' => false, 
+            'message' => $e->getMessage()
+        ], 500);
+    }
+}
+
+    public function updateStatus(Request $request, string $id)
     {
         $request->validate(['status' => 'required|in:pending,diproses,siap,sukses,batal']);
         $order = Order::findOrFail($id);

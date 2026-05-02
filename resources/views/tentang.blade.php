@@ -8,7 +8,7 @@
         <div class="relative flex justify-center lg:justify-start">
             <div class="absolute -top-10 -left-10 w-64 h-64 bg-orange-100/40 rounded-full blur-3xl opacity-60"></div>
             <div class="relative group">
-                <div class="relative z-10 w-full max-w-md aspect-[4/5] rounded-[2rem] overflow-hidden shadow-[0_30px_60px_-15px_rgba(0,0,0,0.2)] border-8 border-white">
+                <div class="relative z-10 w-full max-w-md aspect-4/5 rounded-4xl overflow-hidden shadow-[0_30px_60px_-15px_rgba(0,0,0,0.2)] border-8 border-white">
                     <img src="{{ asset('img/poto.jpg') }}" alt="Filosofi Valeria Coffee"
                          class="w-full h-full object-cover transition-transform duration-1000 group-hover:scale-110">
                 </div>
@@ -21,7 +21,7 @@
 
         <div class="flex flex-col space-y-8 lg:pr-10">
             <div class="flex items-center gap-3">
-                <div class="h-[1px] w-12 bg-orange-700/40"></div>
+                <div class="h-px w-12 bg-orange-700/40"></div>
                 <span class="text-orange-700 text-xs font-bold uppercase tracking-[0.4em]">Our Journey</span>
             </div>
             <h2 class="text-5xl md:text-6xl font-serif font-bold text-stone-800 leading-[1.1] tracking-tight">
@@ -37,7 +37,7 @@
                 </p>
             </div>
             <div class="relative pt-6">
-                <div class="absolute top-0 left-0 w-12 h-[2px] bg-orange-700/20"></div>
+                <div class="absolute top-0 left-0 w-12 h-0.5 bg-orange-700/20"></div>
                 <p class="italic text-stone-700 text-lg leading-relaxed pl-6 border-l-4 border-orange-700/20">
                     "Bagi kami, setiap tetes seduhan adalah bentuk penghormatan terhadap kerja keras petani dan ketulusan barista."
                 </p>
@@ -63,7 +63,7 @@
         <div class="relative group">
             <div class="absolute inset-0 bg-[#A06040]/5 rounded-full blur-3xl transform group-hover:scale-125 transition-transform duration-1000"></div>
             
-            <div class="relative z-10 w-full max-w-[400px] aspect-square rounded-2xl overflow-hidden shadow-2xl border-4 border-stone-50">
+            <div class="relative z-10 w-full max-w-100 aspect-square rounded-2xl overflow-hidden shadow-2xl border-4 border-stone-50">
                 <img src="{{ asset('staff/Owner.jpeg') }}" alt="Valeria S. Adeline - Founder"
                     class="w-full h-full object-cover transition-transform duration-1000 group-hover:scale-105">
             </div>
@@ -78,7 +78,7 @@
         <div class="w-full md:w-1/2 space-y-8">
             <div class="flex items-center gap-3">
                 <span class="text-orange-700 text-[10px] font-bold uppercase tracking-[0.4em]">The Artisan</span>
-                <div class="h-[1px] w-12 bg-orange-700/30"></div>
+                <div class="h-px w-12 bg-orange-700/30"></div>
             </div>
 
             <h2 class="text-4xl md:text-5xl font-serif font-bold text-stone-800 leading-[1.2]">
@@ -129,40 +129,43 @@
         <div id="staff-container" class="flex overflow-x-auto gap-10 pb-12 snap-x snap-mandatory scrollbar-hide" style="scroll-behavior: smooth;">
             @php
                 $staffs = [
-                    ['name' => 'Jeje', 'role' => 'Head Roaster', 'img' => 'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?q=80&w=400'],
-                    ['name' => 'Sarah Jenkins', 'role' => 'Senior Barista', 'img' => 'https://images.unsplash.com/photo-1494790108377-be9c29b29330?q=80&w=400'],
-                    ['name' => 'Michael Chen', 'role' => 'Latte Art Specialist', 'img' => 'https://images.unsplash.com/photo-1500648767791-00dcc994a43e?q=80&w=400'],
-                    ['name' => 'Emma Watson', 'role' => 'Coffee Sommelier', 'img' => 'https://images.unsplash.com/photo-1438761681033-6461ffad8d80?q=80&w=400'],
-                    ['name' => 'David Miller', 'role' => 'Brew Master', 'img' => 'https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?q=80&w=400'],
+                    ['name' => 'Niel', 'role' => 'Senior Barista', 'img' => 'Niel_Barista.jpg'],
+                    ['name' => 'Nana', 'role' => 'Barista', 'img' => 'Nana_Barista.jpg'],
+                    ['name' => 'Jeje', 'role' => 'Kasir', 'img' => 'Jeje_Kasir.jpg'],
+                    ['name' => 'Jilu', 'role' => 'Waiter', 'img' => 'Jilu_waiter.jpg'],
+                    ['name' => 'Wina', 'role' => 'Waitress', 'img' => 'Wina_Waitres.jpg'],
+                    ['name' => 'Cece', 'role' => 'Chef', 'img' => 'Rere_Chef.jpg'],
+                    ['name' => 'Celia', 'role' => 'Chef', 'img' => 'Celia_Chef.jpg'],
                 ];
             @endphp
 
             @foreach($staffs as $staff)
-            <div class="min-w-70 md:min-w-[320px] snap-start group">
-                {{-- Foto Staf --}}
-                <div class="relative overflow-hidden aspect-3/4 mb-6 rounded-2xl shadow-sm group-hover:shadow-xl transition-all duration-500">
-                    <img src="{{ $staff['img'] }}" 
-                         class="w-full h-full object-cover grayscale group-hover:grayscale-0 group-hover:scale-105 transition-all duration-700" 
-                         alt="{{ $staff['name'] }}">
-                    
-                    <div class="absolute inset-0 bg-linear-to-t from-[#3C2A21]/80 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500 flex items-end justify-center pb-8">
-                        <div class="flex gap-4">
-                            <span class="text-white text-[10px] uppercase tracking-widest font-bold">View Profile</span>
-                        </div>
-                    </div>
-                </div>
-
-                {{-- Info Staf --}}
-                <div class="text-center">
-                    <h3 class="text-stone-800 font-bold uppercase tracking-widest text-sm mb-1 group-hover:text-[#A06040] transition-colors">
-                        {{ $staff['name'] }}
-                    </h3>
-                    <p class="text-stone-400 font-serif italic text-xs">
-                        {{ $staff['role'] }}
-                    </p>
-                </div>
+    {{-- Lebar dikurangi dari w-72 menjadi w-52 atau w-60 --}}
+    <div class="flex-none w-52 md:w-60 snap-start group">
+        
+        {{-- Tinggi gambar dikurangi dari h-[400px] menjadi h-64 (256px) --}}
+        <div class="relative overflow-hidden h-64 mb-4 rounded-xl shadow-sm group-hover:shadow-lg transition-all duration-500">
+            <img src="{{ asset('staff/' . $staff['img']) }}"
+                 class="w-full h-full object-cover grayscale group-hover:grayscale-0 group-hover:scale-105 transition-all duration-700"
+                 alt="{{ $staff['name'] }}">
+            
+            {{-- Overlay View Profile (Teks lebih kecil) --}}
+            <div class="absolute inset-0 bg-gradient-to-t from-stone-900/80 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500 flex items-end justify-center pb-4">
+                <span class="text-white text-[8px] uppercase tracking-tighter font-bold">View Profile</span>
             </div>
-            @endforeach
+        </div>
+
+        {{-- Info Staf (Ukuran teks diturunkan) --}}
+        <div class="text-center">
+            <h3 class="text-stone-800 font-bold uppercase tracking-wider text-xs mb-0.5">
+                {{ $staff['name'] }}
+            </h3>
+            <p class="text-stone-400 font-serif italic text-[10px]">
+                {{ $staff['role'] ?? 'Barista' }}
+            </p>
+        </div>
+    </div>
+@endforeach
         </div>
     </div>
 </section>

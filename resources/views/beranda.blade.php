@@ -2,6 +2,95 @@
 
 @section('content')
 
+{{-- SECTION: PROMO BANNER ALA SHOPEE --}}
+<section class="bg-[#FDFBF7] py-6 border-b border-stone-200">
+    <div class="max-w-275 mx-auto px-4 md:px-10">
+        
+        {{-- Slider Container --}}
+        <div id="shopeeSlider" class="flex overflow-x-auto snap-x snap-mandatory scrollbar-hide gap-6 pb-4 scroll-smooth">
+            
+            @php
+                // Daftar aset sesuai data folder Anda
+                $promos = [
+                    'promo1.png', 'promo2.png', 'promo3.png', 'promo4.png'
+                ];
+            @endphp
+
+            @foreach ($promos as $index => $promo)
+            {{-- Slide Item: Lebar diatur agar hampir memenuhi layar namun menyisakan sedikit ruang di samping --}}
+            <div class="flex-none w-full snap-center snap-always group">
+                {{-- Rasio aspek disesuaikan menjadi 3:1 agar sangat memanjang seperti di gambar --}}
+                <div class="relative overflow-hidden rounded-xl shadow-lg bg-white aspect-16/8">
+                <img src="{{ asset('img/' . $promo) }}"
+                    class="w-full h-full object-contain transition-transform duration-1000 group-hover:scale-105" 
+                    alt="Promo">
+                </div>
+            </div>
+            @endforeach
+
+        </div>
+
+        {{-- Indikator Titik (Dots) --}}
+        <div id="sliderDots" class="flex justify-center items-center gap-2.5 mt-4">
+            @foreach ($promos as $index => $promo)
+                <div class="dot h-1.5 w-1.5 rounded-full bg-stone-300 transition-all duration-300"></div>
+            @endforeach
+        </div>
+    </div>
+</section>
+
+<script>
+    const slider = document.getElementById('shopeeSlider');
+    const dots = document.querySelectorAll('.dot');
+    
+    function updateDots() {
+        const scrollLeft = slider.scrollLeft;
+        const items = slider.querySelectorAll('.flex-none');
+        if (items.length === 0) return;
+        
+        const itemWidth = items[0].offsetWidth + 24; // 24 adalah gap-6
+        const index = Math.round(scrollLeft / itemWidth);
+
+        dots.forEach((dot, i) => {
+            if (i === index) {
+                dot.classList.add('bg-[#EE4D2D]', 'w-6');
+                dot.classList.remove('bg-stone-300', 'w-1.5');
+            } else {
+                dot.classList.remove('bg-[#EE4D2D]', 'w-6');
+                dot.classList.add('bg-stone-300', 'w-1.5');
+            }
+        });
+    }
+
+    let isUserInteracting = false;
+
+    // Auto slide setiap 4 detik
+    let autoSlide = setInterval(() => {
+        if (isUserInteracting) return;
+
+        const items = slider.querySelectorAll('.flex-none');
+        if (items.length === 0) return;
+        const itemWidth = items[0].offsetWidth + 24;
+        
+        if (Math.ceil(slider.scrollLeft + slider.offsetWidth) >= slider.scrollWidth - 10) {
+            slider.scrollTo({ left: 0, behavior: 'smooth' });
+        } else {
+            slider.scrollBy({ left: itemWidth, behavior: 'smooth' });
+        }
+    }, 4000);
+
+    slider.addEventListener('touchstart', () => { isUserInteracting = true; }, {passive: true});
+    slider.addEventListener('mousedown', () => { isUserInteracting = true; });
+    slider.addEventListener('scroll', updateDots);
+    
+    updateDots();
+</script>
+
+<style>
+    .scrollbar-hide::-webkit-scrollbar { display: none; }
+    .scrollbar-hide { -ms-overflow-style: none; scrollbar-width: none; }
+</style>
+
 {{-- SECTION 1: PROMOS --}}
 <section class="bg-[#FDFBF7] pt-24 pb-24 border-b border-stone-100">
     <div class="max-w-7xl mx-auto px-6">
