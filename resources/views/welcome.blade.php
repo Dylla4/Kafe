@@ -17,7 +17,8 @@
 <!-- ================= NAVBAR ================= -->
 <nav class="bg-white/80 backdrop-blur-md shadow-sm sticky top-0 z-50">
   <div class="max-w-6xl mx-auto px-6 py-4 flex justify-between items-center">
-    <h1 class="text-2xl font-bold text-orange-700 tracking-wide">☕ Valeria Coffee</h1>
+      <span class="text-2xl font-bold tracking-tighter text-[#004d31]">VALERIA<span class="text-stone-800">COFFEE</span></span>
+  </div>
 
     <div class="flex items-center gap-4"> {{-- Gap dikurangi agar muat dua tombol --}}
       <div class="hidden md:flex gap-8 font-medium mr-4">

@@ -22,7 +22,7 @@ class AdminAuthController extends Controller
         // Menggunakan guard admin khusus
         if (Auth::guard('admin')->attempt($credentials)) {
             $request->session()->regenerate();
-            return redirect()->intended(route('admin.orders'));
+            return redirect()->intended(route('admin.dashboard'));
         }
 
         return back()->withErrors(['email' => 'Akses ditolak. Periksa email/password admin Anda.']);

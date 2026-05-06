@@ -8,301 +8,268 @@
     <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;600;700;800&display=swap" rel="stylesheet">
     <style>
         body { font-family: 'Plus Jakarta Sans', sans-serif; scroll-behavior: smooth; }
-        .animate-fade-in { animation: fadeIn 0.4s ease-out; }
-        @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+        .coffee-gradient { background: linear-gradient(135deg, #3C2A21 0%, #1A120B 100%); }
+        .input-focus:focus { border-color: #A06040; box-shadow: 0 0 0 4px rgba(160, 96, 64, 0.1); }
+        .animate-in { animation: slideUp 0.5s ease-out forwards; }
+        @keyframes slideUp { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
+        /* Menghilangkan arrow pada input number jika masih ada */
+        input::-webkit-outer-spin-button, input::-webkit-inner-spin-button { -webkit-appearance: none; margin: 0; }
     </style>
 </head>
-<body class="bg-stone-50 text-stone-800 p-4 md:p-12">
-    <div class="max-w-4xl mx-auto bg-white rounded-3xl shadow-2xl overflow-hidden border border-stone-100 animate-fade-in">
+<body class="bg-[#F9F8F6] text-stone-800 p-4 md:p-12">
+    <div class="max-w-4xl mx-auto animate-in">
         
-        {{-- Header Section --}}
-        <div class="p-8 pb-0 flex flex-col md:flex-row md:items-center justify-between gap-4">
-            <div>
-                <h1 class="text-3xl font-extrabold tracking-tight text-stone-900 flex items-center">
-                    <span class="mr-3 text-4xl">🛒</span> Keranjang <span class="text-orange-700 ml-2 italic">Saya</span>
-                </h1>
-                <p class="text-stone-400 text-sm mt-1">Selesaikan pesanan Valeria Coffee Anda</p>
-            </div>
-            <a href="{{ route('menu') }}" class="group inline-flex items-center px-6 py-3 bg-orange-50 text-orange-700 rounded-2xl font-bold text-sm hover:bg-orange-600 hover:text-white transition-all duration-300 shadow-sm">
-                <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-2 group-hover:rotate-90 transition-transform" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4" />
-                </svg>
-                Tambah Pesanan
+        {{-- Top Navigation --}}
+        <div class="flex items-center justify-between mb-8 px-4">
+            <a href="{{ url('/') }}" class="group flex items-center gap-2 text-[10px] font-black uppercase tracking-widest text-stone-400 hover:text-[#3C2A21] transition-all">
+                <span class="text-lg group-hover:-translate-x-1 transition-transform">←</span> Kembali ke Home
             </a>
+            <div class="text-[10px] font-black uppercase tracking-widest text-stone-300">Valeria Coffee</div>
         </div>
 
-        @if(!empty($cartItems) && count($cartItems) > 0)
-            <div class="p-8">
-                {{-- Table Section --}}
-                <div class="overflow-x-auto mb-10">
-                    <table class="w-full text-left">
-                        <thead class="border-b border-stone-100 text-stone-400 uppercase text-[10px] font-black tracking-widest">
-                            <tr>
-                                <th class="pb-4">Menu</th>
-                                <th class="pb-4 hidden md:table-cell">Harga</th>
-                                <th class="pb-4 text-center">Qty</th>
-                                <th class="pb-4 text-right">Subtotal</th>
-                            </tr>
-                        </thead>
-                        <tbody class="divide-y divide-stone-50">
-                            @php $total = 0; @endphp
-                            @foreach($cartItems as $id => $details)
-                                @php $total += $details['harga'] * $details['quantity']; @endphp
-                                <tr class="group">
-                                    <td class="py-5">
-                                        <div class="flex items-center gap-4">
-                                            <div class="w-16 h-16 shrink-0 bg-stone-100 rounded-2xl overflow-hidden border border-stone-100 group-hover:scale-105 transition-transform">
-                                                @if(isset($details['foto']) && $details['foto'])
-                                                    <img src="{{ asset($details['foto']) }}" class="w-full h-full object-cover">
-                                                @else
-                                                    <div class="w-full h-full flex items-center justify-center text-2xl bg-stone-50">☕</div>
-                                                @endif
-                                            </div>
-                                            <div>
-                                                <span class="block font-bold text-stone-800 uppercase text-sm tracking-tight">{{ $details['nama_menu'] }}</span>
-                                                <span class="text-xs text-orange-600 font-semibold md:hidden">Rp {{ number_format($details['harga'], 0, ',', '.') }}</span>
-                                            </div>
-                                        </div>
-                                    </td>
-                                    <td class="hidden md:table-cell text-stone-500 font-medium text-sm">
-                                        Rp {{ number_format($details['harga'], 0, ',', '.') }}
-                                    </td>
-                                    <td class="py-5 text-center">
-                                        <div class="inline-flex items-center gap-3 bg-stone-50 p-2 rounded-2xl border border-stone-100">
-                                            <button type="button" onclick="updateQuantity('{{ $id }}', 'decrease')" class="w-8 h-8 flex items-center justify-center rounded-xl bg-white border border-stone-200 text-stone-600 hover:bg-orange-50 hover:text-orange-700 transition-all shadow-sm active:scale-90 font-bold">-</button>
-                                            <span class="font-black text-stone-800 text-sm min-w-5">{{ $details['quantity'] }}</span>
-                                            <button type="button" onclick="updateQuantity('{{ $id }}', 'increase')" class="w-8 h-8 flex items-center justify-center rounded-xl bg-stone-900 text-white hover:bg-orange-700 transition-all shadow-md active:scale-90 font-bold">+</button>
-                                        </div>
-                                    </td>
-                                    <td class="text-right font-bold text-stone-900">
-                                        Rp {{ number_format($details['harga'] * $details['quantity'], 0, ',', '.') }}
-                                    </td>
+        <div class="bg-white rounded-[3rem] shadow-2xl shadow-stone-200/50 overflow-hidden border border-stone-100">
+            {{-- Header Section --}}
+            <div class="p-10 border-b border-stone-50 flex flex-col md:flex-row md:items-center justify-between gap-6">
+                <div>
+                    <h1 class="text-4xl font-black tracking-tighter text-[#3C2A21] uppercase">
+                        Keranjang <span class="text-orange-700 italic">Saya</span>
+                    </h1>
+                    <p class="text-stone-400 text-xs font-bold uppercase tracking-widest mt-2">Review your selected caffeine picks</p>
+                </div>
+                <div class="flex items-center gap-3">
+                    <div class="bg-orange-50 text-orange-700 px-5 py-2 rounded-2xl text-[10px] font-black uppercase tracking-widest">
+                        {{ count($cartItems ?? []) }} Items
+                    </div>
+                </div>
+            </div>
+
+            @if(!empty($cartItems) && count($cartItems) > 0)
+                <div class="p-4 md:p-10">
+                    {{-- Table Section --}}
+                    <div class="overflow-x-auto mb-12">
+                        <table class="w-full text-left border-separate border-spacing-y-4">
+                            <thead>
+                                <tr class="text-stone-400 uppercase text-[9px] font-black tracking-[0.2em] px-4">
+                                    <th class="pb-2 pl-4">Produk</th>
+                                    <th class="pb-2 hidden md:table-cell">Harga Satuan</th>
+                                    <th class="pb-2 text-center">Kuantitas</th>
+                                    <th class="pb-2 text-right pr-4">Subtotal</th>
                                 </tr>
-                            @endforeach
-                        </tbody>
-                    </table>
+                            </thead>
+                            <tbody class="divide-y divide-stone-50">
+                                @php $total = 0; @endphp
+                                @foreach($cartItems as $id => $details)
+                                    @php $total += $details['harga'] * $details['quantity']; @endphp
+                                    <tr class="group bg-stone-50/40 rounded-3xl overflow-hidden hover:bg-white hover:shadow-xl hover:shadow-stone-100 transition-all">
+                                        <td class="py-6 pl-4 rounded-l-[2rem]">
+                                            <div class="flex items-center gap-5">
+                                                <div class="w-20 h-20 shrink-0 bg-white rounded-2xl overflow-hidden shadow-sm border border-stone-100 p-1">
+                                                    @if(isset($details['foto']) && $details['foto'])
+                                                        <img src="{{ asset($details['foto']) }}" class="w-full h-full object-cover rounded-xl">
+                                                    @else
+                                                        <div class="w-full h-full flex items-center justify-center text-3xl bg-stone-50 rounded-xl">☕</div>
+                                                    @endif
+                                                </div>
+                                                <div>
+                                                    <span class="block font-black text-[#3C2A21] uppercase text-sm tracking-tight mb-1">{{ $details['nama_menu'] }}</span>
+                                                    <span class="text-[10px] text-orange-600 font-bold uppercase tracking-widest md:hidden">Rp {{ number_format($details['harga'], 0, ',', '.') }}</span>
+                                                </div>
+                                            </div>
+                                        </td>
+                                        <td class="hidden md:table-cell text-stone-400 font-bold text-xs uppercase tracking-wider">
+                                            Rp {{ number_format($details['harga'], 0, ',', '.') }}
+                                        </td>
+                                        <td class="py-6 text-center">
+                                            <div class="inline-flex items-center gap-4 bg-white p-2 rounded-2xl shadow-sm border border-stone-100">
+                                                <button type="button" onclick="updateQuantity('{{ $id }}', 'decrease')" class="w-8 h-8 flex items-center justify-center rounded-xl bg-stone-50 text-stone-600 hover:bg-red-50 hover:text-red-600 transition-all active:scale-90 font-black">-</button>
+                                                <span class="font-black text-[#3C2A21] text-sm min-w-[20px]">{{ $details['quantity'] }}</span>
+                                                <button type="button" onclick="updateQuantity('{{ $id }}', 'increase')" class="w-8 h-8 flex items-center justify-center rounded-xl bg-[#3C2A21] text-white hover:bg-orange-800 transition-all shadow-md active:scale-90 font-black">+</button>
+                                            </div>
+                                        </td>
+                                        <td class="text-right pr-4 rounded-r-[2rem]">
+                                            <span class="font-black text-[#3C2A21] text-base">Rp {{ number_format($details['harga'] * $details['quantity'], 0, ',', '.') }}</span>
+                                        </td>
+                                    </tr>
+                                @endforeach
+                            </tbody>
+                        </table>
+                    </div>
+
+                    {{-- Summary & Checkout Form --}}
+                    <div class="grid grid-cols-1 lg:grid-cols-12 gap-10">
+                        <div class="lg:col-span-7">
+                            <form id="form-pembayaran" action="{{ route('checkout.proses') }}" method="POST" class="space-y-8">
+                                @csrf
+                                <div class="flex items-center gap-3 mb-6">
+                                    <div class="w-1 bg-orange-700 h-6 rounded-full"></div>
+                                    <h3 class="text-[11px] font-black text-[#3C2A21] uppercase tracking-[0.2em]">Informasi Pengiriman</h3>
+                                </div>
+                                
+                                <div class="grid grid-cols-1 md:grid-cols-2 gap-5">
+                                    <div class="md:col-span-2">
+                                        <label class="block text-[9px] font-black text-stone-400 mb-2 uppercase tracking-widest ml-1">Nama Pemesan</label>
+                                        <input type="text" name="nama_pemesan" value="{{ auth()->user()->name ?? 'Pelanggan' }}" readonly class="w-full p-4 rounded-2xl border-none bg-stone-50 text-sm font-bold text-stone-500 shadow-inner outline-none">
+                                    </div>
+
+                                    <div>
+                                        <label class="block text-[9px] font-black text-stone-400 mb-2 uppercase tracking-widest ml-1">Tanggal Pesan</label>
+                                        <input type="date" name="tanggal_booking" id="tanggal_booking" min="{{ date('Y-m-d') }}" value="{{ date('Y-m-d') }}" class="w-full p-4 border border-stone-100 rounded-2xl text-sm bg-stone-50 focus:bg-white input-focus shadow-sm transition-all font-bold" required>
+                                    </div>
+
+                                    <div>
+                                        <label class="block text-[9px] font-black text-stone-400 mb-2 uppercase tracking-widest ml-1" id="label-jam">Waktu Pengambilan</label>
+                                        <select name="jam_booking" id="jam_booking" class="w-full p-4 border border-stone-100 rounded-2xl text-sm bg-stone-50 focus:bg-white input-focus shadow-sm transition-all font-bold cursor-pointer" required>
+                                            <option value="" disabled selected>Pilih Jam</option>
+                                            @for ($i = 9; $i <= 22; $i++)
+                                                @php $t1 = str_pad($i, 2, '0', STR_PAD_LEFT) . ':00'; $t2 = str_pad($i, 2, '0', STR_PAD_LEFT) . ':30'; @endphp
+                                                <option value="{{ $t1 }}">{{ $t1 }}</option>
+                                                @if($i < 22) <option value="{{ $t2 }}">{{ $t2 }}</option> @endif
+                                            @endfor
+                                        </select>
+                                    </div>
+
+                                    <div class="md:col-span-2">
+                                        <label class="block text-[9px] font-black text-stone-400 mb-2 uppercase tracking-widest ml-1">Metode Layanan</label>
+                                        <div class="grid grid-cols-3 gap-3">
+                                            <label class="cursor-pointer">
+                                                <input type="radio" name="jenis_pesanan" value="dine_in" checked onchange="toggleLayanan()" class="hidden peer">
+                                                <div class="text-center p-3 rounded-2xl border border-stone-100 bg-stone-50 peer-checked:bg-orange-700 peer-checked:text-white peer-checked:border-orange-700 transition-all font-bold text-[10px] uppercase tracking-tighter shadow-sm">🍽️ Makan</div>
+                                            </label>
+                                            <label class="cursor-pointer">
+                                                <input type="radio" name="jenis_pesanan" value="take_away" onchange="toggleLayanan()" class="hidden peer">
+                                                <div class="text-center p-3 rounded-2xl border border-stone-100 bg-stone-50 peer-checked:bg-orange-700 peer-checked:text-white peer-checked:border-orange-700 transition-all font-bold text-[10px] uppercase tracking-tighter shadow-sm">🥡 Ambil</div>
+                                            </label>
+                                            <label class="cursor-pointer">
+                                                <input type="radio" name="jenis_pesanan" value="delivery" onchange="toggleLayanan()" class="hidden peer">
+                                                <div class="text-center p-3 rounded-2xl border border-stone-100 bg-stone-50 peer-checked:bg-orange-700 peer-checked:text-white peer-checked:border-orange-700 transition-all font-bold text-[10px] uppercase tracking-tighter shadow-sm">🚚 Antar</div>
+                                            </label>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div id="section-alamat" class="hidden animate-in">
+                                    <label class="block text-[9px] font-black text-stone-400 mb-2 uppercase tracking-widest ml-1">Alamat Lengkap</label>
+                                    <textarea name="alamat" id="input-alamat" rows="2" class="w-full p-4 border border-stone-100 rounded-2xl text-sm bg-stone-50 focus:bg-white input-focus shadow-sm transition-all" placeholder="Contoh: Jl. Kopi No. 123..."></textarea>
+                                </div>
+
+                                <div class="grid grid-cols-1 md:grid-cols-2 gap-5">
+                                    <div>
+                                        <label class="block text-[9px] font-black text-stone-400 mb-2 uppercase tracking-widest ml-1">WhatsApp</label>
+                                        <input type="text" name="nomor_wa" value="{{ auth()->user()->nomor_wa ?? '' }}" placeholder="628..." class="w-full p-4 rounded-2xl border border-stone-100 bg-stone-50 focus:bg-white input-focus shadow-sm transition-all text-sm font-bold" required>
+                                    </div>
+                                    <div>
+                                        <label class="block text-[9px] font-black text-stone-400 mb-2 uppercase tracking-widest ml-1">Pembayaran</label>
+                                        <select name="metode_pembayaran" class="w-full p-4 border border-stone-100 rounded-2xl text-sm bg-stone-50 focus:bg-white input-focus shadow-sm transition-all font-bold">
+                                            <option value="cash">💵 Cash / Kasir</option>
+                                            <option value="qris">📱 QRIS / E-Wallet</option>
+                                        </select>
+                                    </div>
+                                </div>
+                            </form>
+                        </div>
+
+                        {{-- Final Total Card --}}
+                        <div class="lg:col-span-5">
+                            <div class="coffee-gradient p-8 rounded-[2.5rem] text-white shadow-2xl shadow-orange-900/20 sticky top-10">
+                                <h4 class="text-[10px] font-black uppercase tracking-[0.3em] opacity-60 mb-8 border-b border-white/10 pb-4">Ringkasan Pesanan</h4>
+                                
+                                <div class="space-y-4 mb-10">
+                                    <div class="flex justify-between items-center text-sm">
+                                        <span class="opacity-70 font-medium">Subtotal Menu</span>
+                                        <span class="font-bold">Rp {{ number_format($total, 0, ',', '.') }}</span>
+                                    </div>
+                                    <div class="flex justify-between items-center text-sm">
+                                        <span class="opacity-70 font-medium">Pajak (0%)</span>
+                                        <span class="font-bold">Rp 0</span>
+                                    </div>
+                                    <div class="h-px bg-white/10 w-full my-4"></div>
+                                    <div class="flex justify-between items-end">
+                                        <span class="text-xs font-black uppercase tracking-widest">Total Bayar</span>
+                                        <span class="text-2xl font-black">Rp {{ number_format($total, 0, ',', '.') }}</span>
+                                    </div>
+                                </div>
+
+                                <button type="submit" form="form-pembayaran" class="w-full py-5 bg-white text-[#1A120B] rounded-2xl font-black uppercase tracking-[0.2em] text-[10px] hover:bg-orange-50 shadow-xl transition-all active:scale-[0.98] flex items-center justify-center gap-3 group">
+                                    <span>Konfirmasi Pesanan</span>
+                                    <span class="text-lg group-hover:translate-x-1 transition-transform">→</span>
+                                </button>
+                                
+                                <p class="text-[9px] text-center mt-6 opacity-40 font-bold uppercase tracking-widest italic">
+                                    *Pastikan pesanan sudah sesuai
+                                </p>
+                            </div>
+                        </div>
+                    </div>
                 </div>
-
-                {{-- Total Banner --}}
-                <div class="bg-stone-900 rounded-3xl p-6 mb-10 flex justify-between items-center text-white shadow-lg">
-                    <span class="text-xs font-black uppercase tracking-[0.3em] opacity-60">Total Keseluruhan</span>
-                    <span class="text-3xl font-black">Rp {{ number_format($total, 0, ',', '.') }}</span>
+            @else
+                {{-- Empty State --}}
+                <div class="text-center py-32 px-8">
+                    <div class="relative inline-block mb-10">
+                        <div class="absolute -inset-6 bg-stone-100 rounded-full blur-2xl opacity-50"></div>
+                        <span class="relative text-8xl">🛒</span>
+                    </div>
+                    <h2 class="text-3xl font-black text-[#3C2A21] uppercase tracking-tighter mb-3">Keranjang Kosong</h2>
+                    <p class="text-stone-400 mb-12 max-w-xs mx-auto text-sm font-medium">Sepertinya Anda belum memilih menu favorit..</p>
+                    <a href="{{ url('/menu') }}" class="inline-block px-14 py-5 bg-[#3C2A21] text-white rounded-full font-black uppercase tracking-[0.2em] text-[10px] hover:bg-black transition-all shadow-2xl active:scale-95">Mulai Belanja</a>
                 </div>
-
-                {{-- Form Section --}}
-                <form id="form-pembayaran" class="bg-orange-50/50 p-8 rounded-3xl border border-orange-100 space-y-6">
-                    @csrf
-                    <h3 class="text-xs font-black text-orange-900 uppercase tracking-[0.2em] flex items-center mb-4">
-                        <span class="bg-orange-200 p-1.5 rounded-lg mr-3">📋</span> Rincian Pengiriman & Waktu
-                    </h3>
-                    
-                    <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-                        <div class="md:col-span-2">
-                            <label class="block text-[10px] font-black text-orange-900/50 mb-2 uppercase tracking-widest">Nama Pemesan</label>
-                            <input type="text" name="nama_pemesan" value="{{ auth()->user()->name ?? 'Pelanggan' }}" readonly class="w-full p-4 rounded-2xl border-none bg-white text-sm font-bold text-stone-400 cursor-not-allowed shadow-sm">
-                        </div>
-
-                        <div>
-                            <label class="block text-[10px] font-black text-orange-900 mb-2 uppercase tracking-widest">Tanggal Booking</label>
-                            <input type="date" name="tanggal_booking" id="tanggal_booking" min="{{ date('Y-m-d') }}" max="{{ date('Y-m-d', strtotime('+7 days')) }}" value="{{ date('Y-m-d') }}" class="w-full p-4 border border-stone-200 rounded-2xl text-sm bg-white shadow-sm outline-none focus:ring-2 focus:ring-orange-500 transition-all font-bold" required>
-                        </div>
-
-                        <div>
-                            <label id="label-jam" class="block text-[10px] font-black text-orange-900 mb-2 uppercase tracking-widest">Jam Booking</label>
-                            <select name="jam_booking" id="jam_booking" class="w-full p-4 border border-stone-200 rounded-2xl text-sm bg-white shadow-sm outline-none focus:ring-2 focus:ring-orange-500 transition-all font-bold cursor-pointer" required>
-                                <option value="" disabled selected>Pilih Jam</option>
-                                @for ($i = 9; $i <= 22; $i++)
-                                    @php 
-                                        $t1 = str_pad($i, 2, '0', STR_PAD_LEFT) . ':00';
-                                        $t2 = str_pad($i, 2, '0', STR_PAD_LEFT) . ':30';
-                                    @endphp
-                                    <option value="{{ $t1 }}">{{ $t1 }}</option>
-                                    @if($i < 22) <option value="{{ $t2 }}">{{ $t2 }}</option> @endif
-                                @endfor
-                            </select>
-                        </div>
-
-                        <div>
-                            <label class="block text-[10px] font-black text-orange-900 mb-2 uppercase tracking-widest">Metode Layanan</label>
-                            <select name="jenis_pesanan" id="jenis_pesanan" onchange="toggleLayanan()" class="w-full p-4 border border-stone-200 rounded-2xl text-sm bg-white shadow-sm outline-none focus:ring-2 focus:ring-orange-500 font-bold cursor-pointer">
-                                <option value="dine_in">🍽️ Makan di Tempat</option>
-                                <option value="delivery">🚚 Delivery</option>
-                                <option value="take_away">🥡 Take Away (Bawa Pulang)</option>
-                            </select>
-                        </div>
-
-                        <div id="section-meja">
-                            <label class="block text-[10px] font-black text-orange-900 mb-2 uppercase tracking-widest">Nomor Meja</label>
-                            <input type="text" name="nomor_meja" value="{{ $mejaOtomatis ?? '01' }}" readonly class="w-full p-4 border border-stone-200 rounded-2xl bg-white font-black text-orange-700 text-center text-lg shadow-sm">
-                        </div>
-
-                        <div id="section-takeaway" class="hidden md:col-span-1 bg-orange-100/50 p-4 rounded-2xl border border-orange-200 animate-fade-in">
-                            <p class="text-[10px] text-orange-800 font-black uppercase tracking-widest">Info:</p>
-                            <p class="text-xs text-stone-600 mt-1 font-medium">Pesanan akan dikemas rapi. Silakan ambil di kasir sesuai jam booking.</p>
-                        </div>
-                    </div>
-
-                    <div id="section-alamat" class="hidden animate-fade-in">
-                        <label class="block text-[10px] font-black text-orange-900 mb-2 uppercase tracking-widest">Alamat Pengiriman</label>
-                        <textarea name="alamat" rows="3" class="w-full p-4 border border-stone-200 rounded-2xl text-sm bg-white shadow-sm focus:ring-2 focus:ring-orange-500 outline-none" placeholder="Tulis alamat lengkap Anda..."></textarea>
-                    </div>
-
-                    <div>
-                        <label class="block text-[10px] font-black text-orange-900 mb-2 uppercase tracking-widest">Metode Pembayaran</label>
-                        <select name="metode_pembayaran" id="metode_pembayaran" class="w-full p-4 border border-stone-200 rounded-2xl text-sm bg-white shadow-sm font-black text-stone-700">
-                            <option value="cash">💵 Bayar Langsung di Kasir</option>
-                            <option value="qris">📱 QRIS</option>
-                        </select>
-                    </div>
-
-                    <div>
-                        <label class="block text-[10px] font-black text-orange-900 mb-2 uppercase tracking-widest">Konfirmasi WhatsApp (Otomatis)</label>
-                        <input type="number" name="nomor_wa" value="{{ auth()->user()->nomor_wa }}" class="w-full p-4 rounded-2xl border border-stone-200 bg-white text-sm font-bold shadow-sm outline-none focus:ring-2 focus:ring-orange-500" placeholder="Contoh: 62812345678" required>
-                    </div>
-
-                    <div class="pt-6 grid grid-cols-1 gap-4">
-                        <button type="submit" id="btn-submit" class="w-full py-5 bg-orange-700 text-white rounded-2xl font-black uppercase tracking-[0.2em] hover:bg-orange-800 shadow-xl transition-all active:scale-[0.98] disabled:bg-stone-300">
-                            Konfirmasi Pesanan Sekarang
-                        </button>
-                        <a href="{{ route('menu') }}" class="text-center text-xs font-bold text-stone-400 uppercase tracking-widest hover:text-orange-700 transition-colors py-2">
-                            ← Kembali Tambah Menu
-                        </a>
-                    </div>
-                </form>
-            </div>
-        @else
-            <div class="text-center py-32 px-8">
-                <div class="inline-flex items-center justify-center w-24 h-24 bg-stone-50 rounded-full text-5xl mb-6 shadow-inner">☕</div>
-                <h2 class="text-2xl font-black text-stone-800 uppercase tracking-widest mb-2">Keranjang Kosong</h2>
-                <p class="text-stone-400 mb-10 max-w-xs mx-auto text-sm">Sepertinya Anda belum memilih menu favorit.</p>
-                <a href="{{ route('menu') }}" class="inline-block px-12 py-5 bg-orange-700 text-white rounded-2xl font-black uppercase tracking-widest hover:bg-orange-800 transition-all shadow-2xl active:scale-95">Mulai Belanja</a>
-            </div>
-        @endif
+            @endif
+        </div>
     </div>
 
     <script>
-        function toggleLayanan() {
-            const layanan = document.getElementById('jenis_pesanan').value;
-            const sectionMeja = document.getElementById('section-meja');
-            const sectionAlamat = document.getElementById('section-alamat');
-            const sectionTakeAway = document.getElementById('section-takeaway');
-            const labelJam = document.getElementById('label-jam');
-            const selectPembayaran = document.querySelector('select[name="metode_pembayaran"]');
-            const opsiCash = selectPembayaran.querySelector('option[value="cash"]');
-
-            sectionMeja.classList.add('hidden');
-            sectionAlamat.classList.add('hidden');
-            sectionTakeAway.classList.add('hidden');
-
-            if (layanan === 'dine_in') {
-                sectionMeja.classList.remove('hidden');
-                labelJam.innerText = 'Jam Booking';
-                opsiCash.disabled = false;
-                opsiCash.style.display = 'block';
-            } else if (layanan === 'delivery') {
-                sectionAlamat.classList.remove('hidden');
-                labelJam.innerText = 'Jam Delivery';
-                selectPembayaran.value = 'qris'; 
-                opsiCash.disabled = true;
-                opsiCash.style.display = 'none';
-            } else if (layanan === 'take_away') {
-                sectionTakeAway.classList.remove('hidden');
-                labelJam.innerText = 'Jam Pengambilan';
-                opsiCash.disabled = false;
-                opsiCash.style.display = 'block';
-            }
-        }
-
+        // 1. Fungsi Update Kuantitas (+ dan -)
         function updateQuantity(id, action) {
-    // Tentukan URL secara dinamis berdasarkan tombol yang diklik
-    let url = action === 'increase' ? `/cart/add/${id}` : `/cart/decrease/${id}`;
-
-    fetch(url, {
-        method: 'POST',
-        headers: { 
-            'X-CSRF-TOKEN': '{{ csrf_token() }}', 
-            'Content-Type': 'application/json', 
-            'Accept': 'application/json' 
-        }
-    })
-    .then(async res => {
-        if (res.ok) {
-            window.location.reload(); // Refresh halaman jika berhasil
-        } else {
-            const data = await res.json();
-            alert(data.error || "Gagal memperbarui jumlah.");
-        }
-    })
-    .catch(() => alert("Terjadi kesalahan koneksi ke server."));
-}
-
-        function filterJam() {
-            const sekarang = new Date();
-            const selectJam = document.getElementById('jam_booking');
-            const inputTgl = document.getElementById('tanggal_booking');
-            const tglPilihan = inputTgl.value;
-            const tglHariIni = sekarang.toISOString().split('T')[0];
-            const options = selectJam.options;
-
-            for (let i = 1; i < options.length; i++) {
-                const [jam, menit] = options[i].value.split(':');
-                const waktuOpsi = new Date();
-                waktuOpsi.setHours(parseInt(jam), parseInt(menit), 0);
-                if (tglPilihan === tglHariIni && waktuOpsi < sekarang) {
-                    options[i].disabled = true;
-                    options[i].style.display = 'none';
-                } else {
-                    options[i].disabled = false;
-                    options[i].style.display = 'block';
-                }
-            }
-        }
-
-        document.getElementById('form-pembayaran')?.addEventListener('submit', function(e) {
-            e.preventDefault();
-            const btn = document.getElementById('btn-submit');
-            const originalText = btn.innerHTML;
-            
-            btn.disabled = true;
-            btn.innerHTML = `<span class="flex items-center justify-center"><svg class="animate-spin h-5 w-5 mr-3" viewBox="0 0 24 24"><circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle><path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z"></path></svg> Memproses...</span>`;
-
-            fetch("{{ route('order.simpan') }}", {
-                method: "POST",
-                body: new FormData(this),
-                headers: { "X-CSRF-TOKEN": "{{ csrf_token() }}", "Accept": "application/json" }
+            fetch(`/cart/update/${id}`, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'X-CSRF-TOKEN': '{{ csrf_token() }}',
+                    'Accept': 'application/json'
+                },
+                body: JSON.stringify({ action: action })
             })
-            .then(async res => {
-                const data = await res.json();
-                if (!res.ok) throw data; // Lempar data error jika status bukan 2xx
-                return data;
-            })
+            .then(response => response.json())
             .then(data => {
                 if (data.success) {
-                    const metode = document.querySelector('select[name="metode_pembayaran"]').value;
-                    window.location.href = (metode === 'qris') 
-                        ? "/payment/" + data.order_id 
-                        : "/order/konfirmasi/" + data.order_id;
+                    window.location.reload();
+                } else {
+                    alert('Gagal memperbarui item.');
                 }
             })
-            .catch(err => {
-                btn.disabled = false;
-                btn.innerHTML = originalText;
-                
-                // Tampilkan pesan error validasi jika ada
-                if (err.errors) {
-                    let errors = Object.values(err.errors).flat().join('\n');
-                    alert("Validasi Gagal:\n" + errors);
-                } else {
-                    alert(err.error || "Terjadi kesalahan pada server.");
-                }
+            .catch(error => {
+                console.error('Error:', error);
+                alert('Terjadi kesalahan sistem.');
             });
-        });
+        }
 
-        window.onload = function() {
-            filterJam();
-            toggleLayanan();
-        };
-        document.getElementById('tanggal_booking')?.addEventListener('change', filterJam);
+        // 2. Fungsi Toggle Layanan
+        function toggleLayanan() {
+            const layanan = document.querySelector('input[name="jenis_pesanan"]:checked').value;
+            const sectionAlamat = document.getElementById('section-alamat');
+            const inputAlamat = document.getElementById('input-alamat');
+            const labelJam = document.getElementById('label-jam');
+            const opsiCash = document.querySelector('option[value="cash"]');
+            const selectMetode = document.querySelector('select[name="metode_pembayaran"]');
+
+            // Reset Default
+            sectionAlamat.classList.add('hidden');
+            inputAlamat.required = false;
+            opsiCash.disabled = false;
+            opsiCash.style.display = 'block';
+
+            if (layanan === 'dine_in') {
+                labelJam.innerText = 'Jam Booking Meja';
+            } else if (layanan === 'take_away') {
+                labelJam.innerText = 'Jam Ambil di Kasir';
+            } else if (layanan === 'delivery') {
+                labelJam.innerText = 'Jam Pengantaran';
+                sectionAlamat.classList.remove('hidden');
+                inputAlamat.required = true; // Alamat wajib jika delivery
+                selectMetode.value = 'qris'; // Delivery wajib bayar online/qris
+                opsiCash.disabled = true;
+                opsiCash.style.display = 'none';
+            }
+        }
     </script>
 </body>
 </html>

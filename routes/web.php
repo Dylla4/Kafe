@@ -55,6 +55,16 @@ Route::middleware('auth:web')->group(function () {
     
     // PERBAIKAN UTAMA: Nama rute diubah menjadi 'history' agar sesuai dengan script Blade Anda
     Route::get('/history', [OrderController::class, 'history'])->name('order.history');
+    Route::post('/cart/update/{id}', [OrderController::class, 'updateCart'])->name('cart.update');
+
+    // Pastikan barisnya terlihat seperti ini
+    Route::post('/checkout/proses', [App\Http\Controllers\OrderController::class, 'prosesCheckout'])
+        ->name('checkout.proses');
+
+    Route::get('/invoice/{id}', function ($id) {
+        $order = \App\Models\Order::findOrFail($id);
+        return view('invoice', compact('order'));
+    })->name('invoice.show');
 
     Route::get('/payment/{id}', [OrderController::class, 'showPayment'])->name('order.payment');
     Route::post('/payment/confirm/{id}', [OrderController::class, 'confirmPayment'])->name('payment.confirm');
@@ -74,17 +84,28 @@ Route::middleware('auth:web')->group(function () {
 | 4. AREA ADMIN (GUARD: ADMIN)
 |--------------------------------------------------------------------------
 */
-    Route::prefix('admin')->group(function () {
+Route::prefix('admin')->group(function () {
+    
     // Login Admin
     Route::get('/login', [AdminAuthController::class, 'showLogin'])->name('admin.login');
     Route::post('/login', [AdminAuthController::class, 'login'])->name('admin.login.submit');
 
     // Admin Terproteksi
     Route::middleware('auth:admin')->group(function () {
-    Route::get('/orders', [AdminOrderController::class, 'index'])->name('admin.orders');
-    //Route::post('/orders/{id}/status', [AdminOrderController::class, 'nextStatus'])->name('admin.orders.status');
-    Route::post('/admin/orders/{id}/status', [OrderController::class, 'updateStatus'])->name('admin.orders.status');
-    Route::delete('/orders/{id}', [AdminOrderController::class, 'destroy'])->name('admin.orders.destroy');
-    Route::post('/logout', [AdminAuthController::class, 'logout'])->name('admin.logout');
+        
+        // Tambahkan rute dashboard yang hilang ini
+        Route::get('/dashboard', [AdminOrderController::class, 'dashboard'])->name('admin.dashboard');
+
+        Route::get('/orders', [AdminOrderController::class, 'index'])->name('admin.orders');
+        
+        // Perbaikan: Hapus prefix '/admin' di dalam parameter URL karena sudah ada di Route::prefix('admin')
+        Route::post('/orders/{id}/status', [AdminOrderController::class, 'updateStatus'])->name('admin.orders.status');
+
+        Route::get('/reviews', [AdminOrderController::class, 'reviews'])->name('admin.reviews');
+        
+        Route::get('/report', [AdminOrderController::class, 'report'])->name('admin.report');
+
+        Route::delete('/orders/{id}', [AdminOrderController::class, 'destroy'])->name('admin.orders.destroy');
+        Route::post('/logout', [AdminAuthController::class, 'logout'])->name('admin.logout');
     });
 });

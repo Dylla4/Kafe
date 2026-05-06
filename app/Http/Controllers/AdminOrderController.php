@@ -4,64 +4,110 @@ namespace App\Http\Controllers;
 
 use App\Models\Order;
 use Illuminate\Http\Request;
-use App\Http\Controllers\Controller;
-use Illuminate\Support\Facades\DB; // WAJIB TAMBAHKAN INI agar DB::raw bisa jalan
+use Carbon\Carbon;
+use Illuminate\Http\RedirectResponse;
+use Illuminate\View\View;
 
 class AdminOrderController extends Controller
 {
-public function index()
-{
-    // 1. Ambil semua data pesanan untuk tabel utama
-    $orders = Order::latest()->get();
+    /**
+     * Dashboard Overview (Grafik & Statistik)
+     */
+    public function dashboard(): View
+    {
+        // Menggunakan Order::query() membantu indexing Intelephense
+        $totalOrders = Order::query()->count('*'); 
+        $today = Carbon::today()->toDateString();
+        
+        // Menghitung jumlah pesanan hari ini dengan parameter eksplisit
+        //$ordersTodayCount = Order::query()
 
-    // 2. Ambil data pesanan KHUSUS hari ini (sebagai koleksi/collection)
-    // Ini agar bisa di-count() dan di-sum() di Blade kamu
-    $ordersToday = Order::whereDate('created_at', \Carbon\Carbon::today())->get();
+        $ordersTodayCount = Order::where('created_at', '>=', $today . ' 00:00:00')->count();
+        
+        $recentOrders = Order::latest()->limit(5)->get();
 
-    // 3. Data Grafik Per Jam
-    $hourlyData = Order::select(
-        DB::raw('HOUR(created_at) as jam'),
-        DB::raw('COUNT(*) as total')
-    )
-    ->whereDate('created_at', \Carbon\Carbon::today())
-    ->groupBy('jam')
-    ->orderBy('jam')
-    ->get();
+        // Statistik per jam
+        $hourlyData = Order::query()
+            ->selectRaw('HOUR(created_at) as jam, COUNT(*) as total')
+            ->whereDate('created_at', '=', $today)
+            ->groupBy('jam')
+            ->orderBy('jam', 'asc')
+            ->get();
 
-    // 4. Data Grafik Per Bulan
-    $monthlyData = Order::select(
-        DB::raw('MONTH(created_at) as bulan'),
-        DB::raw('COUNT(*) as total')
-    )
-    ->whereYear('created_at', date('Y'))
-    ->groupBy('bulan')
-    ->orderBy('bulan')
-    ->get();
+        // Statistik per bulan$recentOrders
+        $currentYear = (int) Carbon::now()->year;
+        $monthlyData = Order::query()
+            ->selectRaw('MONTH(created_at) as bulan, COUNT(*) as total')
+            ->whereYear('created_at', '=', $currentYear)
+            ->groupBy('bulan')
+            ->orderBy('bulan', 'asc')
+            ->get();
 
-    // Kirim SEMUA variabel ke view
-    return view('admin.orders', compact('orders', 'ordersToday', 'hourlyData', 'monthlyData'));
-}
+        return view('admin.dashboard', compact(
+            'totalOrders', 
+            'ordersTodayCount', 
+            'recentOrders', 
+            'hourlyData', 
+            'monthlyData'
+        ));
+    }
 
-    // Ganti fungsi nextStatus menjadi ini:
-public function updateStatus(Request $request, $id)
-{
-    $order = Order::findOrFail($id);
-    
-    // Validasi agar status yang masuk sesuai dengan pilihan yang ada
-    $request->validate([
-        'status' => 'required|in:diproses,siap,sukses'
-    ]);
+    /**
+     * List Data Pesanan (Tabel)
+     */
+    public function index(): View
+    {
+        $orders = Order::query()->latest()->paginate(10);
+        return view('admin.order', compact('orders'));
+    }
 
-    $order->status = $request->status;
-    $order->save();
+    /**
+     * Update Status Pesanan
+     */
+    public function updateStatus(Request $request, int $id): RedirectResponse
+    {
+        $order = Order::findOrFail($id);
 
-    return back()->with('success', 'Status pesanan #' . $id . ' berhasil diubah ke ' . $request->status);
-}
+        $request->validate([
+            'status' => 'required|in:diproses,siap,sukses'
+        ]);
 
-    public function destroy($id)
+        $order->status = $request->status;
+        $order->save();
+
+        return back()->with('success', "Status pesanan #{$id} berhasil diperbarui.");
+    }
+
+    /**
+     * Hapus Pesanan
+     */
+    public function destroy(int $id): RedirectResponse
     {
         $order = Order::findOrFail($id);
         $order->delete();
-        return redirect()->back()->with('success', 'Pesanan berhasil dihapus');
+
+        return back()->with('success', 'Pesanan berhasil dihapus.');
     }
-} // HANYA SATU KURUNG TUTUP DI AKHIR FILE
+
+    public function reviews()
+{
+    // Jika Anda punya model Review, bisa ambil data di sini
+    // $reviews = Review::latest()->get();
+    // return view('admin.reviews', compact('reviews'));
+
+    return view('admin.reviews'); // Sementara tampilkan view saja
+}
+
+public function report()
+{
+    // Mengambil total penjualan per bulan untuk tahun ini
+    $salesData = Order::selectRaw('MONTH(created_at) as month, SUM(total_bayar) as total')
+        ->whereYear('created_at', date('Y'))
+        ->groupBy('month')
+        ->orderBy('month')
+        ->get();
+
+    return view('admin.report', compact('salesData'));
+}
+
+}

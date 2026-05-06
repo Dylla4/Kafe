@@ -20,15 +20,19 @@ class MenuSeeder extends Seeder
                             "Komposisi Utama: Double Shot Espresso, Water."
         ]);
 
-        Menu::create([
-            'nama_menu' => 'Almond Coffee',
-            'harga' => 25000,
-            'kategori' => 'Coffee',
-            'foto' => 'img/AlmoundCoffee.jpeg',
-            'deskripsi' => "Nikmati perpaduan bold dari espresso premium dan creamy-nya susu segar dengan sentuhan sirup almond yang aromatik. Disajikan dingin dengan topping whipped cream lembut dan taburan kacang almond panggang yang renyah. Pilihan sempurna untuk penyemangat harimu.\n\n" .
-                            "Komposisi Utama: Espresso, Fresh Milk, Almond Syrup, Whipped Cream, Roasted Almond.",
-            'is_best_seller' => true
-        ]);
+Menu::create([
+    'nama_menu' => 'Almond Coffee',
+    'harga' => 25000,
+    'kategori' => 'Coffee',
+    'foto' => 'img/AlmoundCoffee.jpeg',
+    'deskripsi' => "Nikmati perpaduan bold dari espresso premium dan creamy-nya susu segar dengan sentuhan sirup almond yang aromatik. Disajikan dingin dengan topping whipped cream lembut dan taburan kacang almond panggang yang renyah. Pilihan sempurna untuk penyemangat harimu.<br><br>" .
+                   "<b>Komposisi Utama:</b> Espresso, Fresh Milk, Almond Syrup, Whipped Cream, Roasted Almond.<br><br>" .
+                   "<b>Pilihan:</b><br>" .
+                   "- Ukuran: Regular / Large (+5rb)<br>" .
+                   "- Gula: Less / Normal / Extra<br>" .
+                   "- Es: Less / Normal / Extra",
+    'is_best_seller' => true
+]);
 
         Menu::create([
             'nama_menu' => 'Biskuit Coffee',

@@ -8,29 +8,28 @@
         <div class="max-w-7xl mx-auto px-6">
             <div class="flex items-center gap-8 overflow-x-auto no-scrollbar py-4">
                 @php
+                    // Kita hanya butuh kategori, daftar $icons dihapus karena tidak dipakai lagi
                     $categories = $menus->pluck('kategori')->unique();
-                    $icons = [
-                        'Coffee'        => '☕',
-                        'Non-Coffee'    => '🍹',
-                        'Makanan'      => '🍽️',
-                        'Sweet Treats' => '🍰'
-                    ];
                 @endphp
 
+                {{-- Link Best Seller --}}
                 @if($menus->where('is_best_seller', 1)->count() > 0)
                 <a href="#best-seller" class="flex items-center gap-2 shrink-0 group">
-                    <span class="text-xl">⭐️</span>
+                    {{-- Span ikon kosong atau dihapus --}}
                     <span class="text-sm font-bold text-stone-400 group-hover:text-[#A06040] transition duration-300 uppercase tracking-wider">Best Seller</span>
                 </a>
                 @endif
 
+                {{-- Link Kategori Menu --}}
                 @foreach($categories as $cat)
                 <a href="#category-{{ Str::slug($cat) }}" class="flex items-center gap-2 shrink-0 group">
-                    <span class="text-xl">{{ $icons[$cat] ?? '🍴' }}</span>
+                    {{-- BAGIAN DIBAWAH INI SUDAH DIHAPUS (<span>{{ $icons[$cat] ?? '🍴' }}</span>) --}}
                     <span class="text-sm font-bold text-stone-400 group-hover:text-[#A06040] transition duration-300 uppercase tracking-wider">{{ $cat }}</span>
                 </a>
                 @endforeach
             </div>
+        </div>
+    </div>
         </div>
     </div>
 

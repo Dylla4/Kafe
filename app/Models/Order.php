@@ -2,48 +2,45 @@
 
 namespace App\Models;
 
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Relations\HasOne;
 
 class Order extends Model
 {
+    use HasFactory;
+
     protected $fillable = [
+        'nomor_pesanan', 
         'user_id', 
         'nama_pemesan', 
-        'nomor_meja',
-        'nomor_pesanan',
+        'nomor_wa', 
         'jenis_pesanan', 
-        'alamat',
-        'nomor_wa',    
-        'catatan',   
+        'metode_pembayaran', // Pastikan ini ada
+        'alamat', 
+        'nomor_meja', 
         'item_pesanan', 
         'total_bayar', 
-        'metode_pembayaran', 
-        'status',
-        'tanggal_booking', 
-        'jam_booking'
+        'status'
     ];
 
-    /**
-     * Relasi ke User (Pemesan)
-     */
-    public function user()
+    public function user(): BelongsTo
     {
         return $this->belongsTo(User::class);
     }
 
-    /**
-     * Relasi ke Ulasan (Review)
-     */
-    public function review() 
+    public function ulasan(): HasOne
     {
         return $this->hasOne(Ulasan::class, 'order_id');
     }
 
-    /**
-     * Casting data otomatis
-     */
-    protected $casts = [
-        'item_pesanan' => 'array', 
-        'tanggal_booking' => 'date', // Tambahan agar format tanggal lebih konsisten
-    ];
+    protected function casts(): array
+    {
+        return [
+            'item_pesanan'    => 'array',
+            'tanggal_booking' => 'date',
+            'total_bayar'     => 'integer',
+        ];
+    }
 }

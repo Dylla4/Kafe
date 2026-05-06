@@ -13,7 +13,8 @@ return new class extends Migration
 {
     Schema::create('orders', function (Blueprint $table) {
         $table->id();
-        $table->foreignId('user_id')->constrained('users'); // Penting untuk sistem ulasan
+        // Cari baris user_id dan ubah menjadi seperti ini:
+        $table->foreignId('user_id')->nullable()->constrained()->onDelete('set null');
         $table->string('nama_pemesan');
         $table->json('item_pesanan');
         $table->enum('jenis_pesanan', ['dine_in', 'take_away', 'delivery']); 
