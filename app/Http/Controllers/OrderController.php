@@ -67,20 +67,31 @@ class OrderController extends Controller
 public function history()
 {
     // Mengambil pesanan milik user yang sedang login
-    $orders = \App\Models\Order::where('user_id', auth()->id())
+    $orders = Order::where('user_id', Auth::id())
                 ->latest()
                 ->get();
 
     return view('history', compact('orders'));
 }
 public function showCart()
-{
-    // Logika untuk mengambil data keranjang (misalnya dari session atau database)
-    // Contoh sederhana:
-    $cartItems = session()->get('cart', []);
+    {
+        $cartItems = session()->get('cart', []);
+        
+        $total_harga = collect($cartItems)->sum(function($item) {
+            return (int)$item['harga'] * (int)$item['quantity'];
+        });
 
-    return view('cart', compact('cartItems'));
-}
+        $semuaMeja = ['Meja 01', 'Meja 02', 'Meja 03', 'Meja 04', 'Meja 05', 'Meja 06', 'Meja 07', 'Meja 08', 'Meja 09', 'Meja 10'];
+        $mejaTerpakai = Order::whereIn('status', ['pending', 'diproses', 'siap', 'sukses'])
+                             ->whereNotNull('nomor_meja')
+                             ->pluck('nomor_meja')
+                             ->toArray();
+                                     
+        $mejaKosong = array_diff($semuaMeja, $mejaTerpakai);
+        $mejaOtomatis = !empty($mejaKosong) ? reset($mejaKosong) : 'Penuh';
+
+        return view('cart', compact('cartItems', 'total_harga', 'mejaOtomatis'));
+    }
 public function addToCart(Request $request, $id)
 {
     // Cari menu berdasarkan ID
@@ -136,27 +147,76 @@ public function prosesCheckout(Request $request) {
         'nama_pemesan' => 'required',
         'nomor_wa' => 'required',
         'jenis_pesanan' => 'required',
-        'metode_pembayaran' => 'required', // Tambahkan validasi ini
+        'metode_pembayaran' => 'required',
     ]);
 
     $cart = session()->get('cart');
     if (!$cart) return redirect()->back()->with('error', 'Keranjang kosong!');
 
-    $order = \App\Models\Order::create([
+    // Tentukan status awal: jika cash langsung 'diproses', jika qris tetap 'pending'
+    $statusAwal = ($request->metode_pembayaran === 'cash') ? 'diproses' : 'pending';
+
+    $order = Order::create([
         'nomor_pesanan' => 'VAL-' . strtoupper(uniqid()),
-        'user_id'       => auth()->id(),
+        'user_id' => Auth::id(),
         'nama_pemesan'  => $request->nama_pemesan,
         'nomor_wa'      => $request->nomor_wa,
         'jenis_pesanan' => $request->jenis_pesanan,
-        'metode_pembayaran' => $request->metode_pembayaran, // Tambahkan baris ini
+        'metode_pembayaran' => $request->metode_pembayaran,
         'alamat'        => $request->alamat ?? '-',
         'nomor_meja'    => $request->nomor_meja ?? '-',
         'item_pesanan'  => json_encode($cart),
         'total_bayar'   => collect($cart)->sum(fn($item) => $item['harga'] * $item['quantity']),
-        'status'        => 'pending'
+        'status'        => $statusAwal
     ]);
 
     session()->forget('cart');
-    return redirect()->route('invoice.show', $order->id);
+
+    // LOGIKA REDIRECT BERDASARKAN METODE PEMBAYARAN
+    if ($request->metode_pembayaran === 'cash') {
+        // Jika Cash: Langsung ke Invoice (Gunakan name route yang sesuai: order.invoice atau invoice.print)
+        return redirect()->route('invoice.print', $order->id)
+                         ->with('success', 'Pesanan berhasil! Silakan lakukan pembayaran di kasir.');
+    } else {
+        // Jika QRIS: Tetap ke halaman pembayaran
+        return redirect()->route('order.payment', $order->id);
+    }
 }
+
+    public function konfirmasi(string $id)
+    {
+        $order = Order::findOrFail($id);
+        $order->update(['status' => 'sukses']); 
+        return redirect()->route('order.invoice', $order->id);
+    }
+
+    public function confirmPayment($id)
+    {
+        $order = Order::findOrFail($id);
+        
+        // Update status dari 'pending' menjadi 'diproses'
+        $order->update([
+            'status' => 'diproses'
+        ]);
+
+        // Redirect ke halaman invoice
+        return redirect()->route('invoice.print', $order->id)
+                         ->with('success', 'Pembayaran berhasil dikonfirmasi!');
+    }
+    
+    public function printInvoice($id)
+    {
+        $order = Order::findOrFail($id);
+        
+        // Cek apakah item_pesanan perlu di-decode (jika di database bentuknya string JSON)
+        $items = $order->item_pesanan ?? [];
+
+        return view('invoice', compact('order', 'items'));
+    }
+    
+    public function showPayment($id)
+    {
+        $order = Order::findOrFail($id);
+        return view('payment', compact('order'));
+    }
 }

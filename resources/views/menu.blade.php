@@ -78,7 +78,7 @@
                 <div class="grow h-px bg-stone-200"></div>
             </div>
 
-            <div class="grid grid-cols-2 md:grid-cols-4 gap-10">
+            <div class="grid grid-cols-2 md:grid-cols-5 gap-10">
                 @foreach($menus->where('kategori', $cat) as $m)
                 <div onclick="handleOpenModal(this)" 
                      data-nama="{{ $m->nama_menu }}"

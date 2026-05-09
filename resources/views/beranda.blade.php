@@ -53,8 +53,10 @@
     {{-- Indikator Dots --}}
     <div class="absolute bottom-10 left-1/2 -translate-x-1/2 flex gap-3 z-20">
         @foreach ($slides as $index => $s)
-            <button onclick="goToSlide({{ $index }})" class="fore-dot h-1.5 w-8 bg-stone-300 rounded-full transition-all duration-500"></button>
-        @endforeach
+    <button data-index="{{ $index }}" 
+            class="dot-navigation h-1.5 w-8 bg-stone-300 rounded-full transition-all duration-500">
+    </button>
+@endforeach
     </div>
 </section>
 

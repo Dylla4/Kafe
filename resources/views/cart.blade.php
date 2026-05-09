@@ -113,18 +113,21 @@
 
                                     <div>
                                         <label class="block text-[9px] font-black text-stone-400 mb-2 uppercase tracking-widest ml-1">Tanggal Pesan</label>
-                                        <input type="date" name="tanggal_booking" id="tanggal_booking" min="{{ date('Y-m-d') }}" value="{{ date('Y-m-d') }}" class="w-full p-4 border border-stone-100 rounded-2xl text-sm bg-stone-50 focus:bg-white input-focus shadow-sm transition-all font-bold" required>
+                                        {{-- Ganti baris input tanggal_booking dengan ini --}}
+                                        <input type="date" 
+                                                name="tanggal_booking" 
+                                                id="tanggal_booking" 
+                                                min="{{ date('Y-m-d') }}" 
+                                                max="{{ date('Y-m-d', strtotime('+7 days')) }}" 
+                                                value="{{ date('Y-m-d') }}" 
+                                                class="w-full p-4 border border-stone-100 rounded-2xl text-sm bg-stone-50 focus:bg-white input-focus shadow-sm transition-all font-bold" 
+                                                required>
                                     </div>
 
                                     <div>
                                         <label class="block text-[9px] font-black text-stone-400 mb-2 uppercase tracking-widest ml-1" id="label-jam">Waktu Pengambilan</label>
                                         <select name="jam_booking" id="jam_booking" class="w-full p-4 border border-stone-100 rounded-2xl text-sm bg-stone-50 focus:bg-white input-focus shadow-sm transition-all font-bold cursor-pointer" required>
                                             <option value="" disabled selected>Pilih Jam</option>
-                                            @for ($i = 9; $i <= 22; $i++)
-                                                @php $t1 = str_pad($i, 2, '0', STR_PAD_LEFT) . ':00'; $t2 = str_pad($i, 2, '0', STR_PAD_LEFT) . ':30'; @endphp
-                                                <option value="{{ $t1 }}">{{ $t1 }}</option>
-                                                @if($i < 22) <option value="{{ $t2 }}">{{ $t2 }}</option> @endif
-                                            @endfor
                                         </select>
                                     </div>
 
@@ -146,6 +149,12 @@
                                         </div>
                                     </div>
                                 </div>
+
+                                <div id="section-meja" class="animate-in">
+                            <label class="block text-[10px] font-black text-orange-900 mb-2 uppercase tracking-widest">Nomor Meja</label>
+                            <input type="text" name="nomor_meja" value="{{ $mejaOtomatis ?? '01' }}" readonly class="w-full p-4 border border-stone-200 rounded-2xl bg-white font-black text-orange-700 text-center text-lg shadow-sm">
+                        </div>
+
 
                                 <div id="section-alamat" class="hidden animate-in">
                                     <label class="block text-[9px] font-black text-stone-400 mb-2 uppercase tracking-widest ml-1">Alamat Lengkap</label>
@@ -244,32 +253,90 @@
 
         // 2. Fungsi Toggle Layanan
         function toggleLayanan() {
-            const layanan = document.querySelector('input[name="jenis_pesanan"]:checked').value;
-            const sectionAlamat = document.getElementById('section-alamat');
-            const inputAlamat = document.getElementById('input-alamat');
-            const labelJam = document.getElementById('label-jam');
-            const opsiCash = document.querySelector('option[value="cash"]');
-            const selectMetode = document.querySelector('select[name="metode_pembayaran"]');
+    const layanan = document.querySelector('input[name="jenis_pesanan"]:checked').value;
+    const sectionAlamat = document.getElementById('section-alamat');
+    const sectionMeja = document.getElementById('section-meja'); // Tambahkan ini
+    const inputAlamat = document.getElementById('input-alamat');
+    const labelJam = document.getElementById('label-jam');
+    const opsiCash = document.querySelector('option[value="cash"]');
+    const selectMetode = document.querySelector('select[name="metode_pembayaran"]');
 
-            // Reset Default
-            sectionAlamat.classList.add('hidden');
-            inputAlamat.required = false;
-            opsiCash.disabled = false;
-            opsiCash.style.display = 'block';
+    // Reset Default
+    sectionAlamat.classList.add('hidden');
+    sectionMeja.classList.remove('hidden'); // Default meja muncul
+    inputAlamat.required = false;
+    opsiCash.disabled = false;
+    opsiCash.style.display = 'block';
 
-            if (layanan === 'dine_in') {
-                labelJam.innerText = 'Jam Booking Meja';
-            } else if (layanan === 'take_away') {
-                labelJam.innerText = 'Jam Ambil di Kasir';
-            } else if (layanan === 'delivery') {
-                labelJam.innerText = 'Jam Pengantaran';
-                sectionAlamat.classList.remove('hidden');
-                inputAlamat.required = true; // Alamat wajib jika delivery
-                selectMetode.value = 'qris'; // Delivery wajib bayar online/qris
-                opsiCash.disabled = true;
-                opsiCash.style.display = 'none';
+    if (layanan === 'dine_in') {
+        labelJam.innerText = 'Jam Booking Meja';
+    } else if (layanan === 'take_away') {
+        labelJam.innerText = 'Jam Ambil di Kasir';
+        sectionMeja.classList.add('hidden'); // Sembunyikan meja
+    } else if (layanan === 'delivery') {
+        labelJam.innerText = 'Jam Pengantaran';
+        sectionAlamat.classList.remove('hidden');
+        sectionMeja.classList.add('hidden'); // Sembunyikan meja
+        inputAlamat.required = true; 
+        selectMetode.value = 'qris'; 
+        opsiCash.disabled = true;
+        opsiCash.style.display = 'none';
+    }
+}
+
+        document.addEventListener('DOMContentLoaded', function() {
+        const tanggalInput = document.getElementById('tanggal_booking');
+        const jamSelect = document.getElementById('jam_booking');
+
+        function generateJamOptions() {
+    const selectedDate = tanggalInput.value;
+    const now = new Date();
+    const today = now.toISOString().split('T')[0];
+    
+    const currentHour = now.getHours();
+    const currentMinute = now.getMinutes();
+
+    jamSelect.innerHTML = '<option value="" disabled selected>Pilih Jam</option>';
+
+    for (let h = 9; h <= 22; h++) {
+        ['00', '30'].forEach(m => {
+            if (h === 22 && m === '30') return;
+
+            const jamStr = h.toString().padStart(2, '0') + ':' + m;
+            const optionHour = h;
+            const optionMinute = parseInt(m);
+
+            let isDisabled = false;
+
+            // --- TARUH DI SINI (MENGGANTIKAN LOGIKA LAMA) ---
+            if (selectedDate === today) {
+                // Menambah buffer 15 menit agar pelanggan tidak pesan terlalu mepet
+                const bufferTime = new Date(now.getTime() + 15 * 60000); 
+                const bHour = bufferTime.getHours();
+                const bMinute = bufferTime.getMinutes();
+
+                if (optionHour < bHour || (optionHour === bHour && optionMinute <= bMinute)) {
+                    isDisabled = true;
+                }
             }
+
+                // 4. Masukkan ke dalam Select jika tidak disabled
+                if (!isDisabled) {
+                    const option = document.createElement('option');
+                    option.value = jamStr;
+                    option.text = jamStr;
+                    jamSelect.appendChild(option);
+                }
+            });
         }
+    }
+
+        // Jalankan saat tanggal berubah
+        tanggalInput.addEventListener('change', generateJamOptions);
+    
+        // Jalankan pertama kali saat halaman dibuka
+        generateJamOptions();
+});
     </script>
 </body>
 </html>

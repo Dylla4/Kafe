@@ -47,7 +47,7 @@ Route::middleware('auth:web')->group(function () {
     Route::post('/order/simpan', [OrderController::class, 'simpan'])->name('order.simpan');
     Route::get('/payment/{id}', [OrderController::class, 'showPayment'])->name('order.payment');
     Route::post('/order/konfirmasi/{id}', [OrderController::class, 'konfirmasi'])->name('order.konfirmasi');
-    Route::get('/order/konfirmasi/{id}', [OrderController::class, 'konfirmasi'])->name('order.konfirmasi');
+    //Route::get('/order/konfirmasi/{id}', [OrderController::class, 'konfirmasi'])->name('order.konfirmasi');
 
     // Route untuk menampilkan Bukti Reservasi
     //Route::get('/reservation/{id}', [OrderController::class, 'reservation'])->name('order.reservation');

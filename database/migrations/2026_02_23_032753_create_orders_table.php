@@ -25,7 +25,7 @@ return new class extends Migration
         $table->decimal('total_bayar', 12, 2);
         
         // Status sebaiknya punya opsi 'Selesai' untuk memicu tombol ulasan
-        $table->enum('status', ['Diproses', 'Siap', 'Sukses', 'Dibatalkan'])->default('diproses');
+        $table->enum('status', ['pending', 'diproses', 'siap', 'sukses', 'batal'])->default('pending');
         
         // Tambahkan kolom untuk waktu booking
         $table->date('tanggal_booking')->nullable();
