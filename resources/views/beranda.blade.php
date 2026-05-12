@@ -118,18 +118,19 @@
     <div class="max-w-7xl mx-auto px-6 relative z-10">
         <div class="grid grid-cols-1 lg:grid-cols-2 gap-16 items-start">
             
-            {{-- Bagian Kiri: Judul dan Gambar --}}
-            <div class="space-y-8">
-                <h2 class="text-[#004d31] text-7xl md:text-8xl font-bold tracking-tighter animate-fade-in-up">
-                    Our Story
-                </h2>
-                
-                <div class="relative rounded-[60px] overflow-hidden shadow-2xl shadow-stone-200 aspect-[4/5] md:aspect-square lg:aspect-[4/5]">
-                    <img src="https://images.unsplash.com/photo-1554118811-1e0d58224f24?q=80&w=1000" 
-                         class="w-full h-full object-cover" 
-                         alt="Our Store Interior">
-                </div>
+        {{-- Bagian Kiri: Judul dan Gambar --}}
+        <div class="space-y-8">
+            <h2 class="text-[#004d31] text-7xl md:text-8xl font-bold tracking-tighter animate-fade-in-up">
+                Our Story
+            </h2>
+            
+            {{-- Gambar dikecilkan dengan max-w-md (sekitar 448px) --}}
+            <div class="relative rounded-[30px] overflow-hidden shadow-1xl shadow-stone-200 aspect-square max-w-md">
+                <img src="https://images.unsplash.com/photo-1554118811-1e0d58224f24?q=80&w=1000" 
+                    class="w-full h-full object-cover" 
+                    alt="Our Store Interior">
             </div>
+        </div>
 
             {{-- Bagian Kanan: Teks Deskripsi --}}
             <div class="pt-0 lg:pt-32 space-y-8">

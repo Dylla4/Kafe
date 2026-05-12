@@ -99,24 +99,39 @@
                     </div>
                 </div>
 
-                {{-- Kolom 2: Customer Center --}}
-                <div class="space-y-6">
-                    <h4 class="text-[#693d04] font-bold text-lg">Customer Center</h4>
-                    <div class="space-y-4">
-                        <div class="flex items-start gap-3">
-                            <svg class="w-5 h-5 text-[#004d31] mt-1" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"/><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"/></svg>
-                            <p class="text-stone-600 text-sm">
-                                Thamrin Plaza. Jl. M.H. Thamrin Kav. 8-9<br>
-                                Lt. PH. Kebon Melati, Tanah Abang,<br>
-                                Jakarta Pusat
-                            </p>
-                        </div>
-                        <div class="flex items-center gap-3">
-                            <svg class="w-5 h-5 text-[#004d31]" fill="currentColor" viewBox="0 0 24 24"><path d="M12.012 2c-5.506 0-9.989 4.478-9.99 9.984a9.964 9.964 0 001.333 4.993L2 22l5.233-1.237a9.921 9.921 0 004.779 1.237h.004c5.505 0 9.988-4.478 9.989-9.984 0-2.669-1.037-5.176-2.922-7.062A9.925 9.925 0 0012.012 2z"/></svg>
-                            <p class="text-stone-600 text-sm font-medium">0812-1111-8456</p>
-                        </div>
-                    </div>
-                </div>
+{{-- Bagian Customer Center --}}
+<div class="space-y-4">
+    <h3 class="font-bold text-stone-800">Customer Center</h3>
+    
+    <div class="flex items-start space-x-3">
+        <span class="text-[#004d31] mt-1">
+            <i class="fas fa-map-marker-alt"></i> {{-- Icon Map --}}
+        </span>
+        <p class="text-sm text-stone-600">
+            Thamrin Plaza, Jl. M.H. Thamrin Kav. 8-9<br>
+            Lt. PH, Kebon Melati, Tanah Abang,<br>
+            Jakarta Pusat
+        </p>
+    </div>
+
+        <div class="flex items-center space-x-3">
+            <span class="text-[#004d31]">
+                <i class="fab fa-whatsapp text-lg"></i> {{-- Icon WA --}}
+            </span>
+            <p class="text-sm text-stone-600">0812-1111-8456</p>
+        </div>
+
+        {{-- TAMBAHKAN LOGO DI SINI --}}
+        <div class="flex items-center space-x-4 pt-2">
+        <a href="https://wa.me/6281211118456" target="_blank" class="w-10 h-10 rounded-full bg-stone-100 flex items-center justify-center group hover:bg-[#004d31] transition-all duration-300">
+            {{-- Hapus tag <i> dan ganti dengan tag <img> --}}
+            <img src="{{ asset('img/logowa.jpg') }}" alt="WhatsApp Logo" class="w-6 h-6 object-contain">
+        </a>
+            <a href="https://instagram.com/valeriacoffee" target="_blank" class="w-10 h-10 rounded-full bg-stone-100 flex items-center justify-center text-[#004d31] hover:bg-[#004d31] hover:text-white transition-all duration-300 shadow-sm">
+                <i class="fab fa-instagram text-xl"></i>
+            </a>
+        </div>
+    </div>
 
                 {{-- Kolom 3: Pengaduan Konsumen & Sosmed --}}
                 <div class="space-y-6">
@@ -128,23 +143,6 @@
                             Direktorat Jenderal Perlindungan Konsumen dan Tertib Niaga, 
                             Kementerian Perdagangan Republik Indonesia
                         </p>
-                        <p class="font-medium text-[#004d31]">WhatsApp Ditjen PKTN: 0853-1111-1010</p>
-                    </div>
-                    
-                    {{-- Social Media Icons --}}
-                    <div class="flex gap-4 pt-4">
-                        <a href="#" class="w-10 h-10 rounded-full bg-stone-200 flex items-center justify-center text-stone-600 hover:bg-[#004d31] hover:text-white transition-all">
-                            <i class="fab fa-youtube"></i>
-                        </a>
-                        <a href="#" class="w-10 h-10 rounded-full bg-stone-200 flex items-center justify-center text-stone-600 hover:bg-[#004d31] hover:text-white transition-all">
-                            <i class="fab fa-x-twitter"></i>
-                        </a>
-                        <a href="#" class="w-10 h-10 rounded-full bg-stone-200 flex items-center justify-center text-stone-600 hover:bg-[#004d31] hover:text-white transition-all">
-                            <i class="fab fa-instagram"></i>
-                        </a>
-                        <a href="#" class="w-10 h-10 rounded-full bg-stone-200 flex items-center justify-center text-stone-600 hover:bg-[#004d31] hover:text-white transition-all">
-                            <i class="fab fa-linkedin-in"></i>
-                        </a>
                     </div>
                 </div>
             </div>
