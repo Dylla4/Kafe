@@ -13,7 +13,7 @@ class MenuSeeder extends Seeder
 
         Menu::create([
             'nama_menu' => 'Americano',
-            'harga'     => 19000,
+            'harga'     => 16000,
             'kategori'  => 'Coffee',
             'foto'      => 'img/Americano.jpeg',
             'deskripsi' => "Nikmati kesegaran Americano Coffee dengan cita rasa kopi hitam yang bold, smooth, dan autentik.\n\n" .
@@ -22,7 +22,7 @@ class MenuSeeder extends Seeder
         
         Menu::create([
             'nama_menu' => 'Almond Coffee',
-            'harga' => 25000,
+            'harga' => 22000,
             'kategori' => 'Coffee',
             'foto' => 'img/AlmoundCoffee.jpeg',
             'deskripsi' => "Nikmati perpaduan bold dari espresso premium dan creamy-nya susu segar dengan sentuhan sirup almond yang aromatik. Disajikan dengan topping whipped cream lembut dan taburan kacang almond panggang yang renyah.\n\n" .
@@ -32,7 +32,7 @@ class MenuSeeder extends Seeder
 
         Menu::create([
             'nama_menu' => 'Biskuit Coffee',
-            'harga' => 22000,
+            'harga' => 24000,
             'kategori' => 'Coffee',
             'foto' => 'img/BiskiesCoffee.jpeg',
             'deskripsi' => "Kopi susu vanila premium dengan topping whipped cream melimpah dan taburan biskuit crunchy. Cara manis untuk menikmati kopi dengan gaya modern.\n\n".
@@ -42,7 +42,7 @@ class MenuSeeder extends Seeder
 
         Menu::create([
             'nama_menu' => 'Caramel Latte',
-            'harga' => 20000,
+            'harga' => 24000,
             'kategori' => 'Coffee',
             'foto' => 'img/CaramelCoffee.jpeg',
             'deskripsi' => "Kopi susu lembut dengan sensasi manis karamel yang mewah. Pilihan tepat untuk kamu yang menginginkan kopi creamy dengan aroma karamel yang memanjakan lidah.\n\n".
@@ -52,7 +52,7 @@ class MenuSeeder extends Seeder
 
         Menu::create([
             'nama_menu' => 'Espresso',
-            'harga' => 26000,
+            'harga' => 17000,
             'kategori' => 'Coffee', 
             'foto' => 'img/EspressoSolo.jpg',
             'deskripsi' => "Satu atau dua shot kopi hitam pekat dengan aroma yang sangat kuat dan rasa yang mendalam. Tanpa campuran susu atau gula, murni untuk kamu yang menyukai tantangan rasa kopi asli.\n\n".
@@ -61,7 +61,7 @@ class MenuSeeder extends Seeder
 
         Menu::create([
             'nama_menu' => 'Mocha Latte',
-            'harga' => 26000,
+            'harga' => 24000,
             'kategori' => 'Coffee', 
             'foto' => 'img/MochaLatte.jpg',
             'deskripsi' => "Perpaduan pas antara kopi espresso dan cokelat premium yang manis. Disajikan dengan susu segar untuk rasa yang lebih smooth. Pilihan favorit untuk menemani hari yang santai.\n\n".
@@ -70,7 +70,7 @@ class MenuSeeder extends Seeder
 
         Menu::create([
             'nama_menu' => 'Coffee Latte',
-            'harga' => 20000,
+            'harga' => 21000,
             'kategori' => 'Coffee',
             'foto' => 'img/CoffeLattee.jpeg',
             'deskripsi' => "Nikmati harmoni rasa espresso pilihan dan kelembutan susu segar. Teksturnya yang creamy dan rasanya yang halus menjadikan minuman ini teman terbaik untuk segala suasana.\n\n".
@@ -79,7 +79,7 @@ class MenuSeeder extends Seeder
 
         Menu::create([
             'nama_menu' => 'Dalgona Coffee',
-            'harga' => 20000,
+            'harga' => 23000,
             'kategori' => 'Coffee',
             'foto' => 'img/Dalgona.jpeg',
             'deskripsi' => "Perpaduan estetik dari susu segar dingin dan busa kopi kental yang manis di atasnya. Cara seru dan creamy untuk menikmati kopi dingin yang sedang tren.\n\n".
@@ -88,7 +88,7 @@ class MenuSeeder extends Seeder
 
         Menu::create([
             'nama_menu' => 'Palm Sugar Coffee',
-            'harga' => 18000,
+            'harga' => 22000,
             'kategori' => 'Coffee',
             'foto' => 'img/GulaAren.jpeg',
             'deskripsi' => "Kopi susu gula aren favorit! Espresso premium berpadu sempurna dengan kelembutan susu segar dan pemanis alami gula aren. Segar, manis, dan bikin semangat lagi.\n\n".
@@ -97,7 +97,7 @@ class MenuSeeder extends Seeder
 
         Menu::create([
             'nama_menu' => 'Cappucino',
-            'harga' => 18000,
+            'harga' => 20000,
             'kategori' => 'Coffee',
             'foto' => 'img/Cappucino.jpg',
             'deskripsi' => "Minuman kopi klasik dengan komposisi seimbang antara espresso, susu panas, dan busa susu yang tebal. Nikmati sensasi rasa kopi yang mantap dengan sentuhan kelembutan di setiap tegukannya.\n\n".
@@ -106,7 +106,7 @@ class MenuSeeder extends Seeder
 
         Menu::create([
             'nama_menu' => 'Hazelnut Bliss',
-            'harga' => 18000,
+            'harga' => 24000,
             'kategori' => 'Coffee',
             'foto' => 'img/HazelnutBliss.jpg',
             'deskripsi' => "Kopi susu dengan aroma hazelnut yang memikat dan rasa gurih yang lembut. Perpaduan pas untuk kamu yang menyukai kopi dengan sentuhan rasa kacang yang manis dan menenangkan.\n\n".
@@ -115,7 +115,7 @@ class MenuSeeder extends Seeder
 
         Menu::create([
             'nama_menu' => 'Lemon Coffee',
-            'harga' => 18000,
+            'harga' => 21000,
             'kategori' => 'Coffee',
             'foto' => 'img/LemonCoffee.jpeg',
             'deskripsi' => "Kesegaran ganda dalam satu gelas. Perpaduan espresso yang kuat dengan sensasi citrus dari buah lemon asli. Minuman yang ringan, jernih, dan sangat membangkitkan mood.\n\n".
@@ -124,7 +124,7 @@ class MenuSeeder extends Seeder
 
         Menu::create([
             'nama_menu' => 'Caramel Macchiato',
-            'harga' => 18000,
+            'harga' => 24000,
             'kategori' => 'Coffee',
             'foto' => 'img/CaramelMacchiato.jpg',
             'deskripsi' => "Kopi susu populer dengan tiga lapisan rasa: manisnya vanila, kuatnya espresso, dan lezatnya saus karamel di bagian atas. Pilihan tepat untuk kamu yang ingin kopi dengan sensasi manis yang berkelas.\n\n".
@@ -133,7 +133,7 @@ class MenuSeeder extends Seeder
 
         Menu::create([
             'nama_menu' => 'Flat White',
-            'harga' => 18000,
+            'harga' => 22000,
             'kategori' => 'Coffee',
             'foto' => 'img/FlatWhite.jpg',
             'deskripsi' => "Kopi susu dengan tekstur yang lebih halus dan rasa espresso yang lebih kuat dibandingkan Latte. Menggunakan micro-foam tipis untuk memberikan sensasi minum kopi yang lebih bold namun tetap lembut di lidah.\n\n".
@@ -142,7 +142,7 @@ class MenuSeeder extends Seeder
 
         Menu::create([
             'nama_menu' => 'Piccolo Latte',
-            'harga' => 18000,
+            'harga' => 21000,
             'kategori' => 'Coffee',
             'foto' => 'img/PiccoloLatte.jpg',
             'deskripsi' => "Versi ringkas dari Latte dengan rasa kopi yang lebih dominan. Menggunakan ristretto shot dan sedikit susu untuk kamu yang menyukai kelembutan tanpa menutupi karakter asli biji kopi.\n\n".
@@ -160,7 +160,7 @@ class MenuSeeder extends Seeder
 
         Menu::create([
             'nama_menu' => 'Hot Chocolate',
-            'harga' => 20000,
+            'harga' => 22000,
             'kategori' => 'Non-Coffee',
             'foto' => 'img/ChocolateHot.jpeg',
             'deskripsi' => "Nikmati kelembutan cokelat premium yang creamy dan silky. Minuman klasik yang tak lekang oleh waktu, cocok untuk kamu yang menginginkan ketenangan di tengah hari yang sibuk.\n\n".
@@ -169,7 +169,7 @@ class MenuSeeder extends Seeder
 
         Menu::create([
             'nama_menu' => 'Strawberry Milkshake',
-            'harga' => 21000,
+            'harga' => 29000,
             'kategori' => 'Non-Coffee',
             'foto' => 'img/StrawberryMilkshake.jpg',
             'deskripsi' => "Manjakan dirimu dengan kelembutan susu segar dan ekstrak stroberi premium yang di-blend sempurna. Minuman manis yang dingin dan mengenyangkan, lengkap dengan whipped cream di atasnya.\n\n".
@@ -178,7 +178,7 @@ class MenuSeeder extends Seeder
 
         Menu::create([
             'nama_menu' => 'Peach Earl Grey',
-            'harga' => 25000,
+            'harga' => 23000,
             'kategori' => 'Non-Coffee',
             'foto' => 'img/PeachEarlGreyTea.jpg',
             'deskripsi' => "Kesegaran teh Earl Grey premium dengan potongan buah dan sirup peach yang manis. Pilihan tepat bagi kamu yang menginginkan minuman teh dengan aroma bunga dan rasa buah yang berkelas.\n\n".
@@ -196,7 +196,7 @@ class MenuSeeder extends Seeder
 
         Menu::create([
             'nama_menu' => 'Lychee Tea',
-            'harga' => 20000,
+            'harga' => 24000,
             'kategori' => 'Non-Coffee',
             'foto' => 'img/LycheeTea.jpg',
             'deskripsi' => "Kesegaran teh dingin dengan aroma leci yang manis dan menenangkan. Dilengkapi dengan buah leci asli sebagai pelengkap kesegaran harimu.\n\n".
@@ -214,7 +214,7 @@ class MenuSeeder extends Seeder
 
         Menu::create([
             'nama_menu' => 'Cherry Sparkle',
-            'harga' => 24000,
+            'harga' => 26000,
             'kategori' => 'Non-Coffee',
             'foto' => 'img/CherrySparkle.jpg',
             'deskripsi' => "Ledakan rasa ceri yang manis bertemu dengan segarnya soda dingin. Minuman berwarna merah cantik yang tidak hanya menyegarkan dahaga, tapi juga mencerahkan hari kamu.\n\n".
@@ -223,7 +223,7 @@ class MenuSeeder extends Seeder
 
         Menu::create([
             'nama_menu' => 'Red Velvet Milkshake',
-            'harga' => 20000,
+            'harga' => 27000,
             'kategori' => 'Non-Coffee',
             'foto' => 'img/RedVelvetMilkshake.jpg',
             'deskripsi' => "Sensasi minum kue Red Velvet yang dingin dan creamy. Perpaduan pas antara rasa cokelat khas, susu segar, dan es krim vanila yang lembut. Mood booster yang sempurna untuk hari-harimu!\n\n".
@@ -232,7 +232,7 @@ class MenuSeeder extends Seeder
 
         Menu::create([
             'nama_menu' => 'Pure Matcha',
-            'harga' => 26000,
+            'harga' => 17000,
             'kategori' => 'Non-Coffee', 
             'foto' => 'img/PureMatcha.jpg',
             'deskripsi' => "Perpaduan bubuk matcha murni berkualitas tinggi dengan susu segar yang lembut. Menghasilkan rasa teh hijau yang kuat dan autentik dengan tekstur yang creamy.\n\n".
@@ -241,7 +241,7 @@ class MenuSeeder extends Seeder
 
         Menu::create([
             'nama_menu' => 'Mango Smoothie',
-            'harga' => 25000,
+            'harga' => 26000,
             'kategori' => 'Non-Coffee', 
             'foto' => 'img/MangoSmoothie.jpg',
             'deskripsi' => "Hadirkan suasana musim panas dalam satu gelas! Dibuat dari buah mangga pilihan yang matang sempurna, diblender halus dengan susu rendah lemak atau yogurt untuk menghasilkan tekstur yang sangat creamy dan kental.\n\n".
@@ -250,7 +250,7 @@ class MenuSeeder extends Seeder
 
         Menu::create([
             'nama_menu' => 'Avocado Smoothie',
-            'harga' => 25000,
+            'harga' => 28000,
             'kategori' => 'Non-Coffee', 
             'foto' => 'img/AvocadoSmoothie.jpg',
             'deskripsi' => "Nikmati kelembutan buah alpukat mentega pilihan yang dipadukan dengan susu segar untuk menciptakan tekstur smoothie yang sangat kental dan velvety.\n\n".
@@ -259,7 +259,7 @@ class MenuSeeder extends Seeder
 
         Menu::create([
             'nama_menu' => 'Taro Boba Milk',
-            'harga' => 25000,
+            'harga' => 20000,
             'kategori' => 'Non-Coffee', 
             'foto' => 'img/TaroBobaMilk.jpg',
             'deskripsi' => "Manjakan lidahmu dengan kelezatan rasa talas ungu (taro) yang manis dan memiliki aroma nutty yang khas dengan topping boba yang kenyal di setiap sesapan.\n\n".
@@ -268,7 +268,7 @@ class MenuSeeder extends Seeder
 
         Menu::create([
             'nama_menu' => 'Raspberry Frappe',
-            'harga' => 25000,
+            'harga' => 28000,
             'kategori' => 'Non-Coffee', 
             'foto' => 'img/RaspberryFrappe.jpg',
             'deskripsi' => "Minuman es blender rasa buah raspberry yang segar dan manis. Pilihan tepat bagi kamu yang menyukai sensasi buah beri yang dingin dan ringan di lidah.\n\n".
@@ -277,7 +277,7 @@ class MenuSeeder extends Seeder
 
         Menu::create([
             'nama_menu' => 'Blueberry Frappe',
-            'harga' => 25000,
+            'harga' => 29000,
             'kategori' => 'Non-Coffee', 
             'foto' => 'img/BlueberryFrappe.jpg',
             'deskripsi' => "Minuman es blender dengan rasa blueberry yang kaya dan menyegarkan. Perpaduan pas antara buah beri dan susu untuk menemani waktu santaimu.\n\n".
@@ -286,7 +286,7 @@ class MenuSeeder extends Seeder
         
         Menu::create([
             'nama_menu' => 'Dimsum Mentai',
-            'harga' => 40000,
+            'harga' => 35000,
             'kategori' => 'Makanan',
             'foto' => 'img/DimsumMentai.jpeg',
             'deskripsi' => "Dimsum ayam lembut dengan siraman saus mentai yang ditorched. Perpaduan rasa gurih, pedas, dan aroma smoky yang bikin ketagihan.\n\n".
@@ -295,7 +295,7 @@ class MenuSeeder extends Seeder
 
         Menu::create([
             'nama_menu' => 'Gimbap',
-            'harga' => 35000,
+            'harga' => 40000,
             'kategori' => 'Makanan',
             'foto' => 'img/Gimbap.jpeg',
             'deskripsi' => "Gulungan nasi rumput laut khas Korea dengan isian sayuran segar dan protein pilihan. Potongannya yang pas di mulut menjadikannya camilan berat favorit yang mengenyangkan.\n\n".
@@ -304,7 +304,7 @@ class MenuSeeder extends Seeder
 
         Menu::create([
             'nama_menu' => 'Nugget Ayam',
-            'harga' => 30000,
+            'harga' => 25000,
             'kategori' => 'Makanan',
             'foto' => 'img/Naget.jpeg',
             'deskripsi' => "Nugget ayam goreng yang renyah dan gurih, disajikan hangat dengan saus cocolan favoritmu. Teman ngemil paling asyik sambil minum kopi atau smoothie.\n\n".
@@ -313,7 +313,7 @@ class MenuSeeder extends Seeder
 
         Menu::create([
             'nama_menu' => 'Onigiri',
-            'harga' => 25000,
+            'harga' => 40000,
             'kategori' => 'Makanan',
             'foto' => 'img/Onigiri.jpeg',
             'deskripsi' => "Nasi kepal segitiga dengan isian favorit dan balutan nori yang garing. Pilihan camilan sehat dan praktis untuk mengganjal lapar di tengah kesibukanmu.\n\n".
@@ -322,7 +322,7 @@ class MenuSeeder extends Seeder
 
         Menu::create([
             'nama_menu' => 'Sushi Salmon',
-            'harga' => 45000,
+            'harga' => 111000,
             'kategori' => 'Makanan',
             'foto' => 'img/Salmon.jpeg',
             'deskripsi' => "Perpaduan nasi sushi otentik dengan ikan salmon segar. Camilan sehat dan berkelas yang cocok dinikmati kapan saja.\n\n".
@@ -332,7 +332,7 @@ class MenuSeeder extends Seeder
 
         Menu::create([
             'nama_menu' => 'Hamburger Ayam',
-            'harga' => 20000,
+            'harga' => 30000,
             'kategori' => 'Makanan',
             'foto' => 'img/Burgerayaam.jpeg',
             'deskripsi' => "Burger ayam dengan patty yang lembut, sayuran segar, dan saus spesial dalam balutan roti bun panggang.\n\n".
@@ -341,7 +341,7 @@ class MenuSeeder extends Seeder
 
         Menu::create([
             'nama_menu' => 'Hamburger Beef',
-            'harga' => 23000,
+            'harga' => 35000,
             'kategori' => 'Makanan',
             'foto' => 'img/Burgerbeef.jpeg',
             'deskripsi' => "Burger dengan daging sapi asli yang tebal dan juicy, sayuran segar, dan saus spesial yang gurih.\n\n".
@@ -350,7 +350,7 @@ class MenuSeeder extends Seeder
 
         Menu::create([
             'nama_menu' => 'Cheese Rabokki',
-            'harga' => 15000,
+            'harga' => 27000,
             'kategori' => 'Makanan',
             'foto' => 'img/CheeseRabokki.jpg',
             'deskripsi' => "Nikmati perpaduan sempurna antara mie ramen yang kenyal dan tteokbokki (kue beras) yang lembut, dimasak dalam saus keju pedas.\n\n".
@@ -368,7 +368,7 @@ class MenuSeeder extends Seeder
 
         Menu::create([
             'nama_menu' => 'Lumpia',
-            'harga' => 17000,
+            'harga' => 20000,
             'kategori' => 'Makanan',
             'foto' => 'img/Lumpiah.jpeg',
             'deskripsi' => "Nikmati kelezatan camilan klasik berupa gulungan kulit krispi yang diisi dengan perpaduan rebung muda, wortel, dan daging ayam yang ditumis gurih dengan bumbu rempah pilihan.\n\n".
@@ -377,7 +377,7 @@ class MenuSeeder extends Seeder
 
         Menu::create([
             'nama_menu' => 'Sosis Bakar',
-            'harga' => 15000,
+            'harga' => 18000,
             'kategori' => 'Makanan',
             'foto' => 'img/sosisbakar.jpeg',
             'deskripsi' => "Nikmati sosis sapi jumbo berkualitas premium yang dipanggang dengan olesan saus BBQ rahasia hingga meresap sempurna.\n\n".
@@ -386,7 +386,7 @@ class MenuSeeder extends Seeder
 
         Menu::create([
             'nama_menu' => 'Gyoza',
-            'harga' => 15000,
+            'harga' => 25000,
             'kategori' => 'Makanan',
             'foto' => 'img/Gyoza.jpg',
             'deskripsi' => "Nikmati kelezatan pangsit khas Jepang dengan isian daging ayam cincang dan sayuran segar yang dibumbui rempah jahe dan bawang putih yang aromatik.\n\n".
@@ -395,7 +395,7 @@ class MenuSeeder extends Seeder
 
         Menu::create([
             'nama_menu' => 'Tteokbokki',
-            'harga' => 15000,
+            'harga' => 27000,
             'kategori' => 'Makanan',
             'foto' => 'img///Tteokbokki.jpg',
             'deskripsi' => "Nikmati sensasi kuliner jalanan Korea yang otentik dengan kue beras (tteok) yang kenyal sempurna, dimasak dalam saus gochujang merah yang kental dengan perpaduan rasa pedas dan manis yang seimbang.\n\n".
@@ -404,7 +404,7 @@ class MenuSeeder extends Seeder
 
         Menu::create([
             'nama_menu' => 'Kebab',
-            'harga' => 15000,
+            'harga' => 28000,
             'kategori' => 'Makanan',
             'foto' => 'img/KebabBeef.jpg',
             'deskripsi' => "Nikmati perpaduan irisan daging sapi premium yang dibumbui rempah khas Timur Tengah, dipanggang perlahan hingga juicy dan aromatik yang dengan kulit tortilla yang lembut dan dipanggang krispi.\n\n".
@@ -413,7 +413,7 @@ class MenuSeeder extends Seeder
 
         Menu::create([
             'nama_menu' => 'Rujak Cireng',
-            'harga' => 15000,
+            'harga' => 16000,
             'kategori' => 'Makanan',
             'foto' => 'img/RujakCireng.jpg',
             'deskripsi' => "Nikmati camilan tradisional khas Jawa Barat yang terbuat dari tepung tapioka berkualitas, digoreng hingga menghasilkan tekstur luar yang sangat renyah namun tetap kenyal dan lembut di dalam.\n\n".
@@ -432,7 +432,7 @@ class MenuSeeder extends Seeder
 
         Menu::create([
             'nama_menu' => 'Original Churros',
-            'harga' => 10000,
+            'harga' => 25000,
             'kategori' => 'Sweet Treats',
             'foto' => 'img/Churros.jpeg',
             'deskripsi' => "Nikmati camilan khas Spanyol yang digoreng hingga garing keemasan di luar, namun tetap lembut di dalam. Setiap batang churros ditaburi dengan perpaduan gula halus dan bubuk kayu manis yang aromatik.\n\n".
@@ -441,7 +441,7 @@ class MenuSeeder extends Seeder
 
         Menu::create([
             'nama_menu' => 'Original Croissant',
-            'harga' => 20000,
+            'harga' => 23000,
             'kategori' => 'Sweet Treats',
             'foto' => 'img/Croissant.jpeg',
             'deskripsi' => "Pastri berlapis yang renyah di luar dan lembut di dalam serta aroma harum dan rasa gurih butter yang kaya di setiap gigitannya.\n\n".
@@ -450,7 +450,7 @@ class MenuSeeder extends Seeder
 
         Menu::create([
             'nama_menu' => 'Almond Croissant',
-            'harga' => 25000,
+            'harga' => 28000,
             'kategori' => 'Sweet Treats',
             'foto' => 'img/CroissantAlmond.jpeg',
             'deskripsi' => "Nikmati perpaduan sempurna antara pastri mentega yang renyah dengan isian almond cream (frangipane) yang manis dan lembut di dalamnya. Dtaburi dengan irisan kacang almond dan sentuhan gula halus.\n\n".
@@ -459,17 +459,16 @@ class MenuSeeder extends Seeder
 
         Menu::create([
             'nama_menu' => 'Chocolate Croissant',
-            'harga' => 23000,
+            'harga' => 27000,
             'kategori' => 'Sweet Treats',
             'foto' => 'img/Croissantcoklat.jpeg',
             'deskripsi' => "Nikmati keajaiban pastri khas Prancis yang berlapis-lapis dan renyah dengan isian dark chocolate premium di dalamnya.\n\n".
                             "Komposisi Utama: Mentega Premium, Dark Chocolate Batons, Gula Halus."
         ]);
 
-
         Menu::create([
             'nama_menu' => 'Pisang Keju Coklat',
-            'harga' => 23000,
+            'harga' => 18000,
             'kategori' => 'Sweet Treats',
             'foto' => 'img/pisang.jpg',
             'deskripsi' => "Nikmati kelezatan pisang pilihan yang digoreng hingga keemasan, menghasilkan tekstur yang lembut dan manis dengan topping keju parut dan cokelat melimpah.\n\n".
@@ -478,7 +477,7 @@ class MenuSeeder extends Seeder
 
         Menu::create([
             'nama_menu' => 'Lemon Cheesecake',
-            'harga' => 20000,
+            'harga' => 23000,
             'kategori' => 'Sweet Treats',
             'foto' => 'img/LemonCheesecake.jpg',
             'deskripsi' => "Nikmati perpaduan sempurna antara cream cheese premium yang lembut dengan sentuhan kesegaran sari lemon di atas lapisan biskuit mentega yang renyah.\n\n".
@@ -488,7 +487,7 @@ class MenuSeeder extends Seeder
 
         Menu::create([
             'nama_menu' => 'Oreo Cheesecake',
-            'harga' => 20000,
+            'harga' => 25000,
             'kategori' => 'Sweet Treats',
             'foto' => 'img/OreoCheesecake.jpg',
             'deskripsi' => "Rasakan perpaduan sempurna antara kelembutan cream cheese premium dengan potongan biskuit Oreo yang melimpah di atas lapisan biskuit cokelat yang renyah.\n\n".
@@ -497,7 +496,7 @@ class MenuSeeder extends Seeder
 
         Menu::create([
             'nama_menu' => 'Strawberry Cheesecake',
-            'harga' => 25000,
+            'harga' => 26000,
             'kategori' => 'Sweet Treats',
             'foto' => 'img/StrawberryCheesecake.jpg',
             'deskripsi' => "Manjakan diri dengan kelembutan cream cheese premium yang dipadukan dengan selai strawberry buatan sendiri yang segar di atas lapisan biskuit mentega yang renyah.\n\n".
@@ -507,7 +506,7 @@ class MenuSeeder extends Seeder
 
         Menu::create([
             'nama_menu' => 'Brownie Sundae Bliss',
-            'harga' => 25000,
+            'harga' => 35000,
             'kategori' => 'Sweet Treats',
             'foto' => 'img/BrownieSundaeBliss.jpg',
             'deskripsi' => "Nikmati puncak kelezatan cokelat dalam satu mangkuk. Potongan fudgy brownie yang hangat dan kaya rasa cokelat hitam, disajikan dengan dua scoop es krim vanilla yang lembut dan dingin.\n\n".
@@ -516,7 +515,7 @@ class MenuSeeder extends Seeder
 
         Menu::create([
             'nama_menu' => 'Raspberry Mousse',
-            'harga' => 25000,
+            'harga' => 34000,
             'kategori' => 'Sweet Treats',
             'foto' => 'img/RaspberryMousse.jpg',
             'deskripsi' => "Nikmati sensasi lembut dan ringan dari mousse raspberry yang dibuat dari buah raspberry segar pilihan yang memberikan keseimbangan antara rasa manis dan asam yang menyegarkan di setiap suapan.\n\n".
@@ -526,7 +525,7 @@ class MenuSeeder extends Seeder
         
         Menu::create([
             'nama_menu' => 'Blueberry Mousse',
-            'harga' => 25000,
+            'harga' => 36000,
             'kategori' => 'Sweet Treats',
             'foto' => 'img/BlueberryMousse.jpg',
             'deskripsi' => "Manjakan lidah dengan mousse blueberry yang dibuat dari perpaduan buah blueberry asli dan krim segar pilihan yang menawarkan keseimbangan rasa manis dan sedikit asam di setiap suapan.\n\n".
@@ -535,7 +534,7 @@ class MenuSeeder extends Seeder
 
         Menu::create([
             'nama_menu' => 'Chocolate Puding',
-            'harga' => 25000,
+            'harga' => 29000,
             'kategori' => 'Sweet Treats',
             'foto' => 'img/ChocolatePuding.jpg',
             'deskripsi' => "Nikmati kelembutan puding cokelat yang dibuat dengan bubuk cokelat premium, menghasilkan tekstur yang sangat lembut. Disajikan dingin dengan siraman saus vanilla yang creamy dan kental.\n\n".
@@ -544,7 +543,7 @@ class MenuSeeder extends Seeder
 
         Menu::create([
             'nama_menu' => 'Caramel Puding',
-            'harga' => 25000,
+            'harga' => 22000,
             'kategori' => 'Sweet Treats',
             'foto' => 'img/CaramelPuding.jpg',
             'deskripsi' => "Nikmati kelembutan puding yang memiliki tekstur lumer di mulut. Disajikan dengan siraman saus karamel emas yang manis.\n\n".
@@ -553,7 +552,7 @@ class MenuSeeder extends Seeder
 
         Menu::create([
             'nama_menu' => 'Panna Cotta',
-            'harga' => 25000,
+            'harga' => 32000,
             'kategori' => 'Sweet Treats',
             'foto' => 'img/MiniCake.jpg',
             'deskripsi' => "Rasakan kelembutan puding krim khas Italia yang dibuat dari krim segar dan vanilla pilihan, menghasilkan tekstur yang lumer di mulut.\n\n".

@@ -13,45 +13,33 @@ class AdminOrderController extends Controller
     /**
      * Dashboard Overview (Grafik & Statistik)
      */
-    public function dashboard(): View
-    {
-        // Menggunakan Order::query() membantu indexing Intelephense
-        $totalOrders = Order::query()->count('*'); 
-        $today = Carbon::today()->toDateString();
-        
-        // Menghitung jumlah pesanan hari ini dengan parameter eksplisit
-        //$ordersTodayCount = Order::query()
+public function dashboard(): View
+{
+    // Menggunakan timezone Asia/Jakarta agar akurat dengan waktu lokal Indonesia
+    $today = \Carbon\Carbon::today('Asia/Jakarta');
+    
+    // Pastikan kolom created_at dibandingkan dengan string tanggal yang tepat
+    $ordersToday = \App\Models\Order::whereDate('created_at', $today->toDateString())->get();
+    
+    // AllOrders tetap mengambil semua data tanpa filter tanggal
+    $allOrders = \App\Models\Order::latest()->get();
 
-        $ordersTodayCount = Order::where('created_at', '>=', $today . ' 00:00:00')->count();
-        
-        $recentOrders = Order::latest()->limit(5)->get();
+    // Di AdminOrderController.php
+    $hourlyDataRaw = \App\Models\Order::query()
+        ->selectRaw('HOUR(created_at) as jam, COUNT(*) as total')
+        ->whereDate('created_at', $today)
+        ->groupBy('jam')
+        ->pluck('total', 'jam')
+        ->toArray();
 
-        // Statistik per jam
-        $hourlyData = Order::query()
-            ->selectRaw('HOUR(created_at) as jam, COUNT(*) as total')
-            ->whereDate('created_at', '=', $today)
-            ->groupBy('jam')
-            ->orderBy('jam', 'asc')
-            ->get();
-
-        // Statistik per bulan$recentOrders
-        $currentYear = (int) Carbon::now()->year;
-        $monthlyData = Order::query()
-            ->selectRaw('MONTH(created_at) as bulan, COUNT(*) as total')
-            ->whereYear('created_at', '=', $currentYear)
-            ->groupBy('bulan')
-            ->orderBy('bulan', 'asc')
-            ->get();
-
-        return view('admin.dashboard', compact(
-            'totalOrders', 
-            'ordersTodayCount', 
-            'recentOrders', 
-            'hourlyData', 
-            'monthlyData'
-        ));
+    $chartData = [];
+    for ($i = 0; $i < 24; $i++) {
+        // Pastikan nilai dikonversi ke integer agar dibaca angka oleh JS
+        $chartData[] = (int)($hourlyDataRaw[$i] ?? 0); 
     }
 
+    return view('admin.dashboard', compact('ordersToday', 'allOrders', 'chartData'));
+}
     /**
      * List Data Pesanan (Tabel)
      */
@@ -61,21 +49,19 @@ class AdminOrderController extends Controller
         return view('admin.order', compact('orders'));
     }
 
-    /**
-     * Update Status Pesanan
-     */
-    public function updateStatus(Request $request, int $id): RedirectResponse
+    public function updateStatus(Request $request, $id)
     {
-        $order = Order::findOrFail($id);
-
+        // Validasi status yang diterima
         $request->validate([
             'status' => 'required|in:diproses,siap,sukses'
         ]);
 
+        // Cari pesanan dan perbarui statusnya
+        $order = \App\Models\Order::findOrFail($id);
         $order->status = $request->status;
         $order->save();
 
-        return back()->with('success', "Status pesanan #{$id} berhasil diperbarui.");
+        return redirect()->back()->with('success', 'Status pesanan berhasil diperbarui!');
     }
 
     /**
@@ -89,22 +75,25 @@ class AdminOrderController extends Controller
         return back()->with('success', 'Pesanan berhasil dihapus.');
     }
 
-    public function reviews()
+public function reviews()
 {
-    // Jika Anda punya model Review, bisa ambil data di sini
-    // $reviews = Review::latest()->get();
-    // return view('admin.reviews', compact('reviews'));
-
-    return view('admin.reviews'); // Sementara tampilkan view saja
+    // Mengambil data ulasan terbaru dari database
+    $reviews = \App\Models\Ulasan::latest()->get(); 
+    
+    // Mengirim variabel $reviews ke file blade
+    return view('admin.reviews', compact('reviews')); 
 }
 
 public function report()
 {
     // Mengambil total penjualan per bulan untuk tahun ini
-    $salesData = Order::selectRaw('MONTH(created_at) as month, SUM(total_bayar) as total')
-        ->whereYear('created_at', date('Y'))
+    $salesData = Order::selectRaw('
+            MONTH(created_at) as month, 
+            SUM(total_bayar) as total, 
+            COUNT(id) as total_orders
+        ')
+        ->whereYear('created_at', 2026)
         ->groupBy('month')
-        ->orderBy('month')
         ->get();
 
     return view('admin.report', compact('salesData'));

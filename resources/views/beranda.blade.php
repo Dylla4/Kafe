@@ -135,21 +135,27 @@
             {{-- Bagian Kanan: Teks Deskripsi --}}
             <div class="pt-0 lg:pt-32 space-y-8">
                 <div class="prose prose-stone">
-                    <p class="text-stone-600 text-lg leading-relaxed font-light">
-                        Didirikan pada tahun 2018, <strong class="text-[#004d31] font-bold">Valeria Coffee</strong> adalah startup kopi yang bercita-cita membuat kopi spesial terbaik untuk pelanggan. Seperti nama kami yang diambil dari kata "Valiant" yang berarti keberanian, kami ingin tumbuh kuat, konsisten, dan menciptakan kehidupan yang bermakna di sekitar. Kami ingin kehadiran kami bisa meningkatkan kualitas kopi dalam komunitas kita.
+                    <!-- Tambahkan class 'text-justify' di bawah ini -->
+                    <p class="text-stone-600 text-lg leading-relaxed font-light text-justify">
+                        Didirikan pada tahun 2026, <strong class="text-[#9c6b00] font-bold">Valeria Coffee</strong> hadir sebagai startup kopi yang berdedikasi untuk menyajikan kopi spesial terbaik bagi setiap pelanggan. 
+                        Nama "Valeria" sendiri terinspirasi dari kata "Valiant" yang melambangkan keberanian. Melalui semangat tersebut, kami berkomitmen untuk tumbuh menjadi usaha yang tangguh, konsisten, 
+                        dan mampu memberikan dampak bermakna bagi lingkungan sekitar serta meningkatkan kualitas kopi di komunitas masyarakat.
                     </p>
                     
-                    <p class="text-stone-600 text-lg leading-relaxed font-light">
-                        Dengan jaringan dan pengalaman, kami menggunakan teknologi terkini untuk alat dan biji kopi kami. Diambil langsung dari petani pilihan, biji kopi berkualitas tinggi diproses dan dipanggang sempurna oleh kami, dan diajarkan kepada barista kompeten dengan semangat yang tulus.
+                    <p class="text-stone-600 text-lg leading-relaxed font-light text-justify">
+                        Berbekal jaringan dan pengalaman yang luas, kami memanfaatkan teknologi terkini dalam pemilihan alat maupun pengolahan biji kopi. Kami memastikan hanya biji kopi berkualitas tinggi 
+                        yang dipilih langsung dari petani pilihan, untuk kemudian diproses dan dipanggang secara optimal oleh tim ahli kami. Tak hanya itu, kami juga membina barista-barista kompeten 
+                        yang memiliki semangat pelayanan tulus demi menghadirkan pengalaman menikmati kopi yang tak terlupakan bagi Anda.
                     </p>
                 </div>
+            </div>
 
-                {{-- Tombol Selengkapnya (Opsional) --}}
-                    <div class="pt-4">
-                        <a href="{{ route('tentang') }}" class="inline-block border-2 border-[#004d31] text-[#004d31] px-10 py-3 rounded-full font-bold hover:bg-[#004d31] hover:text-white transition-all duration-300">
-                            Selengkapnya
-                        </a>
-                    </div>
+                <!-- Tombol diletakkan di sini agar mengikuti aliran teks -->
+                <div class="pt-6 text-right">
+                    <a href="{{ route('tentang') }}" class="inline-block border-2 border-[#004d31] text-[#004d31] px-10 py-3 rounded-full font-bold hover:bg-[#004d31] hover:text-white transition-all duration-300">
+                        Selengkapnya
+                    </a>
+                </div>
             </div>
         </div>
     </div>
@@ -196,31 +202,31 @@
         <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
             @php
                 $newsList = [
-                    [
-                        'title' => '[Press Release] VALERIA Records 60.5% YoY Net...',
-                        'location' => 'Jakarta, April 20, 2026 – PT Valeria Kopi Indonesia Tbk',
-                        'date' => 'April 20, 2026',
-                        'img' => 'https://images.unsplash.com/photo-1554118811-1e0d58224f24?q=80&w=500'
-                    ],
-                    [
-                        'title' => "[Press Release] VALERIA's Net Profit Surged 55%...",
-                        'location' => 'Jakarta, March 31, 2026 – PT Valeria Kopi Indonesia Tbk',
-                        'date' => 'April 1, 2026',
-                        'img' => 'https://images.unsplash.com/photo-1495474472287-4d71bcdd2085?q=80&w=500'
-                    ],
-                    [
-                        'title' => 'Growing with the Community, VALERIA...',
-                        'location' => 'TANGERANG, March 25, 2026 – PT Valeria Kopi Indonesia Tbk',
-                        'date' => 'March 25, 2026',
-                        'img' => 'https://images.unsplash.com/photo-1559056199-641a0ac8b55e?q=80&w=500'
-                    ],
-                    [
-                        'title' => 'Frequently Asked Questions (FAQ) – Valeria...',
-                        'location' => 'Does Valeria Coffee offer a franchise scheme? Valeria Coffee prioritizes...',
-                        'date' => 'March 9, 2026',
-                        'img' => 'https://images.unsplash.com/photo-1442512595331-e89e73853f31?q=80&w=500'
-                    ],
-                ];
+                [
+                    'title' => '[Grand Opening] Valeria Coffee Resmi Hadir di Indramayu',
+                    'location' => 'Kabar gembira bagi warga Bumi Wiralodra! Valeria Coffee secara resmi membuka cabang terbarunya di pusat kota Indramayu. Dengan mengusung konsep Modern Comfort, kami tidak hanya menyajikan kopi spesial, tetapi juga ruang kreatif bagi komunitas lokal.',
+                    'date' => 'Maret 13, 2026',
+                    'img' => asset('img/berita1.jpg'),
+                ],
+                [
+                    'title' => '[Press Release] Ekspansi Agresif, Laba Bersih Valeria Kopi Meningkat 55%',
+                    'location' => 'Menutup kuartal pertama tahun 2026, Valeria Coffee mencatatkan pertumbuhan impresif. Keberhasilan ini didorong oleh meningkatnya loyalitas pelanggan dan efisiensi teknologi pengolahan biji kopi terkini yang kami terapkan.',
+                    'date' => 'April 21, 2026',
+                    'img' => asset('img/berita2.jpg'),
+                ],
+                [
+                    'title' => 'Program Pelatihan Barista Lokal Valeria Coffee',
+                    'location' => 'Valeria Coffee berkomitmen untuk terus membina barista muda yang kompeten dan berjiwa pelayan tulus. Melalui program pelatihan intensif, kami memberdayakan talenta lokal di setiap kota ekspansi kami.',
+                    'date' => 'Mei 2, 2026',
+                    'img' => asset('img/berita3.jpg'),
+                ],
+                [
+                    'title' => 'Rahasia di Balik Rasa: Proses Pemanggangan Optimal Biji Kopi Petani Pilihan',
+                    'location' => 'Kualitas kopi Valeria dimulai dari hulu. Kami memastikan hanya biji kopi berkualitas tinggi yang dipilih langsung dari petani mitra, untuk kemudian diproses menggunakan teknologi terkini demi kualitas terbaik.',
+                    'date' => 'Mei 26, 2026',
+                    'img' => asset('img/berita4.jpg'),
+                ],
+            ];
             @endphp
 
             @foreach($newsList as $news)
@@ -377,22 +383,22 @@
             @php
                 $testimonials = [
                     [
-                        'text' => 'Kami sangat mengapresiasi inisiatif dari Valeria Coffee untuk berkolaborasi bersama dalam kampanye ini. Semoga kolaborasi kami bisa menginspirasi banyak pihak.',
-                        'author' => 'Sumanda Tondang',
-                        'role' => 'Director of Fund Development at SOS Children\'s Villages',
-                        'logo' => 'https://upload.wikimedia.org/wikipedia/commons/d/d1/SOS_Children%27s_Villages_logo.svg'
+                        'text' => 'Buat yang nggak terlalu suka kopi pahit, Almond Coffee atau Dalgona-nya wajib dicoba! Teksturnya super creamy dan manisnya pas,
+                                    nggak bikin enek. Kelihatan banget kalau mereka pakai bahan-bahan premium. Benar-benar definisi memanjakan lidah recommended! ⭐⭐⭐⭐⭐',
+                        'author' => 'Binar',
+                        'logo' => asset('img/gofood.jpg')
                     ],
                     [
-                        'text' => 'Valeria Coffee is one of the best merchants that I ever handled. They had a great journey to create some collaborations such as Exclusive Seasonal Menu, Percaya Projex, etc.',
-                        'author' => 'Devi Alfilovita',
-                        'role' => 'Key Account Manager at GrabFood',
-                        'logo' => 'https://upload.wikimedia.org/wikipedia/commons/a/a9/Grab_logo.svg'
+                        'text' => 'Gak sengaja nemu hidden gem ini di Indramayu. Tempatnya super nyaman, desainnya modern, dan WiFi-nya kenceng banget buat nugas
+                                    atau kerja. Baristanya juga ramah-ramah banget, bener-bener dapet vibes Selengkapnya bakal jadi tempat nongkrong rutin sih ini! ✨',
+                        'author' => 'Hanjali',
+                        'logo' => asset('img/grabfood.jpg')
                     ],
                     [
-                        'text' => 'Valeria is a very collaborative merchant because, during the pandemic, we were able to collaborate to rebuild from scratch in order to achieve tremendous growth.',
-                        'author' => 'Nina Sudianto',
-                        'role' => 'Enterprise Merchant Partnerships at GoFood',
-                        'logo' => 'https://upload.wikimedia.org/wikipedia/commons/9/9e/Gojek_logo_2019.svg'
+                        'text' => 'Nggak cuma kopinya yang juara, camilannya juga nggak kalah saing. Saya nyobain Pisang Coklat Keju dan Churros-nya, bener-bener pas buat nemenin ngopi sore. Ada juga
+                                pilihan menu seperti Coffee Latte yang otentik. jadi kalau ke sini nggak cuma sekadar minum, tapi bisa sambil ngemil enak.',
+                        'author' => 'Dwi Nurul',
+                        'logo' => asset('img/shopefood.jpg')
                     ],
                 ];
             @endphp
@@ -415,13 +421,13 @@
                 <div class="text-center">
                     <h4 class="text-stone-800 font-bold text-lg">{{ $item['author'] }}</h4>
                     <p class="text-stone-400 text-[11px] leading-tight max-w-[200px] mx-auto uppercase tracking-wider">
-                        {{ $item['role'] }}
                     </p>
                 </div>
             </div>
             @endforeach
         </div>
 
+        
         {{-- Pagination Dots --}}
         <div class="flex justify-center gap-2 mt-16">
             <div class="w-2 h-2 rounded-full bg-[#004d31]"></div>

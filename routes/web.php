@@ -6,6 +6,7 @@ use App\Http\Controllers\AdminOrderController;
 use App\Http\Controllers\OrderController;
 use App\Http\Controllers\UlasanController;
 use App\Http\Controllers\HomeController;
+use App\Http\Controllers\AdminStokController;
 use App\Http\Controllers\Auth\CustomerAuthController;
 
 /*
@@ -93,19 +94,30 @@ Route::prefix('admin')->group(function () {
     // Admin Terproteksi
     Route::middleware('auth:admin')->group(function () {
         
-        // Tambahkan rute dashboard yang hilang ini
-        Route::get('/dashboard', [AdminOrderController::class, 'dashboard'])->name('admin.dashboard');
+    // Tambahkan rute dashboard yang hilang ini
+    Route::get('/dashboard', [AdminOrderController::class, 'dashboard'])->name('admin.dashboard');
 
-        Route::get('/orders', [AdminOrderController::class, 'index'])->name('admin.orders');
+    Route::get('/orders', [AdminOrderController::class, 'index'])->name('admin.orders');
         
-        // Perbaikan: Hapus prefix '/admin' di dalam parameter URL karena sudah ada di Route::prefix('admin')
-        Route::post('/orders/{id}/status', [AdminOrderController::class, 'updateStatus'])->name('admin.orders.status');
+    // Perbaikan: Hapus prefix '/admin' di dalam parameter URL karena sudah ada di Route::prefix('admin')
+    Route::post('/orders/{id}/status', [AdminOrderController::class, 'updateStatus'])->name('admin.orders.status');
 
-        Route::get('/reviews', [AdminOrderController::class, 'reviews'])->name('admin.reviews');
+    Route::get('/reviews', [AdminOrderController::class, 'reviews'])->name('admin.reviews');
         
-        Route::get('/report', [AdminOrderController::class, 'report'])->name('admin.report');
+    Route::get('/report', [AdminOrderController::class, 'report'])->name('admin.report');
 
-        Route::delete('/orders/{id}', [AdminOrderController::class, 'destroy'])->name('admin.orders.destroy');
-        Route::post('/logout', [AdminAuthController::class, 'logout'])->name('admin.logout');
+    Route::delete('/orders/{id}', [AdminOrderController::class, 'destroy'])->name('admin.orders.destroy');
+    Route::post('/logout', [AdminAuthController::class, 'logout'])->name('admin.logout');
+
+    // Pastikan nama route-nya adalah 'admin.orders.update'
+    Route::patch('/admin/orders/{id}', [AdminOrderController::class, 'updateStatus'])->name('admin.orders.update');
+
+Route::prefix('admin')->group(function () {
+    Route::get('/stok', [AdminStokController::class, 'index'])->name('admin.stok');
+    // Baris ini sangat penting:
+    Route::put('/stok/{id}', [AdminStokController::class, 'update'])->name('admin.stok.update');
+});
+
     });
+
 });

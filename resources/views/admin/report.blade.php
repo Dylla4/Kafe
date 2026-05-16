@@ -2,15 +2,15 @@
 
 @section('content')
 @php
-    // Ambil bulan yang sedang dipilih dari URL (default ke bulan saat ini)
     $currentSelectedMonth = request('month', now()->month);
     
-    // Filter salesData hanya untuk bulan yang dipilih agar card statistik ikut sinkron
+    // Pastikan variabel ini ada agar tidak "Undefined variable $filteredData"
     $filteredData = $salesData->where('month', $currentSelectedMonth);
     
-    // Hitung total dari data yang sudah difilter
-    $totalIncome = $filteredData->sum('total');
-    $totalOrders = $filteredData->sum('total_orders');
+    $monthData = $filteredData->first();
+    
+    $totalIncome = $monthData ? $monthData->total : 0;
+    $totalOrders = $monthData ? $monthData->total_orders : 0;
 @endphp
 
 <main class="p-8 lg:p-12 w-full bg-[#FDFCFB] min-h-screen">
@@ -61,11 +61,15 @@
             <h3 class="text-3xl font-black text-[#2D2018] mt-1 italic">Rp{{ number_format($totalIncome, 0, ',', '.') }}</h3>
         </div>
 
-        <div class="bg-white p-6 rounded-[1.5rem] border border-stone-100 shadow-sm border-l-4 border-l-caramel transition hover:shadow-md">
+    <!-- Card Jumlah Order (TAMBAHAN BARU) -->
+        <div class="bg-white p-6 rounded-[1.5rem] border border-stone-100 shadow-sm border-l-4 border-l-caramel">
             <p class="text-stone-400 text-sm font-bold uppercase tracking-tight">Jumlah Order</p>
             <div class="flex items-baseline gap-2">
-                <h3 class="text-4xl font-black text-[#2D2018] mt-1 italic">{{ $totalOrders }}</h3>
-                <span class="text-stone-400 font-bold text-xs uppercase tracking-widest">Pesanan</span>
+            <!-- Bagian Card Jumlah Order -->
+            <h3 class="text-5xl font-black text-[#2D2018] italic leading-none tracking-tighter">
+                {{$totalOrders}}
+            </h3>
+            <span class="text-stone-400 font-bold text-xs uppercase tracking-widest">Pesanan</span>
             </div>
         </div>
 
@@ -89,23 +93,12 @@
         <!-- Grafik Garis (Tren) -->
         <div class="bg-white rounded-[2rem] p-8 shadow-sm border border-stone-100">
             <h3 class="font-black text-[#2D2018] uppercase mb-6 flex items-center gap-2">
-                <span class="w-2 h-6 bg-caramel rounded-full"></span> Tren Pendapatan 2026
+                <span class="w-2 h-6 bg-caramel rounded-full"></span> Kurva Pendapatan 2026
             </h3>
             <div class="h-[300px]">
                 <canvas id="monthlyLineChart"></canvas>
             </div>
         </div>
-
-        <!-- Grafik Batang (Perbandingan Bulanan - PENGGANTI TREN HARIAN) -->
-        <div class="bg-white rounded-[2rem] p-8 shadow-sm border border-stone-100">
-            <h3 class="font-black text-[#2D2018] uppercase mb-6 flex items-center gap-2">
-                <span class="w-2 h-6 bg-[#2D2018] rounded-full"></span> Perbandingan Bulanan 2026
-            </h3>
-            <div class="h-[300px]">
-                <canvas id="monthlyBarChart"></canvas>
-            </div>
-        </div>
-    </div>
 
     <!-- Tabel -->
     <div class="bg-white rounded-[2rem] shadow-sm border border-stone-100 overflow-hidden">

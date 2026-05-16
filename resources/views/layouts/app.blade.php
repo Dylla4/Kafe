@@ -80,74 +80,78 @@
         @yield('content')
     </main>
 
-    <footer class="bg-[#f8f9fa] pt-20 pb-10 border-t border-stone-200">
-        <div class="max-w-7xl mx-auto px-6">
-            <div class="grid grid-cols-1 md:grid-cols-3 gap-12 mb-16">
-                
-                {{-- Kolom 1: Logo & Info Perusahaan --}}
-                <div class="flex flex-col space-y-6">
-                    <div class="flex items-center gap-2">
-                        <span class="text-2xl font-bold tracking-tighter text-[#070707]">VALERIA<span class="text-[#693d04]">COFFEE</span></span>
-                    </div>
-                    <div class="text-stone-500 text-sm leading-relaxed">
-                        © 2026 Valeria Coffee. All rights reserved.
-                        <div class="mt-2 space-x-4">
-                            <a href="#" class="hover:text-[#004d31] transition-colors">Terms and Conditions</a>
-                            <span>•</span>
-                            <a href="#" class="hover:text-[#004d31] transition-colors">Privacy Policy</a>
-                        </div>
-                    </div>
+<footer class="bg-[#f8f9fa] pt-20 pb-10 border-t border-stone-200">
+    <div class="max-w-7xl mx-auto px-6">
+        <div class="grid grid-cols-1 md:grid-cols-4 gap-12 mb-16">
+            
+            {{-- Kolom 1: Branding --}}
+            <div class="flex flex-col space-y-4">
+                <div class="flex items-center gap-2">
+                    <span class="text-2xl font-bold tracking-tighter text-[#070707]">
+                        VALERIA<span class="text-[#693d04]">COFFEE</span>
+                    </span>
                 </div>
-
-{{-- Bagian Customer Center --}}
-<div class="space-y-4">
-    <h3 class="font-bold text-stone-800">Customer Center</h3>
-    
-    <div class="flex items-start space-x-3">
-        <span class="text-[#004d31] mt-1">
-            <i class="fas fa-map-marker-alt"></i> {{-- Icon Map --}}
-        </span>
-        <p class="text-sm text-stone-600">
-            Thamrin Plaza, Jl. M.H. Thamrin Kav. 8-9<br>
-            Lt. PH, Kebon Melati, Tanah Abang,<br>
-            Jakarta Pusat
-        </p>
-    </div>
-
-        <div class="flex items-center space-x-3">
-            <span class="text-[#004d31]">
-                <i class="fab fa-whatsapp text-lg"></i> {{-- Icon WA --}}
-            </span>
-            <p class="text-sm text-stone-600">0812-1111-8456</p>
-        </div>
-
-        {{-- TAMBAHKAN LOGO DI SINI --}}
-        <div class="flex items-center space-x-4 pt-2">
-        <a href="https://wa.me/6281211118456" target="_blank" class="w-10 h-10 rounded-full bg-stone-100 flex items-center justify-center group hover:bg-[#004d31] transition-all duration-300">
-            {{-- Hapus tag <i> dan ganti dengan tag <img> --}}
-            <img src="{{ asset('img/logowa.jpg') }}" alt="WhatsApp Logo" class="w-6 h-6 object-contain">
-        </a>
-            <a href="https://instagram.com/valeriacoffee" target="_blank" class="w-10 h-10 rounded-full bg-stone-100 flex items-center justify-center text-[#004d31] hover:bg-[#004d31] hover:text-white transition-all duration-300 shadow-sm">
-                <i class="fab fa-instagram text-xl"></i>
-            </a>
-        </div>
-    </div>
-
-                {{-- Kolom 3: Pengaduan Konsumen & Sosmed --}}
-                <div class="space-y-6">
-                    <h4 class="text-[#693d04] font-bold text-lg leading-snug">
-                        Informasi Kontak Layanan<br>Pengaduan Konsumen
-                    </h4>
-                    <div class="text-stone-500 text-sm space-y-4">
-                        <p>
-                            Direktorat Jenderal Perlindungan Konsumen dan Tertib Niaga, 
-                            Kementerian Perdagangan Republik Indonesia
-                        </p>
-                    </div>
+                <p class="text-stone-500 text-sm leading-relaxed">
+                    Menyajikan kualitas kopi terbaik untuk komunitas kami dengan sepenuh hati.
+                </p>
+                <div class="text-stone-400 text-xs">
+                    © 2026 Valeria Coffee.
                 </div>
             </div>
+
+            {{-- Kolom 2: Lokasi --}}
+            <div class="space-y-4">
+                <h3 class="font-bold text-stone-800 uppercase tracking-widest text-xs">Lokasi Kami</h3>
+                <div class="flex items-start space-x-3">
+                    <span class="text-[#693d04] mt-1">
+                        <i class="fas fa-map-marker-alt"></i>
+                    </span>
+                    <p class="text-sm text-stone-600 leading-relaxed">
+                        Jalan Ir H Djuanda Km 3 Indramayu.<br>
+                         Kec. Indramayu, Kab. Indramayu,<br>
+                        Jawa Barat
+                    </p>
+                </div>
+            </div>
+
+            {{-- Kolom 3: Media Sosial & Kontak --}}
+            <div class="space-y-4">
+                <h3 class="font-bold text-stone-800 uppercase tracking-widest text-xs">Hubungi Kami</h3>
+                
+                <div class="text-sm text-stone-600 space-y-2">
+                    <div class="flex items-center gap-2">
+                        <i class="fas fa-phone-alt text-[#693d04] text-xs"></i>
+                        <span>+0113-356-7889</span>
+                    </div>
+                </div>
+
+                <div class="flex items-center space-x-3 pt-2">
+                    <a href="https://wa.me/6281211118456" target="_blank" class="w-10 h-10 rounded-full bg-white shadow-sm flex items-center justify-center hover:shadow-md transition-all duration-300">
+                        <img src="{{ asset('img/whatsApp.jpg') }}" alt="WhatsApp" class="w-6 h-6 object-contain">
+                    </a>
+                    <a href="https://instagram.com/valeriacoffee" target="_blank" class="w-10 h-10 rounded-full bg-white shadow-sm flex items-center justify-center hover:shadow-md transition-all duration-300">
+                        <img src="{{ asset('img/Instagram.jpg') }}" alt="Instagram" class="w-6 h-6 object-contain">
+                    </a>
+                </div>
+                <p class="text-[10px] font-bold text-[#693d04] uppercase tracking-tighter">Stay Updated</p>
+            </div>
+
+            {{-- Kolom 4: Pengaduan Konsumen --}}
+            <div class="space-y-4">
+                <h3 class="text-[#693d04] font-bold text-xs uppercase tracking-widest leading-snug">
+                    Layanan Pengaduan Konsumen
+                </h3>
+                <div class="text-stone-500 text-xs leading-relaxed space-y-4">
+                    <p>
+                        Direktorat Jenderal Perlindungan Konsumen dan Tertib Niaga, 
+                        Kementerian Perdagangan Republik Indonesia
+                    </p>
+                </div>
+            </div>
+
         </div>
-    </footer>
+    </div>
+</footer>
 
     {{-- Floating WhatsApp Button (Opsional seperti di gambar) --}}
     <a href="https://wa.me/081211118456" class="fixed bottom-6 right-6 z-50 bg-[#25D366] p-3 rounded-full shadow-lg hover:scale-110 transition-transform">

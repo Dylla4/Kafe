@@ -6,5 +6,11 @@ use Illuminate\Database\Eloquent\Model;
 
 class Menu extends Model
 {
-    //
+    protected $fillable = [
+    'nama', 
+    'harga', 
+    'stok', // PASTIKAN KOLOM INI ADA DI SINI
+    'image',
+    'category'
+];
 }

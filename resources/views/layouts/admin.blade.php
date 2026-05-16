@@ -41,18 +41,21 @@
         </a>
 
         <a href="{{ route('admin.orders') }}" class="flex items-center px-4 py-3 rounded-xl hover:bg-white/5 text-white/70 hover:text-white transition group">
-            <span class="w-8 group-hover:scale-125 transition">📝</span> Data Pesanan
+            <span class="w-8 group-hover:scale-125 transition">🛒</span> Data Pesanan
             <span class="ml-auto bg-red-500 text-[10px] px-2 py-0.5 rounded-full animate-pulse italic">!</span>
+        </a>
+        
+        <a href="{{ route('admin.report') }}" class="flex items-center px-4 py-3 rounded-xl hover:bg-white/5 text-white/70 hover:text-white transition group">
+            <span class="w-8 group-hover:scale-125 transition">📈</span> Laporan Penjualan
+        </a>
+
+        <a href="{{ route('admin.stok') }}" class="flex items-center px-4 py-3 rounded-xl hover:bg-white/5 text-white/70 hover:text-white transition group">
+            <span class="w-8 group-hover:scale-125 transition">📦</span> Stok Menu
         </a>
 
         <a href="{{ route('admin.reviews') }}" class="flex items-center px-4 py-3 rounded-xl hover:bg-white/5 text-white/70 hover:text-white transition group">
             <span class="w-8 group-hover:scale-125 transition">⭐</span> Reviews Pesanan
         </a>
-
-        <a href="{{ route('admin.report') }}" class="flex items-center px-4 py-3 rounded-xl hover:bg-white/5 text-white/70 hover:text-white transition group">
-            <span class="w-8 group-hover:scale-125 transition">📈</span> Laporan Penjualan
-        </a>
-
     </nav>
 
     <div class="p-6 border-t border-white/5 mt-auto">

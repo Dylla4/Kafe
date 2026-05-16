@@ -142,7 +142,7 @@ public function updateCart(Request $request, $id) {
     // Jika item tidak ditemukan, kirim error yang akan ditangkap JavaScript
     return response()->json(['success' => false, 'message' => 'Item tidak ditemukan'], 404);
 }
-public function prosesCheckout(Request $request) {
+    public function prosesCheckout(Request $request) {
     $request->validate([
         'nama_pemesan' => 'required',
         'nomor_wa' => 'required',
@@ -170,19 +170,39 @@ public function prosesCheckout(Request $request) {
         'status'        => $statusAwal
     ]);
 
+    // --- AWAL LOGIKA PENGURANGAN STOK OTOMATIS ---
+    foreach ($cart as $id => $details) {
+        $menu = Menu::find($id);
+        if ($menu) {
+            // Mengurangi stok sesuai quantity yang dibeli
+            $menu->decrement('stok', $details['quantity']);
+        }
+    }
+    // --- AKHIR LOGIKA PENGURANGAN STOK OTOMATIS ---
+
     session()->forget('cart');
 
     // LOGIKA REDIRECT BERDASARKAN METODE PEMBAYARAN
     if ($request->metode_pembayaran === 'cash') {
-        // Jika Cash: Langsung ke Invoice (Gunakan name route yang sesuai: order.invoice atau invoice.print)
         return redirect()->route('invoice.print', $order->id)
                          ->with('success', 'Pesanan berhasil! Silakan lakukan pembayaran di kasir.');
     } else {
-        // Jika QRIS: Tetap ke halaman pembayaran
         return redirect()->route('order.payment', $order->id);
     }
 }
+    public function batalkanPesanan($id)
+    {
+        $order = Order::findOrFail($id);
+        
+        // Opsional: Kembalikan stok jika pesanan dibatalkan
+        $items = json_decode($order->item_pesanan, true);
+        foreach ($items as $idMenu => $details) {
+            \App\Models\Menu::where('id', $idMenu)->increment('stok', $details['quantity']);
+        }
 
+        $order->delete(); // Menghapus dari database
+        return redirect()->back()->with('success', 'Pesanan telah dibatalkan dan dihapus.');
+    }
     public function konfirmasi(string $id)
     {
         $order = Order::findOrFail($id);
@@ -219,4 +239,5 @@ public function prosesCheckout(Request $request) {
         $order = Order::findOrFail($id);
         return view('payment', compact('order'));
     }
+    
 }

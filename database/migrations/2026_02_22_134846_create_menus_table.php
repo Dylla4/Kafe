@@ -9,7 +9,7 @@ return new class extends Migration
     /**
      * Run the migrations.
      */
-    public function up(): void
+public function up(): void
 {
     Schema::create('menus', function (Blueprint $table) {
         $table->id();
@@ -17,7 +17,8 @@ return new class extends Migration
         $table->integer('harga');
         $table->string('kategori');
         $table->string('foto')->nullable();
-        $table->text('deskripsi')->nullable(); // <--- Tambahkan ini
+        $table->text('deskripsi')->nullable();
+        $table->integer('stok')->default(0); // <--- TAMBAHKAN BARIS INI
         $table->timestamps();
     });
 }

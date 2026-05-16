@@ -24,6 +24,12 @@ class DatabaseSeeder extends Seeder
             'password' => bcrypt('akun12345'),
             'nomor_wa' => '6282115937845',
         ]);
+        User::create([
+            'name' => 'caca',
+            'email' => 'salshabila21@gmail.com',
+            'password' => bcrypt('dwinurulizhati'),
+            'nomor_wa' => '628979477537',
+        ]);
 
         Admin::truncate();
         Admin::create([
