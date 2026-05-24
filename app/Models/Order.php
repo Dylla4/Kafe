@@ -17,12 +17,17 @@ class Order extends Model
         'nama_pemesan', 
         'nomor_wa', 
         'jenis_pesanan', 
-        'metode_pembayaran', // Pastikan ini ada
+        'metode_pembayaran',
+        'pilihan_menu',
+        'catatan',
         'alamat', 
         'nomor_meja', 
+        'tanggal_booking',
+        'jam_booking',
         'item_pesanan', 
         'total_bayar', 
-        'status'
+        'status',
+        'status_pembayaran'
     ];
 
     public function user(): BelongsTo

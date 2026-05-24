@@ -12,7 +12,6 @@
         .input-focus:focus { border-color: #A06040; box-shadow: 0 0 0 4px rgba(160, 96, 64, 0.1); }
         .animate-in { animation: slideUp 0.5s ease-out forwards; }
         @keyframes slideUp { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
-        /* Menghilangkan arrow pada input number jika masih ada */
         input::-webkit-outer-spin-button, input::-webkit-inner-spin-button { -webkit-appearance: none; margin: 0; }
     </style>
 </head>
@@ -42,6 +41,19 @@
                     </div>
                 </div>
             </div>
+
+            {{-- NOTIFIKASI TEMPAT ALERT LARAVEL MUNCUL --}}
+            @if(session('error'))
+                <div class="mx-4 md:mx-10 mt-6 p-4 bg-red-50 border border-red-200 text-red-800 rounded-2xl text-xs font-bold uppercase tracking-wider animate-in">
+                    ⚠️ {{ session('error') }}
+                </div>
+            @endif
+
+            @if(session('success'))
+                <div class="mx-4 md:mx-10 mt-6 p-4 bg-emerald-50 border border-emerald-200 text-emerald-800 rounded-2xl text-xs font-bold uppercase tracking-wider animate-in">
+                    ✅ {{ session('success') }}
+                </div>
+            @endif
 
             @if(!empty($cartItems) && count($cartItems) > 0)
                 <div class="p-4 md:p-10">
@@ -113,7 +125,6 @@
 
                                     <div>
                                         <label class="block text-[9px] font-black text-stone-400 mb-2 uppercase tracking-widest ml-1">Tanggal Pesan</label>
-                                        {{-- Ganti baris input tanggal_booking dengan ini --}}
                                         <input type="date" 
                                                 name="tanggal_booking" 
                                                 id="tanggal_booking" 
@@ -125,7 +136,7 @@
                                     </div>
 
                                     <div>
-                                        <label class="block text-[9px] font-black text-stone-400 mb-2 uppercase tracking-widest ml-1" id="label-jam">Waktu Pengambilan</label>
+                                        <label class="block text-[9px] font-black text-stone-400 mb-2 uppercase tracking-widest ml-1" id="label-jam">Jam Booking Meja</label>
                                         <select name="jam_booking" id="jam_booking" class="w-full p-4 border border-stone-100 rounded-2xl text-sm bg-stone-50 focus:bg-white input-focus shadow-sm transition-all font-bold cursor-pointer" required>
                                             <option value="" disabled selected>Pilih Jam</option>
                                         </select>
@@ -151,10 +162,10 @@
                                 </div>
 
                                 <div id="section-meja" class="animate-in">
-                            <label class="block text-[10px] font-black text-orange-900 mb-2 uppercase tracking-widest">Nomor Meja</label>
-                            <input type="text" name="nomor_meja" value="{{ $mejaOtomatis ?? '01' }}" readonly class="w-full p-4 border border-stone-200 rounded-2xl bg-white font-black text-orange-700 text-center text-lg shadow-sm">
-                        </div>
-
+                                    <label class="block text-[10px] font-black text-orange-900 mb-2 uppercase tracking-widest">Nomor Meja</label>
+                                    <input type="text" name="nomor_meja" id="input_nomor_meja" value="Meja..." readonly 
+                                           class="w-full p-4 border border-stone-200 rounded-2xl bg-white font-black text-orange-700 text-center text-lg shadow-sm outline-none transition-all">
+                                </div>
 
                                 <div id="section-alamat" class="hidden animate-in">
                                     <label class="block text-[9px] font-black text-stone-400 mb-2 uppercase tracking-widest ml-1">Alamat Lengkap</label>
@@ -164,7 +175,7 @@
                                 <div class="grid grid-cols-1 md:grid-cols-2 gap-5">
                                     <div>
                                         <label class="block text-[9px] font-black text-stone-400 mb-2 uppercase tracking-widest ml-1">WhatsApp</label>
-                                        <input type="text" name="nomor_wa" value="{{ auth()->user()->nomor_wa ?? '' }}" placeholder="628..." class="w-full p-4 rounded-2xl border border-stone-100 bg-stone-50 focus:bg-white input-focus shadow-sm transition-all text-sm font-bold" required>
+                                        <input type="text" name="nomor_wa" id="nomor_wa" inputmode="numeric" pattern="[0-9]*" minlength="9" maxlength="14" value="{{ old('nomor_wa') }}" placeholder="628..." class="w-full p-4 rounded-2xl border border-stone-100 bg-stone-50 focus:bg-white input-focus shadow-sm transition-all text-sm font-bold" oninput="this.value = this.value.replace(/[^0-9]/g, '');" required>
                                     </div>
                                     <div>
                                         <label class="block text-[9px] font-black text-stone-400 mb-2 uppercase tracking-widest ml-1">Pembayaran</label>
@@ -226,7 +237,6 @@
     </div>
 
     <script>
-        // 1. Fungsi Update Kuantitas (+ dan -)
         function updateQuantity(id, action) {
             fetch(`/cart/update/${id}`, {
                 method: 'POST',
@@ -251,92 +261,133 @@
             });
         }
 
-        // 2. Fungsi Toggle Layanan
+        // FUNGSI UTAMA: Ambil ketersediaan meja dari backend secara Real-Time lewat Ajax Fetch
+        function perbaruiMejaKosong() {
+            const tanggalInput = document.getElementById('tanggal_booking');
+            const jamSelect = document.getElementById('jam_booking');
+            const inputMeja = document.getElementById('input_nomor_meja');
+            const layanan = document.querySelector('input[name="jenis_pesanan"]:checked').value;
+
+            // Jika layanan bukan Dine In, tidak perlu cek meja ke server
+            if (layanan !== 'dine_in') return;
+
+            const tanggal = tanggalInput.value;
+            const jam = jamSelect.value;
+
+            if (!tanggal || !jam) return;
+
+            // Efek Loading Ringan saat mengecek data
+            inputMeja.value = "Mengecek ketersediaan meja...";
+            inputMeja.classList.remove('text-red-600', 'text-orange-700');
+            inputMeja.classList.add('text-stone-400');
+
+            fetch(`/cek-meja-tersedia?tanggal=${tanggal}&jam=${jam}`)
+                .then(response => response.json())
+                .then(data => {
+                    inputMeja.value = data.meja;
+                    inputMeja.classList.remove('text-stone-400');
+                    
+                    if (data.meja === 'Maaf, Meja Penuh') {
+                        inputMeja.classList.add('text-red-600');
+                    } else {
+                        inputMeja.classList.add('text-orange-700');
+                    }
+                })
+                .catch(error => {
+                    console.error('Error:', error);
+                    inputMeja.value = "Meja 01";
+                    inputMeja.classList.add('text-orange-700');
+                });
+        }
+
         function toggleLayanan() {
-    const layanan = document.querySelector('input[name="jenis_pesanan"]:checked').value;
-    const sectionAlamat = document.getElementById('section-alamat');
-    const sectionMeja = document.getElementById('section-meja'); // Tambahkan ini
-    const inputAlamat = document.getElementById('input-alamat');
-    const labelJam = document.getElementById('label-jam');
-    const opsiCash = document.querySelector('option[value="cash"]');
-    const selectMetode = document.querySelector('select[name="metode_pembayaran"]');
+            const layanan = document.querySelector('input[name="jenis_pesanan"]:checked').value;
+            const sectionAlamat = document.getElementById('section-alamat');
+            const sectionMeja = document.getElementById('section-meja'); 
+            const inputAlamat = document.getElementById('input-alamat');
+            const inputMeja = document.getElementById('input_nomor_meja');
+            const labelJam = document.getElementById('label-jam');
+            const opsiCash = document.querySelector('option[value="cash"]');
+            const selectMetode = document.querySelector('select[name="metode_pembayaran"]');
 
-    // Reset Default
-    sectionAlamat.classList.add('hidden');
-    sectionMeja.classList.remove('hidden'); // Default meja muncul
-    inputAlamat.required = false;
-    opsiCash.disabled = false;
-    opsiCash.style.display = 'block';
+            sectionAlamat.classList.add('hidden');
+            sectionMeja.classList.remove('hidden'); 
+            inputMeja.disabled = false;
+            inputAlamat.required = false;
+            opsiCash.disabled = false;
+            opsiCash.style.display = 'block';
 
-    if (layanan === 'dine_in') {
-        labelJam.innerText = 'Jam Booking Meja';
-    } else if (layanan === 'take_away') {
-        labelJam.innerText = 'Jam Ambil di Kasir';
-        sectionMeja.classList.add('hidden'); // Sembunyikan meja
-    } else if (layanan === 'delivery') {
-        labelJam.innerText = 'Jam Pengantaran';
-        sectionAlamat.classList.remove('hidden');
-        sectionMeja.classList.add('hidden'); // Sembunyikan meja
-        inputAlamat.required = true; 
-        selectMetode.value = 'qris'; 
-        opsiCash.disabled = true;
-        opsiCash.style.display = 'none';
-    }
-}
+            if (layanan === 'dine_in') {
+                labelJam.innerText = 'Jam Booking Meja';
+                perbaruiMejaKosong(); // Jalankan cek meja kembali saat tipe layanan diubah ke Dine In
+            } else if (layanan === 'take_away') {
+                labelJam.innerText = 'Jam Ambil di Kasir';
+                sectionMeja.classList.add('hidden'); 
+                inputMeja.disabled = true;
+            } else if (layanan === 'delivery') {
+                labelJam.innerText = 'Jam Pengantaran';
+                sectionAlamat.classList.remove('hidden');
+                sectionMeja.classList.add('hidden'); 
+                inputMeja.disabled = true;
+                inputAlamat.required = true; 
+                selectMetode.value = 'qris'; 
+                opsiCash.disabled = true;
+                opsiCash.style.display = 'none';
+            }
+        }
 
         document.addEventListener('DOMContentLoaded', function() {
-        const tanggalInput = document.getElementById('tanggal_booking');
-        const jamSelect = document.getElementById('jam_booking');
+            const tanggalInput = document.getElementById('tanggal_booking');
+            const jamSelect = document.getElementById('jam_booking');
 
-        function generateJamOptions() {
-    const selectedDate = tanggalInput.value;
-    const now = new Date();
-    const today = now.toISOString().split('T')[0];
-    
-    const currentHour = now.getHours();
-    const currentMinute = now.getMinutes();
+            function generateJamOptions() {
+                const selectedDate = tanggalInput.value;
+                const now = new Date();
+                const today = now.toISOString().split('T')[0];
+                const currentJamValue = jamSelect.value;
 
-    jamSelect.innerHTML = '<option value="" disabled selected>Pilih Jam</option>';
+                jamSelect.innerHTML = '<option value="" disabled selected>Pilih Jam</option>';
 
-    for (let h = 9; h <= 22; h++) {
-        ['00', '30'].forEach(m => {
-            if (h === 22 && m === '30') return;
+                for (let h = 9; h <= 22; h++) {
+                    ['00', '30'].forEach(m => {
+                        if (h === 22 && m === '30') return;
 
-            const jamStr = h.toString().padStart(2, '0') + ':' + m;
-            const optionHour = h;
-            const optionMinute = parseInt(m);
+                        const jamStr = h.toString().padStart(2, '0') + ':' + m;
+                        const optionHour = h;
+                        let isDisabled = false;
 
-            let isDisabled = false;
+                        if (selectedDate === today) {
+                            const bufferTime = new Date(now.getTime() + 15 * 60000); 
+                            const bHour = bufferTime.getHours();
+                            const bMinute = bufferTime.getMinutes();
 
-            // --- TARUH DI SINI (MENGGANTIKAN LOGIKA LAMA) ---
-            if (selectedDate === today) {
-                // Menambah buffer 15 menit agar pelanggan tidak pesan terlalu mepet
-                const bufferTime = new Date(now.getTime() + 15 * 60000); 
-                const bHour = bufferTime.getHours();
-                const bMinute = bufferTime.getMinutes();
+                            if (optionHour < bHour || (optionHour === bHour && parseInt(m) <= bMinute)) {
+                                isDisabled = true;
+                            }
+                        }
 
-                if (optionHour < bHour || (optionHour === bHour && optionMinute <= bMinute)) {
-                    isDisabled = true;
+                        if (!isDisabled) {
+                            const option = document.createElement('option');
+                            option.value = jamStr;
+                            option.text = jamStr;
+                            if (jamStr === currentJamValue) {
+                                option.selected = true;
+                            }
+                            jamSelect.appendChild(option);
+                        }
+                    });
                 }
+                
+                // Memicu pencarian meja setelah pilihan jam berhasil digenerate ulang
+                perbaruiMejaKosong();
             }
 
-                // 4. Masukkan ke dalam Select jika tidak disabled
-                if (!isDisabled) {
-                    const option = document.createElement('option');
-                    option.value = jamStr;
-                    option.text = jamStr;
-                    jamSelect.appendChild(option);
-                }
-            });
-        }
-    }
-
-        // Jalankan saat tanggal berubah
-        tanggalInput.addEventListener('change', generateJamOptions);
-    
-        // Jalankan pertama kali saat halaman dibuka
-        generateJamOptions();
-});
+            tanggalInput.addEventListener('change', generateJamOptions);
+            jamSelect.addEventListener('change', perbaruiMejaKosong);
+            
+            // Pengecekan pertama kali otomatis saat halaman selesai dirender
+            generateJamOptions();
+        });
     </script>
 </body>
 </html>

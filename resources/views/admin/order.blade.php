@@ -23,8 +23,9 @@
                         <th class="p-6 text-xs font-black text-stone-400 uppercase tracking-widest">Pelanggan</th>
                         <th class="p-6 text-xs font-black text-stone-400 uppercase tracking-widest">Total Bayar</th>
                         <th class="p-6 text-xs font-black text-stone-400 uppercase tracking-widest">Waktu</th>
-                        <th class="p-6 text-xs font-black text-stone-400 uppercase tracking-widest">Status</th>
-                        <th class="p-6 text-xs font-black text-stone-400 uppercase tracking-widest text-center">Aksi</th>
+                        <th class="p-6 text-xs font-black text-stone-400 uppercase tracking-widest text-center">Status</th>
+                        <th class="p-6 text-xs font-black text-stone-400 uppercase tracking-widest text-center">Aksi Operasional</th>
+                        <th class="p-6 text-xs font-black text-stone-400 uppercase tracking-widest text-center">Konfirmasi Bayar</th>
                         <th class="p-6 text-xs font-black text-stone-400 uppercase tracking-widest text-center">Kelola</th>
                     </tr>
                 </thead>
@@ -37,12 +38,13 @@
                         {{-- Pelanggan --}}
                         <td class="p-6">
                             <p class="font-bold text-[#2D2018]">{{ $order->nama_pemesan }}</p>
-                            <p class="text-[10px] text-stone-400 font-bold uppercase tracking-tighter">Customer</p>
+                            <p class="text-[10px] text-stone-400 font-bold uppercase tracking-tighter">{{ str_replace('_', ' ', $order->jenis_pesanan) }}</p>
                         </td>
 
                         {{-- Total Bayar --}}
                         <td class="p-6">
                             <p class="font-black text-orange-500 italic text-sm">Rp{{ number_format($order->total_bayar, 0, ',', '.') }}</p>
+                            <p class="text-[9px] text-stone-400 font-bold uppercase tracking-tighter mt-0.5">{{ $order->metode_pembayaran }}</p>
                         </td>
 
                         {{-- Waktu --}}
@@ -50,22 +52,46 @@
                             {{ $order->created_at->format('H:i') }} <span class="text-[10px] opacity-50 ml-1">• {{ $order->created_at->format('d M') }}</span>
                         </td>
 
-                        {{-- Status --}}
+                        {{-- Status Tumpuk (Operasional & Pembayaran) --}}
                         <td class="p-6 text-center">
-                            <span class="px-4 py-1 rounded-full text-[9px] font-black uppercase tracking-widest
-                                {{ $order->status == 'sukses' ? 'bg-green-100 text-green-600' : 'bg-orange-100 text-orange-600' }}">
-                                {{ $order->status }}
-                            </span>
+                            <div class="flex flex-col items-center gap-1.5">
+                                {{-- Status Dapur/Operasional --}}
+                                <span class="px-4 py-1 rounded-full text-[9px] font-black uppercase tracking-widest
+                                    @if($order->status == 'sukses') bg-green-100 text-green-600 
+                                    @elseif($order->status == 'siap') bg-blue-100 text-blue-600
+                                    @elseif($order->status == 'diproses') bg-amber-100 text-amber-600
+                                    @else bg-gray-100 text-gray-600 @endif">
+                                    {{ $order->status }}
+                                </span>
+
+                                {{-- Status Pembayaran Keuangan --}}
+                                <span class="px-3 py-0.5 rounded text-[8px] font-black uppercase tracking-wider text-white
+                                    {{ $order->status_pembayaran == 'paid' ? 'bg-emerald-600' : 'bg-rose-600' }}">
+                                    {{ $order->status_pembayaran ?? 'unpaid' }}
+                                </span>
+                            </div>
                         </td>
 
-                        {{-- Aksi Dropdown --}}
+                        {{-- Aksi Dropdown Status Operasional --}}
                         <td class="p-6 text-center">
                             <form action="{{ route('admin.orders.update', $order->id) }}" method="POST">
                                 @csrf @method('PATCH')
-                                <select name="status" onchange="this.form.submit()" class="text-[9px] font-black border-none bg-stone-100 rounded-lg p-2 focus:ring-2 focus:ring-orange-400 uppercase tracking-tighter cursor-pointer">
+                                <select name="status" onchange="this.form.submit()" class="text-[9px] font-black border-none bg-stone-100 rounded-lg p-2 focus:ring-2 focus:ring-orange-400 uppercase tracking-tighter cursor-pointer-auto w-full max-w-[100px]">
+                                    <option value="pending" {{ $order->status == 'pending' ? 'selected' : '' }}>PENDING</option>
                                     <option value="diproses" {{ $order->status == 'diproses' ? 'selected' : '' }}>PROSES</option>
                                     <option value="siap" {{ $order->status == 'siap' ? 'selected' : '' }}>SIAP</option>
                                     <option value="sukses" {{ $order->status == 'sukses' ? 'selected' : '' }}>SELESAI</option>
+                                </select>
+                            </form>
+                        </td>
+
+                        {{-- Aksi Dropdown Status Pembayaran Baru --}}
+                        <td class="p-6 text-center">
+                            <form action="{{ route('admin.orders.update-payment', $order->id) }}" method="POST">
+                                @csrf @method('PUT')
+                                <select name="status_pembayaran" onchange="this.form.submit()" class="text-[9px] font-black border-none bg-stone-100 rounded-lg p-2 focus:ring-2 focus:ring-emerald-400 uppercase tracking-tighter cursor-pointer w-full max-w-[100px]">
+                                    <option value="unpaid" {{ $order->status_pembayaran == 'unpaid' ? 'selected' : '' }}>UNPAID</option>
+                                    <option value="paid" {{ $order->status_pembayaran == 'paid' ? 'selected' : '' }}>PAID</option>
                                 </select>
                             </form>
                         </td>
@@ -80,7 +106,7 @@
                     </tr>
                     @empty
                     <tr>
-                        <td colspan="7" class="p-20 text-center italic text-stone-400 font-bold uppercase tracking-widest text-xs opacity-50">
+                        <td colspan="8" class="p-20 text-center italic text-stone-400 font-bold uppercase tracking-widest text-xs opacity-50">
                             Belum ada data pesanan yang tersedia.
                         </td>
                     </tr>

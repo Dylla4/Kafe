@@ -106,10 +106,13 @@
                     <span class="text-[#693d04] mt-1">
                         <i class="fas fa-map-marker-alt"></i>
                     </span>
-                    <p class="text-sm text-stone-600 leading-relaxed">
-                        Jalan Ir H Djuanda Km 3 Indramayu.<br>
-                         Kec. Indramayu, Kab. Indramayu,<br>
-                        Jawa Barat
+                    <p class="text-gray-600">
+                        <a href="https://www.google.com/maps/search/?api=1&query=Jalan+Ir+H+Djuanda+Km+3+Indramayu+Kec+Indramayu+Kab+Indramayu+Jawa+Barat" 
+                            target="_blank" rel="noopener noreferrer" class="hover:underline hover:text-brown-700">
+                            📍Jalan Ir H Djuanda Km 3 Indramayu.<br>
+                            Kec. Indramayu, Kab. Indramayu,<br>
+                            Jawa Barat
+                        </a>
                     </p>
                 </div>
             </div>
@@ -121,7 +124,7 @@
                 <div class="text-sm text-stone-600 space-y-2">
                     <div class="flex items-center gap-2">
                         <i class="fas fa-phone-alt text-[#693d04] text-xs"></i>
-                        <span>+0113-356-7889</span>
+                        <span>+62896-6020-5799</span>
                     </div>
                 </div>
 

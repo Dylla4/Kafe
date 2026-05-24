@@ -49,6 +49,9 @@ Route::middleware('auth:web')->group(function () {
     Route::get('/payment/{id}', [OrderController::class, 'showPayment'])->name('order.payment');
     Route::post('/order/konfirmasi/{id}', [OrderController::class, 'konfirmasi'])->name('order.konfirmasi');
     //Route::get('/order/konfirmasi/{id}', [OrderController::class, 'konfirmasi'])->name('order.konfirmasi');
+    
+    //meja
+    Route::get('/cek-meja-tersedia', [App\Http\Controllers\OrderController::class, 'cekMejaTersedia'])->name('cek.meja');
 
     // Route untuk menampilkan Bukti Reservasi
     //Route::get('/reservation/{id}', [OrderController::class, 'reservation'])->name('order.reservation');
@@ -116,6 +119,12 @@ Route::prefix('admin')->group(function () {
     Route::get('/stok', [AdminStokController::class, 'index'])->name('admin.stok');
     // Baris ini sangat penting:
     Route::put('/stok/{id}', [AdminStokController::class, 'update'])->name('admin.stok.update');
+
+// Route untuk update status operasional (bawaan kamu yang sudah ada)
+Route::patch('/orders/{id}', [AdminOrderController::class, 'updateStatus'])->name('admin.orders.update');
+
+// TAMBAHKAN ROUTE BARU INI UNTUK UPDATE STATUS PEMBAYARAN
+Route::put('/orders/{id}/update-payment', [AdminOrderController::class, 'updatePayment'])->name('admin.orders.update-payment');
 });
 
     });

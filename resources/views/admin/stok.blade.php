@@ -40,7 +40,7 @@
                             <div class="flex items-center gap-4">
                                 <img src="{{ asset($menu->foto) }}" 
                                      class="w-12 h-12 rounded-xl object-cover shadow-sm bg-stone-100"
-                                     onerror="this.src='{{ asset('img/1.png') }}'">
+                                     onerror="this.src='\{\{ asset(\'img/1.png\') \}\}'"
                                 <span class="font-black text-[#2D2018] uppercase tracking-tight">
                                     {{ $menu->nama_menu ?? 'NAMA TIDAK DITEMUKAN' }}
                                 </span>

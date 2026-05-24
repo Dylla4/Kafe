@@ -87,19 +87,24 @@
                     </div>
                     
                     <div class="flex items-center gap-3">
-                        @if(strtolower($order->status) == 'sukses' || strtolower($order->status) == 'selesai')
-                            @if(!$order->review)
-                                <a href="{{ route('ulasan.create', ['order_id' => $order->id]) }}" 
-                                   class="px-8 py-3.5 bg-[#3C2A21] text-white rounded-2xl font-black text-[10px] uppercase tracking-[0.2em] hover:bg-black transition-all shadow-xl shadow-stone-200 active:scale-95">
-                                    ⭐ Tulis Ulasan
-                                </a>
-                            @else
-                                <div class="px-6 py-3 bg-green-50 text-green-700 rounded-2xl border border-green-100 flex items-center gap-2">
-                                    <span class="text-[10px] font-black uppercase tracking-widest">Diulas</span>
-                                    <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 20 20"><path d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z"></path></svg>
-                                </div>
-                            @endif
-                        @endif
+    @if(strtolower($order->status) == 'sukses' || strtolower($order->status) == 'selesai')
+        {{-- Jika BELUM ada data review untuk order ini --}}
+        @if(!$order->ulasan)
+            <a href="{{ route('ulasan.create', ['order_id' => $order->id]) }}" 
+               class="px-8 py-3.5 bg-[#3C2A21] text-white rounded-2xl font-black text-[10px] uppercase tracking-[0.2em] hover:bg-black transition-all shadow-xl shadow-stone-200 active:scale-95 flex items-center gap-2">
+                 ⭐ Tulis Ulasan
+            </a>
+        {{-- Jika SUDAH ada data review untuk order ini --}}
+        @else
+            <button class="px-6 py-3.5 bg-stone-100 text-stone-400 border border-stone-200 rounded-2xl font-black text-[10px] uppercase tracking-[0.2em] cursor-not-allowed flex items-center gap-2 shadow-inner"
+                    disabled>
+                <svg class="w-4 h-4 text-stone-400" fill="currentColor" viewBox="0 0 20 20">
+                    <path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd"></path>
+                </svg>
+                Ulasan Dikirim
+            </button>
+        @endif
+    @endif
 
                         <a href="{{ route('invoice.print', $order->id) }}" class="p-3.5 bg-stone-100 text-stone-500 rounded-2xl hover:bg-[#3C2A21] hover:text-white transition-all group-hover:shadow-lg">
                             <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -113,15 +118,14 @@
             <div class="text-center py-32 bg-white rounded-[4rem] border border-stone-100 shadow-sm px-10">
                 <div class="relative inline-block mb-10">
                     <div class="absolute -inset-4 bg-orange-100 rounded-full blur-2xl opacity-50 animate-pulse"></div>
-                        <span class="relative text-8xl">☕</span>
-                    </div>
-                        <h3 class="text-3xl font-black text-[#3C2A21] uppercase tracking-tighter mb-4">Keranjang Masih Kosong</h3>
-                        <p class="text-stone-400 mt-2 mb-10 text-sm max-w-sm mx-auto font-medium">Anda belum memulai cerita rasa bersama kami. Mari pesan Menu terbaik dari Valeria Coffee!</p>
-                    {{-- Bagian tombol di dalam kondisi @empty --}}
-                    <a href="{{ url('/menu') }}" class="bg-[#3C2A21] text-white px-14 py-5 rounded-full font-black uppercase tracking-[0.3em] text-[10px] hover:bg-black transition-all shadow-[0_20px_40px_rgba(0,0,0,0.1)] active:scale-95 inline-block">
-                        Mulai Pesan
-                    </a>
+                    <span class="relative text-8xl">☕</span>
                 </div>
+                <h3 class="text-3xl font-black text-[#3C2A21] uppercase tracking-tighter mb-4">Keranjang Masih Kosong</h3>
+                <p class="text-stone-400 mt-2 mb-10 text-sm max-w-sm mx-auto font-medium">Anda belum memulai cerita rasa bersama kami. Mari pesan Menu terbaik dari Valeria Coffee!</p>
+                
+                <a href="{{ url('/menu') }}" class="bg-[#3C2A21] text-white px-14 py-5 rounded-full font-black uppercase tracking-[0.3em] text-[10px] hover:bg-black transition-all shadow-[0_20px_40px_rgba(0,0,0,0.1)] active:scale-95 inline-block">
+                    Mulai Pesan
+                </a>
             </div>
         @endforelse
     </div>

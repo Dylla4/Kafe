@@ -64,6 +64,22 @@ public function dashboard(): View
         return redirect()->back()->with('success', 'Status pesanan berhasil diperbarui!');
     }
 
+    public function updatePayment(Request $request, $id)
+{
+    $request->validate([
+        'status_pembayaran' => 'required|in:unpaid,paid',
+    ]);
+
+    $order = Order::findOrFail($id);
+    
+    // Update data status pembayaran ke database
+    $order->update([
+        'status_pembayaran' => $request->status_pembayaran
+    ]);
+
+    return redirect()->back()->with('success', 'Status pembayaran berhasil diperbarui!');
+}
+
     /**
      * Hapus Pesanan
      */

@@ -2,7 +2,7 @@
 
 @section('content')
 {{-- Tambahkan Font Montserrat untuk kesan modern jika belum ada --}}
-<link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;700;900&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;700;900&display=swap" rel="stylesheet text-sm">
 
 <div class="max-w-4xl mx-auto py-12 px-6 font-['Montserrat']">
     {{-- Header Section --}}
@@ -12,6 +12,7 @@
         <div class="w-20 h-1 bg-[#A06040] mx-auto mt-4 rounded-full"></div>
     </div>
 
+    {{-- Alert Success --}}
     @if(session('success'))
         <div class="bg-green-50 border-l-4 border-green-500 text-green-800 p-4 mb-8 rounded-xl shadow-sm flex justify-between items-center animate-bounce">
             <div class="flex items-center">
@@ -22,11 +23,23 @@
         </div>
     @endif
 
+    {{-- Alert Error / Gagal Duplikasi --}}
+    @if(session('error'))
+        <div class="bg-red-50 border-l-4 border-red-500 text-red-800 p-4 mb-8 rounded-xl shadow-sm flex justify-between items-center">
+            <div class="flex items-center">
+                <svg class="w-5 h-5 mr-2" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7 4a1 1 0 11-2 0 1 1 0 012 0zm-1-9a1 1 0 00-1 1v4a1 1 0 102 0V6a1 1 0 00-1-1z" clip-rule="evenodd"></path></svg>
+                <span class="font-bold">{{ session('error') }}</span>
+            </div>
+            <button onclick="this.parentElement.remove()" class="text-red-500 hover:text-red-700 transition">&times;</button>
+        </div>
+    @endif
+
     {{-- Form Section --}}
     @isset($order)
     <div class="relative mb-16">
         <div class="absolute -top-4 -left-4 w-24 h-24 bg-[#A06040]/10 rounded-full -z-10"></div>
         <form action="{{ route('ulasan.store') }}" method="POST" enctype="multipart/form-data"
+              onsubmit="this.querySelector('button[type=submit]').disabled = true; this.querySelector('button[type=submit]').innerText = 'MENGIRIM ULASAN...';"
               class="p-8 md:p-10 bg-white/80 backdrop-blur-md shadow-[0_20px_50px_rgba(0,0,0,0.05)] rounded-[2.5rem] border border-white">
             @csrf
             
@@ -35,7 +48,7 @@
             <div class="grid grid-cols-1 md:grid-cols-2 gap-8 mb-8">
                 <div class="space-y-2">
                     <label class="text-xs font-black uppercase tracking-widest text-[#3C2A21]">Nama Pelanggan</label>
-                    <input type="text" name="nama" value="{{ auth()->user()->name ?? 'Tamu' }}" 
+                    <input type="text" name="nama" value="{{ $order->nama_pemesan ?? (auth()->user()->name ?? 'Tamu') }}" 
                            class="w-full bg-stone-100 border-none p-4 rounded-2xl text-stone-500 font-bold focus:ring-0 cursor-not-allowed" readonly>
                 </div>
                 <div class="space-y-2">
@@ -78,7 +91,7 @@
                 </div>
             </div>
 
-            <button type="submit" class="w-full bg-[#3C2A21] text-white py-5 rounded-2xl font-black uppercase tracking-[0.2em] hover:bg-black transition-all shadow-xl active:scale-95">
+            <button type="submit" class="w-full bg-[#3C2A21] text-white py-5 rounded-2xl font-black uppercase tracking-[0.2em] hover:bg-black transition-all shadow-xl active:scale-95 disabled:bg-stone-400 disabled:cursor-not-allowed">
                 Kirim Ulasan Premium
             </button>
         </form>
@@ -131,9 +144,9 @@
                     </p>
                 </div>
 
-                @if($u->foto)
+                @if($u->foto_ulasan)
                     <div class="relative overflow-hidden rounded-2xl group-hover:shadow-lg transition-all duration-500">
-                        <img src="{{ asset('storage/' . $u->foto) }}" 
+                        <img src="{{ asset('storage/' . $u->foto_ulasan) }}" 
                              class="w-full h-48 object-cover transform group-hover:scale-110 transition-all duration-700">
                     </div>
                 @endif
