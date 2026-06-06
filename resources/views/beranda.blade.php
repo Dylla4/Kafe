@@ -18,37 +18,29 @@
     </button>
 
     {{-- Container Slider --}}
-    <div id="foreSlider" class="flex overflow-x-auto snap-x snap-mandatory scrollbar-hide scroll-smooth">
-        @php
-            $slides = [
-                ['title' => 'Promo', 'sub' => 'BUY 1 GET 1', 'desc' => 'Nikmati kesegaran kopi favoritmu lebih hemat. Beli satu varian caramel, dapatkan satu lagi gratis!.', 'img' => '10.png'],
-                ['title' => 'Promo', 'sub' => 'Menu Baru', 'desc' => 'Nikmati kelezatan tradisional dengan sentuhan modern. Lumpiah goreng renyah yang siap menemani Harimuuu.', 'img' => '4.png'],
-                ['title' => 'Promo', 'sub' => 'Asian Fusion', 'desc' => 'Nikmati harmoni rasa autentik Asia. Onigiri yang lembut dan Gimbap yang kaya rasa, kini hadir menemani waktu kopi Anda.', 'img' => '1.png'],
-                ['title' => 'Promo', 'sub' => 'Weekend', 'desc' => 'Rasakan kesegaran nyata dari perpaduan teh pilihan dan irisan lemon segar.', 'img' => '2.png'],
-            ];
-        @endphp
+    <div id="foreSlider" class="flex overflow-x-auto snap-x snap-mandatory scrollbar-hide scroll-smooth w-full h-[200px] md:h-[300px] lg:h-[480px]">
+    @php
+        $slides = [
+            ['img' => 'promo1.jpeg'],
+            ['img' => 'promo2.jpeg'],
+            ['img' => 'promo3.jpeg'],
+            ['img' => 'promo4.jpeg'],
+            ['img' => 'promo5.jpeg'],
+            ['img' => 'promo6.jpeg'],
+            ['img' => 'promo7.jpeg'],
+            ['img' => 'promo8.jpeg'],
+        ];
+    @endphp
 
-        @foreach ($slides as $slide)
-        <div class="flex-none w-full snap-center bg-[#F9F9F9] min-h-[500px] md:min-h-[600px] flex items-center">
-            <div class="max-w-7xl mx-auto px-8 md:px-16 w-full grid grid-cols-1 md:grid-cols-2 gap-12 items-center">
-                {{-- Text Area --}}
-                <div class="order-2 md:order-1 space-y-6">
-                    <h1 class="text-[#004d31] text-6xl md:text-8xl font-bold leading-[0.8] tracking-tighter">
-                        {{ $slide['title'] }} <br>
-                        <span class="font-serif italic font-light text-[#A06040]">{{ $slide['sub'] }}</span>
-                    </h1>
-                    <p class="text-stone-500 text-lg max-w-sm font-light leading-relaxed">
-                        {{ $slide['desc'] }}
-                    </p>
-                </div>
-                {{-- Image Area --}}
-                <div class="order-1 md:order-2 flex justify-center">
-                    <img src="{{ asset('img/' . $slide['img']) }}" class="w-full max-w-md object-contain drop-shadow-2xl" alt="Product">
-                </div>
-            </div>
+    @foreach($slides as $slide)
+        <div class="w-full flex-shrink-0 snap-start h-full bg-gray-100">
+            <img src="{{ asset('img/' . $slide['img']) }}" 
+                 alt="Promo Valeria Coffee" 
+                 class="w-full h-full object-cover md:object-fill"
+                 onerror="this.style.display='none'">
         </div>
-        @endforeach
-    </div>
+    @endforeach
+</div>
 
     {{-- Indikator Dots --}}
     <div class="absolute bottom-10 left-1/2 -translate-x-1/2 flex gap-3 z-20">
